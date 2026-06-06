@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1a1718">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>REMAP Academy — Formação Profissional em Reprogramação Automóvel</title>
+  <meta name="description" content="Formação hands-on e certificada em reprogramação automóvel. Cursos Essential e Advanced em Portugal.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+:root{--black:#231F20;--black-2:#1a1718;--black-3:#141213;--cyan:#0BABDD;--orange:#F36308;--white:#fff}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--white);font-family:'Barlow',sans-serif;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3,h4{font-family:'Barlow Condensed',sans-serif;font-weight:700;line-height:1.15}
+a{text-decoration:none}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--black-3)}::-webkit-scrollbar-thumb{background:rgba(11,171,221,.35);border-radius:3px}
+.en{display:none}
+body.lang-en .pt{display:none}
+body.lang-en .en{display:revert}
+.nav{position:sticky;top:0;z-index:100;background:rgba(26,23,24,.97);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(11,171,221,.15);padding:0 clamp(1rem,4vw,3rem);min-height:92px;display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-top:max(8px,env(safe-area-inset-top));padding-bottom:8px}
+.nav-logo{display:flex;align-items:center;flex-shrink:0}
+.nav-logo svg{height:84px;width:auto}
+.nav-links{display:flex;align-items:center;gap:1.75rem;list-style:none}
+.nav-links a{font-size:13px;font-weight:500;color:rgba(255,255,255,.55);transition:color .2s}
+.nav-links a:hover{color:var(--white)}
+.nav-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.lang-toggle{display:flex;align-items:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:20px;overflow:hidden}
+.lang-toggle button{font-size:11px;font-weight:700;letter-spacing:.05em;padding:6px 12px;background:transparent;border:none;color:rgba(255,255,255,.4);cursor:pointer;transition:all .2s;font-family:'Barlow Condensed',sans-serif}
+.lang-toggle button.active{background:var(--cyan);color:#fff}
+.btn{display:inline-flex;align-items:center;gap:6px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:.04em;border-radius:9px;padding:10px 22px;cursor:pointer;border:none;transition:opacity .2s,transform .15s;-webkit-tap-highlight-color:transparent}
+.btn:hover{opacity:.88;transform:translateY(-1px)}
+.btn:active{transform:scale(.97)}
+.btn-orange{background:var(--orange);color:#fff}
+.btn-ghost{background:transparent;color:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.18)}
+.btn-ghost:hover{border-color:rgba(255,255,255,.35);color:#fff}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:transparent;border:none;padding:6px;-webkit-tap-highlight-color:transparent}
+.hamburger span{display:block;width:22px;height:2px;background:rgba(255,255,255,.7);border-radius:2px;transition:all .3s}
+.mobile-menu{display:none;flex-direction:column;background:var(--black-2);border-bottom:1px solid rgba(255,255,255,.06)}
+.mobile-menu a{padding:1rem 1.5rem;font-size:15px;font-weight:500;color:rgba(255,255,255,.6);border-bottom:1px solid rgba(255,255,255,.05);transition:color .2s;display:block}
+.mobile-menu a:active{color:#fff}
+.mobile-menu.open{display:flex}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+.announce-bar{background:rgba(243,99,8,.1);border-bottom:1px solid rgba(243,99,8,.25);padding:.65rem 1.5rem;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;text-align:center}
+.announce-dot{width:7px;height:7px;border-radius:50%;background:var(--orange);flex-shrink:0;animation:pulse 2s infinite}
+.announce-text{font-size:13px;color:rgba(255,255,255,.75)}
+.announce-text strong{color:var(--orange);font-weight:700}
+.announce-link{font-size:12px;font-weight:700;color:var(--orange);text-decoration:underline}
+.hero{min-height:calc(100vh - 72px);display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;padding:clamp(1rem,3vh,2rem) clamp(1rem,4vw,3rem);border-bottom:1px solid rgba(255,255,255,.06);position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-200px;left:-150px;width:600px;height:600px;background:radial-gradient(circle,rgba(11,171,221,.07) 0%,transparent 70%);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:-120px;right:-80px;width:450px;height:450px;background:radial-gradient(circle,rgba(243,99,8,.05) 0%,transparent 70%);pointer-events:none}
+.hero-content{position:relative;z-index:1}
+.badge-open{display:inline-flex;align-items:center;gap:8px;background:rgba(243,99,8,.12);border:1px solid rgba(243,99,8,.35);border-radius:24px;padding:7px 16px 7px 10px;margin-bottom:1.25rem}
+.badge-open-dot{width:8px;height:8px;border-radius:50%;background:var(--orange);flex-shrink:0;animation:pulse 1.8s infinite}
+.badge-open-text{font-size:12px;font-weight:700;color:var(--orange);letter-spacing:.08em;text-transform:uppercase}
+.badge-open-sub{font-size:11px;color:rgba(255,255,255,.4);padding-left:8px;border-left:1px solid rgba(255,255,255,.15)}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:11px;font-weight:600;color:var(--cyan);letter-spacing:.16em;text-transform:uppercase;margin-bottom:1.25rem}
+.eyebrow::before{content:'';width:26px;height:1.5px;background:var(--cyan)}
+.hero h1{font-size:clamp(2.2rem,4.5vw,3.8rem);margin-bottom:1.25rem;color:#fff;letter-spacing:-.01em}
+.hero h1 em{font-style:normal;color:var(--orange)}
+.hero-sub{font-size:15px;color:rgba(255,255,255,.55);line-height:1.78;max-width:430px;margin-bottom:2rem}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:2.5rem}
+.hero-stats{display:flex;gap:2rem;padding-top:2rem;border-top:1px solid rgba(255,255,255,.1);flex-wrap:wrap}
+.stat-val{font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:700;color:#fff;line-height:1}
+.stat-label{font-size:11px;color:rgba(255,255,255,.38);margin-top:4px}
+.hero-panel{background:rgba(11,171,221,.04);border:1px solid rgba(11,171,221,.14);border-radius:18px;padding:1.5rem;position:relative;z-index:1;animation:fadeUp .7s .3s both}
+.panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid rgba(255,255,255,.08)}
+.panel-title{font-size:11px;font-weight:600;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.1em}
+.mod-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:9px;margin-bottom:6px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.05)}
+.mod-item:last-child{margin-bottom:0}
+.mod-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.d-cyan{background:var(--cyan)}.d-orange{background:var(--orange)}
+.mod-name{font-size:12px;color:rgba(255,255,255,.6);flex:1;line-height:1.3}
+.mod-badge{font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;letter-spacing:.04em;white-space:nowrap}
+.b-ess{background:rgba(11,171,221,.15);color:var(--cyan)}.b-adv{background:rgba(243,99,8,.15);color:#f8a97a}
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+.hero-content>*{animation:fadeUp .6s both}
+.hero-content>*:nth-child(1){animation-delay:.08s}.hero-content>*:nth-child(2){animation-delay:.16s}.hero-content>*:nth-child(3){animation-delay:.24s}.hero-content>*:nth-child(4){animation-delay:.32s}.hero-content>*:nth-child(5){animation-delay:.40s}
+.section{padding:clamp(2.5rem,5vh,4.5rem) clamp(1rem,4vw,3rem)}
+.section-label{font-size:11px;font-weight:700;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.13em;margin-bottom:1rem;display:flex;align-items:center;gap:12px}
+.section-label::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.08)}
+.section-head{margin-bottom:2.5rem}
+.section-h2{font-size:clamp(1.8rem,3.5vw,2.8rem);margin-bottom:.75rem}
+.section-sub{font-size:15px;color:rgba(255,255,255,.5);max-width:520px;line-height:1.75}
+.trust-bar{background:var(--black-2);border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);padding:1.75rem clamp(1rem,4vw,3rem);display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem}
+.trust-item{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:.75rem .5rem}
+.trust-icon{font-size:1.5rem;color:var(--cyan)}
+.trust-val{font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:700;color:#fff}
+.trust-desc{font-size:11px;color:rgba(255,255,255,.38);line-height:1.4}
+.next-date-section{padding:0.75rem clamp(1rem,4vw,3rem)}
+.next-date-banner{background:var(--black-2);border:1px solid rgba(11,171,221,.2);border-radius:14px;padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap}
+.ndb-left{display:flex;align-items:center;gap:14px}
+.ndb-icon{font-size:1.75rem;flex-shrink:0}
+.ndb-label{font-size:11px;font-weight:700;color:var(--cyan);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px}
+.ndb-date{font-family:'Barlow Condensed',sans-serif;font-size:1.35rem;font-weight:700;color:#fff}
+.ndb-sub{font-size:12px;color:rgba(255,255,255,.4);margin-top:2px}
+.ndb-slots{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ndb-slot{font-size:11px;font-weight:700;padding:4px 12px;border-radius:10px}
+.slot-ess{background:rgba(11,171,221,.12);color:var(--cyan);border:1px solid rgba(11,171,221,.2)}
+.slot-adv{background:rgba(243,99,8,.12);color:#f8a97a;border:1px solid rgba(243,99,8,.2)}
+#cursos{border-top:1px solid rgba(255,255,255,.06)}
+.course-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.course-card{border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.1);transition:border-color .3s,transform .3s}
+.course-card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.22)}
+.course-card.adv-card{border-color:rgba(243,99,8,.3)}
+.course-card.adv-card:hover{border-color:rgba(243,99,8,.55)}
+.consult-section-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+@media(max-width:700px){.consult-section-grid{grid-template-columns:1fr}}
+.consult-prod-card{background:var(--black-2);border:1px solid rgba(255,255,255,.1);border-radius:16px;overflow:hidden;transition:border-color .3s,transform .3s;padding:1.5rem}
+.consult-prod-card:hover{transform:translateY(-3px);border-color:rgba(11,171,221,.35)}
+.consult-prod-card.featured{border-color:rgba(11,171,221,.3);background:rgba(11,171,221,.04)}
+.cp-icon{font-size:2rem;margin-bottom:.75rem}
+.cp-price{font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:700;color:var(--cyan);margin:.5rem 0}
+.cp-name{font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:700;margin-bottom:.5rem}
+.cp-desc{font-size:13px;color:rgba(255,255,255,.5);line-height:1.7;margin-bottom:1rem}
+.cp-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1.25rem}
+.cp-tag{font-size:11px;font-weight:700;padding:3px 9px;border-radius:8px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.45)}
+.c-head{padding:1.5rem;border-bottom:1px solid rgba(255,255,255,.06)}
+.c-head.ess-h{background:rgba(11,171,221,.07)}.c-head.adv-h{background:rgba(243,99,8,.07)}
+.c-tier-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem}
+.c-tier{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+.t-ess{color:var(--cyan)}.t-adv{color:var(--orange)}
+.c-incl{font-size:10px;font-weight:700;background:rgba(243,99,8,.15);color:#f8a97a;padding:2px 9px;border-radius:10px}
+.c-name{font-size:1.6rem;color:#fff;margin-bottom:5px}
+.c-meta{font-size:12px;color:rgba(255,255,255,.38);display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.c-sep{width:1px;height:12px;background:rgba(255,255,255,.15)}
+.c-body{padding:1.5rem;background:var(--black-2)}
+.price-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1.25rem}
+.price-opt{border-radius:10px;padding:12px 14px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03)}
+.price-opt-label{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px}
+.po-pres .price-opt-label{color:rgba(255,255,255,.4)}
+.po-online .price-opt-label{color:var(--cyan)}
+.po-online{border-color:rgba(11,171,221,.2);background:rgba(11,171,221,.05)}
+.price-val{font-family:'Barlow Condensed',sans-serif;font-size:1.85rem;font-weight:700;color:#fff;line-height:1}
+.price-note{font-size:10px;color:rgba(255,255,255,.3);margin-top:3px}
+.mods-list{list-style:none;display:flex;flex-direction:column;gap:7px;margin-bottom:1.25rem}
+.mods-list li{font-size:12.5px;color:rgba(255,255,255,.52);display:flex;align-items:flex-start;gap:9px;line-height:1.4}
+.mods-list li::before{content:'\2192';font-size:11px;flex-shrink:0;margin-top:2px}
+.ess-list li::before{color:var(--cyan)}.adv-list li::before{color:var(--orange)}
+.fmt-row{display:flex;gap:6px;margin-bottom:1.25rem;flex-wrap:wrap}
+.fmt-tag{font-size:10px;font-weight:700;padding:3px 10px;border-radius:10px;display:flex;align-items:center;gap:4px}
+.fmt-pres{background:rgba(11,171,221,.1);color:#7fd4f0;border:1px solid rgba(11,171,221,.2)}
+.fmt-online{background:rgba(243,99,8,.1);color:#f8a97a;border:1px solid rgba(243,99,8,.2)}
+.c-cta{display:flex;flex-direction:column;gap:8px}
+.cta-full{display:block;width:100%;text-align:center;padding:14px 16px;border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.05em;cursor:pointer;border:none;transition:opacity .2s,transform .15s;min-height:48px;-webkit-tap-highlight-color:transparent}
+.cta-full:hover{opacity:.85;transform:translateY(-1px)}.cta-full:active{transform:scale(.97)}
+.cta-ess{background:var(--cyan);color:#fff}.cta-adv{background:var(--orange);color:#fff}
+.cta-ghost{display:block;width:100%;text-align:center;padding:11px;border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.04em;background:transparent;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.45);cursor:pointer;transition:all .2s;min-height:44px;-webkit-tap-highlight-color:transparent}
+.cta-ghost:hover{border-color:rgba(255,255,255,.22);color:rgba(255,255,255,.7)}
+#como-funciona{border-top:1px solid rgba(255,255,255,.06)}
+.steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.step-card{padding:1.75rem 1.5rem;background:var(--black-2);border-radius:14px;border:1px solid rgba(255,255,255,.07);position:relative;overflow:hidden;transition:border-color .3s}
+.step-card:hover{border-color:rgba(11,171,221,.25)}
+.step-num{font-family:'Barlow Condensed',sans-serif;font-size:4rem;font-weight:700;color:rgba(255,255,255,.04);position:absolute;top:.75rem;right:1.25rem;line-height:1}
+.step-icon{font-size:1.5rem;color:var(--cyan);margin-bottom:.75rem}
+.step-h{font-size:1.1rem;color:#fff;margin-bottom:.5rem}
+.step-p{font-size:13px;color:rgba(255,255,255,.47);line-height:1.7}
+#contacto{border-top:1px solid rgba(255,255,255,.06)}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start}
+.contact-items{display:flex;flex-direction:column;gap:1.25rem;margin-top:.5rem}
+.contact-item{display:flex;gap:14px;align-items:flex-start}
+.contact-icon-wrap{width:44px;height:44px;border-radius:11px;flex-shrink:0;background:rgba(11,171,221,.08);border:1px solid rgba(11,171,221,.18);display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--cyan)}
+.contact-lbl{font-size:11px;color:rgba(255,255,255,.38);text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-bottom:2px}
+.contact-val{font-size:14px;color:rgba(255,255,255,.8)}
+.contact-form{background:var(--black-2);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:1.75rem}
+.form-h{font-size:1.4rem;margin-bottom:1.25rem}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fg{margin-bottom:.9rem}
+.fg label{display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.38);letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px}
+.fg input,.fg select,.fg textarea{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:9px;padding:12px 14px;color:#fff;font-family:'Barlow',sans-serif;font-size:16px;outline:none;transition:border-color .2s;appearance:none;-webkit-appearance:none}
+.fg input::placeholder,.fg textarea::placeholder{color:rgba(255,255,255,.2)}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:rgba(11,171,221,.4)}
+.fg select option{background:var(--black)}
+.fg textarea{resize:vertical;min-height:90px}
+.footer{background:var(--black-3);border-top:1px solid rgba(255,255,255,.06);padding:3rem clamp(1rem,4vw,3rem) 1.75rem}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2.5rem;margin-bottom:2.5rem;padding-bottom:2.5rem;border-bottom:1px solid rgba(255,255,255,.06)}
+.footer-brand svg{width:160px;height:auto;display:block;margin-bottom:1rem;opacity:.85}
+.footer-desc{font-size:12.5px;color:rgba(255,255,255,.38);line-height:1.7;max-width:230px}
+.footer-socials{display:flex;gap:10px;margin-top:1.25rem}
+.social-btn{width:38px;height:38px;border-radius:9px;border:1px solid rgba(255,255,255,.1);background:transparent;display:flex;align-items:center;justify-content:center;font-size:1rem;color:rgba(255,255,255,.4);cursor:pointer;text-decoration:none;transition:all .2s}
+.social-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+.footer-col-h{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.38);margin-bottom:1rem}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:.65rem}
+.footer-links a{font-size:13px;color:rgba(255,255,255,.45);transition:color .2s}
+.footer-links a:hover{color:#fff}
+.footer-bottom{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.footer-copy{font-size:11px;color:rgba(255,255,255,.25)}
+.footer-copy span{color:var(--cyan)}
+.footer-legal{display:flex;gap:1.5rem;flex-wrap:wrap}
+.footer-legal a{font-size:11px;color:rgba(255,255,255,.25);transition:color .2s}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.fg select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(255,255,255,0.3)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;cursor:pointer}
+
+@media(max-width:900px){.nav-links{display:none}.hamburger{display:flex}.hero{grid-template-columns:1fr;min-height:auto;gap:2rem;padding-top:2.5rem}.hero-panel{display:none}.hero-sub{max-width:100%}.trust-bar{grid-template-columns:repeat(2,1fr)}.course-grid{grid-template-columns:1fr}.steps-grid{grid-template-columns:1fr 1fr}.contact-grid{grid-template-columns:1fr;gap:2rem}.footer-grid{grid-template-columns:1fr 1fr;gap:2rem}.next-date-banner{flex-direction:column;align-items:flex-start;gap:.75rem}}
+@media(max-width:560px){.nav{height:64px;padding:0 1rem}.nav-logo svg{height:84px;width:auto}.btn{font-size:13px;padding:10px 16px}.announce-text{font-size:12px}.hero{padding:2rem 1rem}.hero h1{font-size:2rem}.hero-sub{font-size:14px}.hero-btns{flex-direction:column}.hero-btns .btn{width:100%;justify-content:center;min-height:48px}.hero-stats{gap:1rem}.stat-val{font-size:1.6rem}.stat-label{font-size:10px}.trust-bar{grid-template-columns:1fr 1fr;padding:1.25rem 1rem;gap:.5rem}.trust-icon{font-size:1.25rem}.trust-val{font-size:.9rem}.trust-desc{font-size:10px}.next-date-banner{padding:1rem}.next-date-section{padding:.75rem 1rem}.ndb-date{font-size:1.1rem}.ndb-slots{gap:6px}.ndb-slot{font-size:11px;padding:5px 10px}.section{padding:2rem 1rem}.section-h2{font-size:1.6rem}.steps-grid{grid-template-columns:1fr}.price-options{grid-template-columns:1fr 1fr;gap:6px}.price-val{font-size:1.5rem}.c-head{padding:1.1rem}.c-body{padding:1.1rem}.form-row{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr}.footer-bottom{flex-direction:column;align-items:flex-start}.contact-form{padding:1.25rem}.contact-item{gap:10px}.contact-icon-wrap{width:38px;height:38px;font-size:.95rem}.next-date-banner .btn{width:100%;justify-content:center;text-align:center}.announce-bar{padding:.6rem 1rem;gap:8px}.announce-text strong{display:inline}}
+@supports(padding-bottom:env(safe-area-inset-bottom)){.footer{padding-bottom:calc(1.75rem + env(safe-area-inset-bottom))}.nav{padding-top:max(8px,env(safe-area-inset-top));padding-left:max(1rem,env(safe-area-inset-left));padding-right:max(1rem,env(safe-area-inset-right))}}
+  </style>
+<!-- REMAP Academy — JSONBin cloud sync (datas da formação) -->
+<script>
+(function(){
+  var BIN_ID = localStorage.getItem('ra_bo_binid') || '';
+  if (!BIN_ID) return;
+  fetch('https://api.jsonbin.io/v3/b/' + BIN_ID + '/latest')
+    .then(function(r){ return r.json(); })
+    .then(function(j){
+      var d = j.record && j.record.dates;
+      if (d) {
+        localStorage.setItem('ra_next_training', JSON.stringify(d));
+        // DOM may not be ready yet — wait for it
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', function(){
+            if (typeof renderTrainingDates === 'function') renderTrainingDates();
+          });
+        } else {
+          if (typeof renderTrainingDates === 'function') renderTrainingDates();
+        }
+      }
+    })
+    .catch(function(){});
+})();
+</script>
+</head>
+<body>
+
+<header>
+  <nav class="nav">
+    <a href="#" class="nav-logo" aria-label="REMAP Academy">
+      <svg height="84" viewBox="118 135 265 220" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"><defs>
+<linearGradient id="nlg1" gradientUnits="userSpaceOnUse" x1="203.76" y1="229.07" x2="357.75" y2="229.07"><stop offset="0" stop-color="#0BABDD"/><stop offset="1" stop-color="#1B6F92"/></linearGradient>
+<linearGradient id="nlg2" gradientUnits="userSpaceOnUse" x1="249.99" y1="229.23" x2="142.5" y2="229.23"><stop offset="0" stop-color="#DB3832"/><stop offset=".5025" stop-color="#E46E3A"/><stop offset="1" stop-color="#EDA342"/></linearGradient>
+<linearGradient id="nlg3" gradientUnits="userSpaceOnUse" x1="148.64" y1="306.52" x2="148.64" y2="274.31"><stop offset="0" stop-color="#DB3832"/><stop offset="1" stop-color="#EDA342"/></linearGradient>
+<linearGradient id="nlg4" gradientUnits="userSpaceOnUse" x1="355.74" y1="306.52" x2="355.74" y2="274.31"><stop offset="0" stop-color="#1B6F92"/><stop offset="1" stop-color="#0BABDD"/></linearGradient>
+</defs><circle fill="#0BABDD" cx="322" cy="193.8" r="4.7"/><circle fill="#0BABDD" cx="244.1" cy="168.1" r="4.7"/><circle fill="#0BABDD" cx="369.7" cy="217" r="4.7"/><circle fill="#0BABDD" cx="298.8" cy="157.4" r="5.1"/><circle fill="#F36308" cx="177.2" cy="168.1" r="6.4"/><circle fill="#F36308" cx="146.1" cy="196.7" r="6.4"/><circle fill="#0BABDD" cx="191.5" cy="200.6" r="5"/><circle fill="#F36308" cx="134.8" cy="217" r="5.8"/>
+<path fill="none" stroke="#F36308" stroke-width="2.5" d="M142.4,230.2c0,0,5.1-33.9,53.4-58.7"/><path fill="none" stroke="#F36308" stroke-width="2.5" d="M130.7,264.8c0,0-11.7-44.8,27.7-81.6c0,0,34.6-37.2,100.9-34.6"/>
+<path fill="none" stroke="#0BABDD" stroke-width="2.5" d="M300.9,158.6c0,0,34.1,10.9,56.8,39.9s19.1,45.2,17.6,65.4"/>
+<path fill="none" stroke="#F36308" stroke-width="2.2" d="M182.3,200.8c0,0-10.9,7.2-19.1,22.9"/><path fill="none" stroke="#0BABDD" stroke-width="2.2" d="M221.8,186.3c0,0-16.5,3.7-29.7,14.3"/><path fill="none" stroke="#0BABDD" stroke-width="2.2" d="M244.1,168.1c0,0,29.8-3.1,61.5,13.8c0,0,20.3,10,33.1,31.9"/><path fill="none" stroke="#0BABDD" stroke-width="2.2" d="M303.9,190.8c0,0-22-18.1-64.5-15.4"/>
+<circle fill="#0BABDD" cx="260.6" cy="148.6" r="6.4"/>
+<path fill="url(#nlg1)" d="M351.1,242.2l6.7,3.3c-2.2-5.5-3.6-11-3.6-11c-2.4-5.8,0.8-9.9,0.8-9.9l2.7-3.5l-28.3,0.6C293.2,199.7,261.1,200,250,201h0c-25.4,9.5-46.2,26.9-46.2,26.9h14.5c0,0,1.9,0.1,0.7,2.3c0,0-5.3,6.8-8.5,18.8c29.1-7,79.9-12,79.9-12l-8,12l21.2,8.5h0.5c2-18.2,17.4-17.5,17.4-17.5c5,0.5,8.8,1.9,11.7,3.8l3.4-16.3C336.5,227.4,352.7,242.3,351.1,242.2z M303.9,225.3h-80c0,0-1-7.8-3.1-7.9c0,0,14.6-11,40.7-10.8c0,0,34,1.9,53.8,15L303.9,225.3z"/>
+<path fill="url(#nlg2)" d="M250,201c-2.7,0.2-4.2,0.5-4.2,0.5c-23.7,2.5-51.7,22.3-51.7,22.3c-32.2,2.1-49.3,18.7-49.3,18.7c-3.9,3-1.8,8.1-1.8,8.1l2,6.9h22.6c1.9-20.1,16.9-20.6,16.9-20.6c10.3,0.3,11.3,8.4,11.3,8.4c-4-6.2-13.1-4-13.1-4c-11.6,4.2-11,16.2-11,16.2h31.1c0,0,0-0.1,0-0.1c0-0.1,0-0.1,0-0.2c0-0.1,0-0.2,0.1-0.3c3.6-18.3,11.7-27.8,12.6-28.9c0,0,0-0.1,0.1-0.1c0,0,0,0,0,0h-12C203.8,227.9,224.6,210.5,250,201z M164.1,243.5c0,0-4.1,2-12.4,2.7c0,0,2.2-3.2,6.5-5.2l10.1-6.1C168.2,235.1,166.6,239.2,164.1,243.5z"/>
+<path fill="#1B6F92" d="M303.3,257.5h-94.8c0.5-3,1.1-5.8,1.8-8.4c29.1-7,79.9-12,79.9-12l-8,12L303.3,257.5z"/><path fill="#1B6F92" d="M351.1,242.2c-1.7-0.2-4.5,0.2-4.5,0.2c-5.6,0.2-9.1,1.5-11.3,3.1c-0.7-0.6-1.4-1.2-2.2-1.7l3.4-16.3C336.5,227.4,352.7,242.3,351.1,242.2z"/><path fill="#343F52" d="M354.5,257h-12.6c0,0-0.8-6.6-6.5-11.6c2.2-1.6,5.7-2.9,11.3-3.1c0,0,2.8-0.3,4.5-0.2l6.7,3.3c0.6,1.5,1.3,3.1,2,4.5C359.8,250,363.8,257.4,354.5,257z"/>
+<path fill="url(#nlg3)" d="M156.6,306.5l-8.3-10.2h-9.2v10.2H130v-32.2h22c8,0,14.2,3.6,14.2,11c0,5.4-3.3,8.8-8.2,10.3l9.2,10.9H156.6z M151.3,289.5c3.3,0,5.6-0.9,5.6-4s-2.4-4-5.6-4h-12.3v8.1H151.3z"/>
+<path fill="#FFF" d="M210,299.3v7.2h-33.6v-32.2h33.1v7.2h-24.1v5.3h19.9v6.9h-19.9v5.7H210z"/><path fill="#FFF" d="M279.4,274.3v32.2h-8.7V286l-11.9,15.7h-0.4L246.4,286v20.6H238v-32.2h9.5l11.2,15.5l11.3-15.5H279.4z"/><path fill="#FFF" d="M317,300.4h-18.1l-3.1,6.2h-10.1l17.1-32.2h10.5l17.1,32.2h-10.2L317,300.4z M313.7,293.7l-5.7-11.4l-5.8,11.4H313.7z"/>
+<path fill="url(#nlg4)" d="M374.3,285.6c0,7.5-5.8,11.3-14.6,11.3h-13v9.7h-9.4V290h21.6c3.5,0,5.9-1.1,5.9-4.3c0-3.3-2.4-4.3-5.9-4.3h-12.1l-9.5-7.1h22.4C368.4,274.3,374.3,278.2,374.3,285.6z"/>
+<polygon fill="#FFF" points="217.3,295.7 230.3,295.7 223.8,307.5"/><polygon fill="#0BABDD" points="230.3,288.6 217.3,288.6 223.8,276.8"/>
+<path fill="#FFF" d="M164.4,342.4h-4.8l-2.5-5.9h-9.7l-2.5,5.9h-4.5l9.8-22.3h4.3L164.4,342.4z M155.7,332.9l-3.3-8l-3.4,8H155.7z"/><path fill="#FFF" d="M185.6,342.8c-2.3,0-4.4-0.5-6.2-1.5c-1.8-1-3.2-2.4-4.1-4.1c-1-1.7-1.4-3.7-1.4-5.9c0-2.2,0.5-4.2,1.4-5.9c1-1.7,2.3-3.1,4.1-4.1c1.8-1,3.8-1.5,6.1-1.5c4.1,0,7.4,1.6,9.8,4.9l-3.4,2.2c-0.8-1.1-1.7-2-2.8-2.5c-1-0.5-2.2-0.8-3.6-0.8c-2.2,0-4,0.7-5.4,2.1c-1.3,1.4-2,3.3-2,5.7c0,2.4,0.7,4.3,2,5.7c1.3,1.4,3.1,2.1,5.3,2.1c2.6,0,4.8-1.2,6.4-3.5l3.5,2.1C193.1,341.1,189.7,342.8,185.6,342.8z"/><path fill="#FFF" d="M228.2,342.4h-4.8l-2.5-5.9h-9.7l-2.5,5.9h-4.5l9.8-22.3h4.3L228.2,342.4z M219.5,332.9l-3.3-8l-3.4,8H219.5z"/><path fill="#FFF" d="M248.5,342.4H239v-22.3h9.5c2.4,0,4.5,0.5,6.3,1.5c1.8,1,3.1,2.3,4,4c0.9,1.7,1.3,3.6,1.3,5.7c0,2.1-0.4,4-1.3,5.7c-0.9,1.7-2.2,3-4,4C253.1,341.9,250.9,342.4,248.5,342.4z M248.5,323.9h-5.1v14.8h5.1c2.3,0,4.1-0.7,5.4-2s1.9-3.1,1.9-5.5c0-2.3-0.6-4.1-1.9-5.5S250.9,323.9,248.5,323.9z"/><path fill="#FFF" d="M290.5,342.4h-17.8v-22.3h17.4v3.7H277v5h11.4v3.6H277v6.2h13.5V342.4z"/><path fill="#FFF" d="M328.2,342.4H324v-16.1l-6.7,16.1h-3.5l-6.7-16.1v16.1h-4.2v-22.3h5.7l7,16.7l7-16.7h5.6V342.4z"/><path fill="#FFF" d="M361.7,320.1l-9.3,13.2v9.1H348v-9l-9.2-13.2h5l6.4,9.5l6.5-9.5H361.7z"/></svg>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#cursos"><span class="pt">Cursos</span><span class="en">Courses</span></a></li>
+      <li><a href="#como-funciona"><span class="pt">Como Funciona</span><span class="en">How It Works</span></a></li>
+      <li><a href="membros/index.html"><span class="pt">&#193;rea de Membros</span><span class="en">Member Area</span></a></li>
+      <li><a href="#contacto"><span class="pt">Contacto</span><span class="en">Contact</span></a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="lang-toggle" role="group" aria-label="Idioma">
+        <button id="btn-pt" class="active" onclick="setLang('pt')">PT</button>
+        <button id="btn-en" onclick="setLang('en')">EN</button>
+      </div>
+      <a href="#cursos" class="btn btn-orange"><span class="pt">Inscrever-me</span><span class="en">Enrol Now</span></a>
+      <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+  <nav class="mobile-menu" id="mobile-menu">
+    <a href="#cursos" onclick="toggleMenu()"><span class="pt">Cursos</span><span class="en">Courses</span></a>
+    <a href="#como-funciona" onclick="toggleMenu()"><span class="pt">Como Funciona</span><span class="en">How It Works</span></a>
+    <a href="membros/index.html"><span class="pt">&#193;rea de Membros</span><span class="en">Member Area</span></a>
+    <a href="#contacto" onclick="toggleMenu()"><span class="pt">Contacto</span><span class="en">Contact</span></a>
+    <div style="padding:1rem 1.5rem;border-top:1px solid rgba(11,171,221,.15)">
+      <a href="#cursos" class="btn btn-orange" style="width:100%;justify-content:center" onclick="toggleMenu()"><span class="pt">Inscrever-me</span><span class="en">Enrol Now</span></a>
+    </div>
+  </nav>
+</header>
+
+<!-- NEXT DATE BANNER -->
+<div class="next-date-section">
+  <div class="next-date-banner">
+    <div class="ndb-left">
+      <div class="ndb-icon">&#128197;</div>
+      <div>
+        <div class="ndb-label"><span class="pt">Pr&#243;xima forma&#231;&#227;o presencial</span><span class="en">Next in-person training</span></div>
+        <div class="ndb-date" id="ndb-date-text">14 a 17 de Maio 2026 · Lisboa</div>
+        <div class="ndb-sub" id="ndb-sub-text">Essential: 14–15 Mai &nbsp;·&nbsp; Advanced: 14–17 Mai</div>
+      </div>
+    </div>
+    <div class="ndb-slots">
+      <span class="ndb-slot slot-ess" id="ndb-slot-ess"><span class="pt">3 vagas Essential</span><span class="en">3 spots Essential</span></span>
+      <span class="ndb-slot slot-adv" id="ndb-slot-adv"><span class="pt">2 vagas Advanced</span><span class="en">2 spots Advanced</span></span>
+    </div>
+    <a href="#cursos" class="btn btn-orange" style="flex-shrink:0"><span class="pt">Reservar lugar</span><span class="en">Reserve a spot</span></a>
+  </div>
+</div>
+
+<main>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-content">
+    <div class="badge-open">
+      <div class="badge-open-dot"></div>
+      <span class="badge-open-text"><span class="pt">Inscri&#231;&#245;es abertas</span><span class="en">Enrolments open</span></span>
+      <span class="badge-open-sub"><span class="pt">Turmas 2026</span><span class="en">2026 Classes</span></span>
+    </div>
+    <p class="eyebrow"><span class="pt">Forma&#231;&#227;o Profissional &middot; Portugal</span><span class="en">Professional Training &middot; Portugal</span></p>
+    <h1>
+      <span class="pt">Domina a <em>Reprograma&#231;&#227;o</em> de ECUs a n&#237;vel profissional.</span>
+      <span class="en">Master <em>ECU Remapping</em> at a professional level.</span>
+    </h1>
+    <p class="hero-sub">
+      <span class="pt">Forma&#231;&#227;o hands-on certificada em reprograma&#231;&#227;o autom&#243;vel. Do diagn&#243;stico ao remapeamento avan&#231;ado &mdash; aprende com quem trabalha na &#225;rea todos os dias.</span>
+      <span class="en">Certified hands-on automotive remapping training. From diagnostics to advanced tuning &mdash; learn from practitioners active in the field every day.</span>
+    </p>
+    <div class="hero-btns">
+      <a href="#cursos" class="btn btn-orange"><span class="pt">Ver Cursos</span><span class="en">View Courses</span></a>
+      <a href="#contacto" class="btn btn-ghost"><span class="pt">Falar Connosco</span><span class="en">Contact Us</span></a>
+    </div>
+    <div class="hero-stats">
+      <div><div class="stat-val">2</div><div class="stat-label"><span class="pt">Cursos dispon&#237;veis</span><span class="en">Courses available</span></div></div>
+      <div style="width:1px;background:rgba(255,255,255,.1)"></div>
+      <div><div class="stat-val">100%</div><div class="stat-label"><span class="pt">Pr&#225;tico &amp; hands-on</span><span class="en">Practical &amp; hands-on</span></div></div>
+      <div style="width:1px;background:rgba(255,255,255,.1)"></div>
+      <div><div class="stat-val">6&ndash;8</div><div class="stat-label"><span class="pt">Alunos por turma</span><span class="en">Students per class</span></div></div>
+    </div>
+  </div>
+  <div class="hero-panel" aria-hidden="true">
+    <div class="panel-header">
+      <span class="panel-title"><span class="pt">Conte&#250;do do curso</span><span class="en">Course content</span></span>
+    </div>
+    <div class="mod-item"><div class="mod-dot d-cyan"></div><div class="mod-name"><span class="pt">Identifica&#231;&#227;o e Arquitetura de ECU</span><span class="en">ECU Identification &amp; Architecture</span></div><div class="mod-badge b-ess">Essential</div></div>
+    <div class="mod-item"><div class="mod-dot d-cyan"></div><div class="mod-name"><span class="pt">Solu&#231;&#245;es de P&#243;s-Tratamento (DPF / EGR / AdBlue)</span><span class="en">Aftertreatment System Solutions (DPF / EGR / AdBlue)</span></div><div class="mod-badge b-ess">Essential</div></div>
+    <div class="mod-item"><div class="mod-dot d-cyan"></div><div class="mod-name"><span class="pt">Corre&#231;&#227;o de Od&#243;metro e Calibra&#231;&#227;o de Quadrante</span><span class="en">Odometer Correction &amp; Cluster Calibration</span></div><div class="mod-badge b-ess">Essential</div></div>
+    <div class="mod-item"><div class="mod-dot d-cyan"></div><div class="mod-name"><span class="pt">Reset de M&#243;dulos SRS Airbag e Remo&#231;&#227;o de Crash Data</span><span class="en">SRS Airbag Reset &amp; Crash Data Removal</span></div><div class="mod-badge b-ess">Essential</div></div>
+    <div class="mod-item"><div class="mod-dot d-orange"></div><div class="mod-name"><span class="pt">Remapeamento de Pot&#234;ncia e Stage Tuning</span><span class="en">Performance Remapping &amp; Stage Tuning</span></div><div class="mod-badge b-adv">Advanced</div></div>
+    <div class="mod-item"><div class="mod-dot d-orange"></div><div class="mod-name"><span class="pt">Anula&#231;&#227;o de Imobilizador e Programa&#231;&#227;o de Chaves</span><span class="en">Immobilizer Bypass &amp; Key Programming</span></div><div class="mod-badge b-adv">Advanced</div></div>
+    <div class="mod-item"><div class="mod-dot d-orange"></div><div class="mod-name"><span class="pt">Microssoldadura em PCB &mdash; SMD e Ar Quente</span><span class="en">PCB Microsoldering: SMD &amp; Hot Air Rework</span></div><div class="mod-badge b-adv">Advanced</div></div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item"><div class="trust-icon">&#127891;</div><div class="trust-val"><span class="pt">Certificado</span><span class="en">Certificate</span></div><div class="trust-desc"><span class="pt">inclu&#237;do em todos os cursos</span><span class="en">included in all courses</span></div></div>
+  <div class="trust-item"><div class="trust-icon">&#128295;</div><div class="trust-val">100% Hands-on</div><div class="trust-desc"><span class="pt">pr&#225;tica em bancada real</span><span class="en">real bench practice</span></div></div>
+  <div class="trust-item"><div class="trust-icon">&#128101;</div><div class="trust-val"><span class="pt">Turmas Pequenas</span><span class="en">Small Classes</span></div><div class="trust-desc"><span class="pt">m&#225;x. 6&ndash;8 formandos</span><span class="en">max. 6&ndash;8 students</span></div></div>
+  <div class="trust-item"><div class="trust-icon">&#128172;</div><div class="trust-val"><span class="pt">Suporte P&#243;s-Curso</span><span class="en">Post-Course Support</span></div><div class="trust-desc"><span class="pt">canal dedicado de apoio</span><span class="en">dedicated support channel</span></div></div>
+</div>
+
+<!-- CURSOS -->
+<section class="section" id="cursos">
+  <div class="section-label"><span class="pt">Percursos de forma&#231;&#227;o</span><span class="en">Training paths</span></div>
+  <div class="section-head">
+    <h2 class="section-h2"><span class="pt">Escolhe o teu n&#237;vel</span><span class="en">Choose your level</span></h2>
+    <p class="section-sub"><span class="pt">Dois cursos estruturados para todos os perfis &mdash; desde quem come&#231;a at&#233; ao t&#233;cnico que quer dominar toda a cadeia de reprograma&#231;&#227;o.</span><span class="en">Two structured courses for all profiles &mdash; from beginners to technicians who want to master the full remapping workflow.</span></p>
+  </div>
+  <div class="course-grid">
+
+    <!-- ESSENTIAL -->
+    <div class="course-card">
+      <div class="c-head ess-h">
+        <div class="c-tier-row"><span class="c-tier t-ess">Essential</span></div>
+        <h3 class="c-name">REMAP Start</h3>
+        <div class="c-meta">
+          <span><span class="pt">2 dias</span><span class="en">2 days</span></span><span class="c-sep"></span>
+          <span>16h</span><span class="c-sep"></span>
+          <span><span class="pt">m&#225;x. 8 alunos</span><span class="en">max. 8 students</span></span>
+        </div>
+      </div>
+      <div class="c-body">
+        <div class="price-options">
+          <div class="price-opt po-pres"><div class="price-opt-label"><span class="pt">Presencial</span><span class="en">In-person</span></div><div class="price-val">&#8364;1.299</div><div class="price-note">IVA incl.</div></div>
+          <div class="price-opt po-online"><div class="price-opt-label">Online</div><div class="price-val">&#8364;499</div><div class="price-note">IVA incl.</div></div>
+        </div>
+        <ul class="mods-list ess-list">
+          <li><span class="pt">Identifica&#231;&#227;o e Arquitetura de ECU</span><span class="en">ECU Identification &amp; Architecture</span></li>
+          <li><span class="pt">Ferramentas de Diagn&#243;stico e Programa&#231;&#227;o</span><span class="en">Diagnostic &amp; Programming Tools</span></li>
+          <li><span class="pt">Solu&#231;&#245;es de P&#243;s-Tratamento &mdash; DPF, EGR &amp; AdBlue</span><span class="en">Aftertreatment System Solutions &mdash; DPF, EGR &amp; AdBlue</span></li>
+          <li><span class="pt">Corre&#231;&#227;o de Od&#243;metro e Calibra&#231;&#227;o de Quadrante</span><span class="en">Odometer Correction &amp; Cluster Calibration</span></li>
+          <li><span class="pt">Reset de M&#243;dulos SRS Airbag e Remo&#231;&#227;o de Crash Data</span><span class="en">SRS Airbag Reset &amp; Crash Data Removal</span></li>
+        </ul>
+        <div class="fmt-row">
+          <span class="fmt-tag fmt-pres">&#128101; <span class="pt">Presencial</span><span class="en">In-person</span></span>
+          <span class="fmt-tag fmt-online">&#127909; <span class="pt">Online</span><span class="en">Online</span></span>
+        </div>
+        <div class="c-cta">
+          <a href="checkout.html?curso=essential" class="cta-full cta-ess"><span class="pt">Inscrever-me no Essential</span><span class="en">Enrol in Essential</span></a>
+          <a href="cursos/essential.html" class="cta-ghost"><span class="pt">Ver conte&#250;do completo</span><span class="en">View full content</span></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADVANCED -->
+    <div class="course-card adv-card">
+      <div class="c-head adv-h">
+        <div class="c-tier-row">
+          <span class="c-tier t-adv">Advanced</span>
+          <span class="c-incl"><span class="pt">Inclu&#237; Essential</span><span class="en">Includes Essential</span></span>
+        </div>
+        <h3 class="c-name">REMAP Pro</h3>
+        <div class="c-meta">
+          <span><span class="pt">4 dias</span><span class="en">4 days</span></span><span class="c-sep"></span>
+          <span>32h</span><span class="c-sep"></span>
+          <span><span class="pt">m&#225;x. 6 alunos</span><span class="en">max. 6 students</span></span>
+        </div>
+      </div>
+      <div class="c-body">
+        <div class="price-options">
+          <div class="price-opt po-pres"><div class="price-opt-label"><span class="pt">Presencial</span><span class="en">In-person</span></div><div class="price-val">&#8364;1.799</div><div class="price-note">IVA incl.</div></div>
+          <div class="price-opt po-online"><div class="price-opt-label">Online</div><div class="price-val">&#8364;799</div><div class="price-note">IVA incl.</div></div>
+        </div>
+        <ul class="mods-list adv-list">
+          <li><span class="pt">Remapeamento de Pot&#234;ncia e Stage Tuning (Stage 1/2/3)</span><span class="en">Performance Remapping &amp; Stage Tuning (Stage 1/2/3)</span></li>
+          <li><span class="pt">Clonagem de ECU e Transfer&#234;ncia de Dados</span><span class="en">ECU Cloning &amp; Full Data Transfer</span></li>
+          <li><span class="pt">Anula&#231;&#227;o de Imobilizador e Programa&#231;&#227;o de Chaves</span><span class="en">Immobilizer Bypass &amp; Key Programming</span></li>
+          <li><span class="pt">Microssoldadura em PCB &mdash; SMD e Ar Quente</span><span class="en">PCB Microsoldering &mdash; SMD &amp; Hot Air Rework</span></li>
+          <li><span class="pt">Anula&#231;&#227;o de Tran&#231;as e Reset de Pr&#233;-Tensionadores</span><span class="en">Steering Lock &amp; Restraint System Reset</span></li>
+        </ul>
+        <div class="fmt-row">
+          <span class="fmt-tag fmt-pres">&#128101; <span class="pt">Presencial</span><span class="en">In-person</span></span>
+          <span class="fmt-tag fmt-online">&#127909; <span class="pt">Online</span><span class="en">Online</span></span>
+        </div>
+        <div class="c-cta">
+          <a href="checkout.html?curso=advanced" class="cta-full cta-adv"><span class="pt">Inscrever-me no Advanced</span><span class="en">Enrol in Advanced</span></a>
+          <a href="cursos/advanced.html" class="cta-ghost"><span class="pt">Ver conte&#250;do completo</span><span class="en">View full content</span></a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- CONSULTORIA PRIVADA -->
+<section class="section" id="consultoria">
+  <div class="section-label"><span class="pt">Serviços Adicionais</span><span class="en">Additional Services</span></div>
+  <div class="section-head">
+    <h2 class="section-h2"><span class="pt">Consultoria <em style="color:var(--cyan)">Privada</em></span><span class="en">Private <em style="color:var(--cyan)">Consulting</em></span></h2>
+    <p class="section-sub"><span class="pt">Sessões individuais de apoio técnico por chamada de voz ou vídeo com o técnico-formador. Esclarecimento de dúvidas, resolução de casos reais e orientação directa — sem filtros, sem esperas. Incluída gratuitamente após cada curso.</span><span class="en">Individual technical support sessions by voice or video call with your trainer. Question answering, real case solving and direct guidance — no filters, no waiting. Included free after each course.</span></p>
+  </div>
+
+  <div style="background:rgba(34,197,94,.04);border:1px solid rgba(34,197,94,.2);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1.75rem;font-size:13px;color:rgba(255,255,255,.6);line-height:1.7">
+    🎁 <strong style="color:#86efac"><span class="pt">Incluído nos cursos:</span><span class="en">Included with courses:</span></strong>
+    <span class="pt"> REMAP Start → <strong>30 dias gratuitos</strong> &nbsp;·&nbsp; REMAP Pro → <strong>60 dias gratuitos</strong></span>
+    <span class="en"> REMAP Start → <strong>30 free days</strong> &nbsp;·&nbsp; REMAP Pro → <strong>60 free days</strong></span>
+  </div>
+
+  <div class="consult-section-grid">
+    <div class="consult-prod-card featured">
+      <div class="cp-icon">🎯</div>
+      <div class="cp-name"><span class="pt">Pack 4 Sessões</span><span class="en">4-Session Pack</span></div>
+      <div class="cp-price">€399</div>
+      <div class="cp-tags">
+        <span class="cp-tag"><span class="pt">4 sessões · máx. 1h cada</span><span class="en">4 sessions · max. 1h each</span></span>
+        <span class="cp-tag"><span class="pt">Voz ou vídeo</span><span class="en">Voice or video</span></span>
+        <span class="cp-tag"><span class="pt">Validade 6 meses</span><span class="en">Valid 6 months</span></span>
+      </div>
+      <p class="cp-desc"><span class="pt">Quatro sessões individuais de até 1 hora com o técnico-formador. Para tirar dúvidas técnicas, resolver casos reais de clientes e evoluir com confiança depois da formação.</span><span class="en">Four individual sessions of up to 1 hour with your trainer. For technical questions, real client cases and building confidence after training.</span></p>
+      <a href="checkout.html?produto=consult4" class="btn btn-cyan"><span class="pt">Adquirir Pack</span><span class="en">Get Pack</span></a>
+    </div>
+
+    <div class="consult-prod-card">
+      <div class="cp-icon">💬</div>
+      <div class="cp-name"><span class="pt">Sessão Única</span><span class="en">Single Session</span></div>
+      <div class="cp-price">€150</div>
+      <div class="cp-tags">
+        <span class="cp-tag"><span class="pt">1 sessão · máx. 1h</span><span class="en">1 session · max. 1h</span></span>
+        <span class="cp-tag"><span class="pt">Voz ou vídeo</span><span class="en">Voice or video</span></span>
+      </div>
+      <p class="cp-desc"><span class="pt">Uma sessão individual de até 1 hora com o técnico-formador. Ideal para uma dúvida específica, um caso de cliente difícil ou uma situação pontual.</span><span class="en">A single one-hour session with your trainer. Ideal for a specific question, a difficult client case or a one-off situation.</span></p>
+      <a href="checkout.html?produto=consult1" class="btn btn-ghost"><span class="pt">Agendar Sessão</span><span class="en">Book Session</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- COMO FUNCIONA -->
+<section class="section" id="como-funciona">
+  <div class="section-label"><span class="pt">Processo</span><span class="en">Process</span></div>
+  <div class="section-head">
+    <h2 class="section-h2"><span class="pt">Como funciona</span><span class="en">How it works</span></h2>
+    <p class="section-sub"><span class="pt">Do primeiro contacto ao certificado final &mdash; um processo simples e direto.</span><span class="en">From first contact to final certificate &mdash; a simple and straightforward process.</span></p>
+  </div>
+  <div class="steps-grid">
+    <div class="step-card"><div class="step-num">01</div><div class="step-icon">&#127919;</div><h4 class="step-h"><span class="pt">Escolhes o teu percurso</span><span class="en">Choose your path</span></h4><p class="step-p"><span class="pt">Essential ou Advanced, presencial ou online &mdash; escolhe o formato que melhor se adapta ao teu perfil e disponibilidade.</span><span class="en">Essential or Advanced, in-person or online &mdash; choose the format that best fits your profile and availability.</span></p></div>
+    <div class="step-card"><div class="step-num">02</div><div class="step-icon">&#128295;</div><h4 class="step-h"><span class="pt">Formas-te em bancada</span><span class="en">Hands-on training</span></h4><p class="step-p"><span class="pt">Forma&#231;&#227;o pr&#225;tica com equipamento real, em turmas reduzidas para garantir acompanhamento individual em cada m&#243;dulo.</span><span class="en">Practical training with real equipment, in small classes to ensure individual follow-up on each module.</span></p></div>
+    <div class="step-card"><div class="step-num">03</div><div class="step-icon">&#127891;</div><h4 class="step-h"><span class="pt">Recebes o certificado</span><span class="en">Receive your certificate</span></h4><p class="step-p"><span class="pt">No final recebes o teu certificado REMAP Academy e acesso ao canal de suporte t&#233;cnico p&#243;s-forma&#231;&#227;o.</span><span class="en">At the end you receive your REMAP Academy certificate and access to the post-training technical support channel.</span></p></div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section class="section" id="contacto">
+  <div class="section-label"><span class="pt">Contacto</span><span class="en">Contact</span></div>
+  <div class="section-head">
+    <h2 class="section-h2"><span class="pt">Fala connosco</span><span class="en">Get in touch</span></h2>
+    <p class="section-sub"><span class="pt">D&#250;vidas sobre qual curso escolher? Entra em contacto &mdash; ajudamos a encontrar o percurso certo.</span><span class="en">Not sure which course to choose? Get in touch &mdash; we&apos;ll help you find the right path.</span></p>
+  </div>
+  <div class="contact-grid">
+    <div>
+      <div class="contact-items">
+        <div class="contact-item"><div class="contact-icon-wrap">&#128222;</div><div><div class="contact-lbl">WhatsApp</div><div class="contact-val">+351 939 056 565</div></div></div>
+        <div class="contact-item"><div class="contact-icon-wrap">&#9993;</div><div><div class="contact-lbl">Email</div><div class="contact-val">info@remapacademy.pt</div></div></div>
+        <div class="contact-item"><div class="contact-icon-wrap">&#128205;</div><div><div class="contact-lbl"><span class="pt">Localiza&#231;&#227;o</span><span class="en">Location</span></div><div class="contact-val">Lisboa, Portugal</div></div></div>
+      </div>
+    </div>
+    <div class="contact-form">
+      <h3 class="form-h"><span class="pt">Formul&#225;rio de contacto</span><span class="en">Contact form</span></h3>
+      <form onsubmit="handleForm(event)">
+        <div class="form-row">
+          <div class="fg"><label><span class="pt">Nome</span><span class="en">Name</span></label><input type="text" name="nome" placeholder="Jo&#227;o Silva" autocomplete="name" required></div>
+          <div class="fg"><label>Email</label><input type="email" name="email" placeholder="joao@email.com" autocomplete="email" inputmode="email" required></div>
+        </div>
+        <div class="fg"><label><span class="pt">Telef./WhatsApp</span><span class="en">Phone/WhatsApp</span></label><input type="tel" name="telefone" placeholder="+351 9XX XXX XXX" autocomplete="tel" inputmode="tel"></div>
+        <div class="fg">
+          <label><span class="pt">Curso de interesse</span><span class="en">Course of interest</span></label>
+          <select id="contact-select-pt" name="curso" class="pt">
+            <option value="" disabled selected>Selecionar</option>
+            <option>Essential — Presencial</option>
+            <option>Essential — Online</option>
+            <option>Advanced — Presencial</option>
+            <option>Advanced — Online</option>
+            <option>Ainda não sei</option>
+          </select>
+          <select id="contact-select-en" class="en">
+            <option value="" disabled selected>Select</option>
+            <option>Essential — In-person</option>
+            <option>Essential — Online</option>
+            <option>Advanced — In-person</option>
+            <option>Advanced — Online</option>
+            <option>Not sure yet</option>
+          </select>
+        </div>
+        <div class="fg"><label><span class="pt">Mensagem</span><span class="en">Message</span></label><textarea name="mensagem" placeholder="..." rows="3"></textarea></div>
+        <button type="submit" class="btn btn-orange" style="width:100%;justify-content:center;font-size:15px;padding:14px;min-height:50px"><span class="pt">Enviar mensagem</span><span class="en">Send message</span></button>
+      </form>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <svg width="140" height="116" viewBox="118 135 265 220" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"><defs>
+<linearGradient id="flg1" gradientUnits="userSpaceOnUse" x1="203.76" y1="229.07" x2="357.75" y2="229.07"><stop offset="0" stop-color="#0BABDD"/><stop offset="1" stop-color="#1B6F92"/></linearGradient>
+<linearGradient id="flg2" gradientUnits="userSpaceOnUse" x1="249.99" y1="229.23" x2="142.5" y2="229.23"><stop offset="0" stop-color="#DB3832"/><stop offset=".5025" stop-color="#E46E3A"/><stop offset="1" stop-color="#EDA342"/></linearGradient>
+<linearGradient id="flg3" gradientUnits="userSpaceOnUse" x1="148.64" y1="306.52" x2="148.64" y2="274.31"><stop offset="0" stop-color="#DB3832"/><stop offset="1" stop-color="#EDA342"/></linearGradient>
+<linearGradient id="flg4" gradientUnits="userSpaceOnUse" x1="355.74" y1="306.52" x2="355.74" y2="274.31"><stop offset="0" stop-color="#1B6F92"/><stop offset="1" stop-color="#0BABDD"/></linearGradient>
+</defs><circle fill="#0BABDD" cx="322" cy="193.8" r="4.7"/><circle fill="#0BABDD" cx="244.1" cy="168.1" r="4.7"/><circle fill="#0BABDD" cx="369.7" cy="217" r="4.7"/><circle fill="#0BABDD" cx="298.8" cy="157.4" r="5.1"/><circle fill="#F36308" cx="177.2" cy="168.1" r="6.4"/><circle fill="#F36308" cx="146.1" cy="196.7" r="6.4"/><circle fill="#0BABDD" cx="191.5" cy="200.6" r="5"/><circle fill="#F36308" cx="134.8" cy="217" r="5.8"/>
+<path fill="none" stroke="#F36308" stroke-width="2.5" d="M142.4,230.2c0,0,5.1-33.9,53.4-58.7"/><path fill="none" stroke="#F36308" stroke-width="2.5" d="M130.7,264.8c0,0-11.7-44.8,27.7-81.6c0,0,34.6-37.2,100.9-34.6"/>
+<path fill="none" stroke="#0BABDD" stroke-width="2.5" d="M300.9,158.6c0,0,34.1,10.9,56.8,39.9s19.1,45.2,17.6,65.4"/>
+<path fill="none" stroke="#F36308" stroke-width="2.2" d="M182.3,200.8c0,0-10.9,7.2-19.1,22.9"/><path fill="none" stroke="#0BABDD" stroke-width="2.2" d="M221.8,186.3c0,0-16.5,3.7-29.7,14.3"/><path fill="none" stroke="#0BABDD" stroke-width="2.2" d="M244.1,168.1c0,0,29.8-3.1,61.5,13.8c0,0,20.3,10,33.1,31.9"/><path fill="none" stroke="#0BABDD" stroke-width="2.2" d="M303.9,190.8c0,0-22-18.1-64.5-15.4"/>
+<circle fill="#0BABDD" cx="260.6" cy="148.6" r="6.4"/>
+<path fill="url(#flg1)" d="M351.1,242.2l6.7,3.3c-2.2-5.5-3.6-11-3.6-11c-2.4-5.8,0.8-9.9,0.8-9.9l2.7-3.5l-28.3,0.6C293.2,199.7,261.1,200,250,201h0c-25.4,9.5-46.2,26.9-46.2,26.9h14.5c0,0,1.9,0.1,0.7,2.3c0,0-5.3,6.8-8.5,18.8c29.1-7,79.9-12,79.9-12l-8,12l21.2,8.5h0.5c2-18.2,17.4-17.5,17.4-17.5c5,0.5,8.8,1.9,11.7,3.8l3.4-16.3C336.5,227.4,352.7,242.3,351.1,242.2z M303.9,225.3h-80c0,0-1-7.8-3.1-7.9c0,0,14.6-11,40.7-10.8c0,0,34,1.9,53.8,15L303.9,225.3z"/>
+<path fill="url(#flg2)" d="M250,201c-2.7,0.2-4.2,0.5-4.2,0.5c-23.7,2.5-51.7,22.3-51.7,22.3c-32.2,2.1-49.3,18.7-49.3,18.7c-3.9,3-1.8,8.1-1.8,8.1l2,6.9h22.6c1.9-20.1,16.9-20.6,16.9-20.6c10.3,0.3,11.3,8.4,11.3,8.4c-4-6.2-13.1-4-13.1-4c-11.6,4.2-11,16.2-11,16.2h31.1c0,0,0-0.1,0-0.1c0-0.1,0-0.1,0-0.2c0-0.1,0-0.2,0.1-0.3c3.6-18.3,11.7-27.8,12.6-28.9c0,0,0-0.1,0.1-0.1c0,0,0,0,0,0h-12C203.8,227.9,224.6,210.5,250,201z M164.1,243.5c0,0-4.1,2-12.4,2.7c0,0,2.2-3.2,6.5-5.2l10.1-6.1C168.2,235.1,166.6,239.2,164.1,243.5z"/>
+<path fill="#1B6F92" d="M303.3,257.5h-94.8c0.5-3,1.1-5.8,1.8-8.4c29.1-7,79.9-12,79.9-12l-8,12L303.3,257.5z"/><path fill="#1B6F92" d="M351.1,242.2c-1.7-0.2-4.5,0.2-4.5,0.2c-5.6,0.2-9.1,1.5-11.3,3.1c-0.7-0.6-1.4-1.2-2.2-1.7l3.4-16.3C336.5,227.4,352.7,242.3,351.1,242.2z"/><path fill="#343F52" d="M354.5,257h-12.6c0,0-0.8-6.6-6.5-11.6c2.2-1.6,5.7-2.9,11.3-3.1c0,0,2.8-0.3,4.5-0.2l6.7,3.3c0.6,1.5,1.3,3.1,2,4.5C359.8,250,363.8,257.4,354.5,257z"/>
+<path fill="url(#flg3)" d="M156.6,306.5l-8.3-10.2h-9.2v10.2H130v-32.2h22c8,0,14.2,3.6,14.2,11c0,5.4-3.3,8.8-8.2,10.3l9.2,10.9H156.6z M151.3,289.5c3.3,0,5.6-0.9,5.6-4s-2.4-4-5.6-4h-12.3v8.1H151.3z"/>
+<path fill="#FFF" d="M210,299.3v7.2h-33.6v-32.2h33.1v7.2h-24.1v5.3h19.9v6.9h-19.9v5.7H210z"/><path fill="#FFF" d="M279.4,274.3v32.2h-8.7V286l-11.9,15.7h-0.4L246.4,286v20.6H238v-32.2h9.5l11.2,15.5l11.3-15.5H279.4z"/><path fill="#FFF" d="M317,300.4h-18.1l-3.1,6.2h-10.1l17.1-32.2h10.5l17.1,32.2h-10.2L317,300.4z M313.7,293.7l-5.7-11.4l-5.8,11.4H313.7z"/>
+<path fill="url(#flg4)" d="M374.3,285.6c0,7.5-5.8,11.3-14.6,11.3h-13v9.7h-9.4V290h21.6c3.5,0,5.9-1.1,5.9-4.3c0-3.3-2.4-4.3-5.9-4.3h-12.1l-9.5-7.1h22.4C368.4,274.3,374.3,278.2,374.3,285.6z"/>
+<polygon fill="#FFF" points="217.3,295.7 230.3,295.7 223.8,307.5"/><polygon fill="#0BABDD" points="230.3,288.6 217.3,288.6 223.8,276.8"/>
+<path fill="#FFF" d="M164.4,342.4h-4.8l-2.5-5.9h-9.7l-2.5,5.9h-4.5l9.8-22.3h4.3L164.4,342.4z M155.7,332.9l-3.3-8l-3.4,8H155.7z"/><path fill="#FFF" d="M185.6,342.8c-2.3,0-4.4-0.5-6.2-1.5c-1.8-1-3.2-2.4-4.1-4.1c-1-1.7-1.4-3.7-1.4-5.9c0-2.2,0.5-4.2,1.4-5.9c1-1.7,2.3-3.1,4.1-4.1c1.8-1,3.8-1.5,6.1-1.5c4.1,0,7.4,1.6,9.8,4.9l-3.4,2.2c-0.8-1.1-1.7-2-2.8-2.5c-1-0.5-2.2-0.8-3.6-0.8c-2.2,0-4,0.7-5.4,2.1c-1.3,1.4-2,3.3-2,5.7c0,2.4,0.7,4.3,2,5.7c1.3,1.4,3.1,2.1,5.3,2.1c2.6,0,4.8-1.2,6.4-3.5l3.5,2.1C193.1,341.1,189.7,342.8,185.6,342.8z"/><path fill="#FFF" d="M228.2,342.4h-4.8l-2.5-5.9h-9.7l-2.5,5.9h-4.5l9.8-22.3h4.3L228.2,342.4z M219.5,332.9l-3.3-8l-3.4,8H219.5z"/><path fill="#FFF" d="M248.5,342.4H239v-22.3h9.5c2.4,0,4.5,0.5,6.3,1.5c1.8,1,3.1,2.3,4,4c0.9,1.7,1.3,3.6,1.3,5.7c0,2.1-0.4,4-1.3,5.7c-0.9,1.7-2.2,3-4,4C253.1,341.9,250.9,342.4,248.5,342.4z M248.5,323.9h-5.1v14.8h5.1c2.3,0,4.1-0.7,5.4-2s1.9-3.1,1.9-5.5c0-2.3-0.6-4.1-1.9-5.5S250.9,323.9,248.5,323.9z"/><path fill="#FFF" d="M290.5,342.4h-17.8v-22.3h17.4v3.7H277v5h11.4v3.6H277v6.2h13.5V342.4z"/><path fill="#FFF" d="M328.2,342.4H324v-16.1l-6.7,16.1h-3.5l-6.7-16.1v16.1h-4.2v-22.3h5.7l7,16.7l7-16.7h5.6V342.4z"/><path fill="#FFF" d="M361.7,320.1l-9.3,13.2v9.1H348v-9l-9.2-13.2h5l6.4,9.5l6.5-9.5H361.7z"/></svg>
+      <p class="footer-desc"><span class="pt">Forma&#231;&#227;o profissional e certificada em reprograma&#231;&#227;o autom&#243;vel. Do diagn&#243;stico ao remapeamento avan&#231;ado.</span><span class="en">Certified professional training in automotive remapping. From diagnostics to advanced tuning.</span></p>
+      <div class="footer-socials">
+        <a href="#" class="social-btn" aria-label="Instagram">&#128247;</a>
+        <a href="#" class="social-btn" aria-label="YouTube">&#9654;</a>
+        <a href="#" class="social-btn" aria-label="WhatsApp">&#128172;</a>
+        <a href="#" class="social-btn" aria-label="Facebook">&#127760;</a>
+      </div>
+    </div>
+    <div><div class="footer-col-h"><span class="pt">Cursos</span><span class="en">Courses</span></div><ul class="footer-links"><li><a href="checkout.html?curso=essential"><span class="pt">Essential &mdash; Fundamentos de ECU</span><span class="en">Essential &mdash; ECU Fundamentals</span></a></li><li><a href="checkout.html?curso=advanced"><span class="pt">Advanced &mdash; Programa de Mestria ECU</span><span class="en">Advanced &mdash; ECU Mastery Program</span></a></li><li><a href="membros/index.html"><span class="pt">&#193;rea de Membros</span><span class="en">Member Area</span></a></li></ul></div>
+    <div><div class="footer-col-h"><span class="pt">Empresa</span><span class="en">Company</span></div><ul class="footer-links"><li><a href="#"><span class="pt">Sobre n&#243;s</span><span class="en">About us</span></a></li><li><a href="#como-funciona"><span class="pt">Como funciona</span><span class="en">How it works</span></a></li><li><a href="#"><span class="pt">Blog t&#233;cnico</span><span class="en">Technical blog</span></a></li></ul></div>
+    <div><div class="footer-col-h"><span class="pt">Contacto</span><span class="en">Contact</span></div><ul class="footer-links"><li><a href="#contacto">info@remapacademy.pt</a></li><li><a href="#contacto">WhatsApp</a></li><li><a href="#contacto"><span class="pt">Formul&#225;rio</span><span class="en">Contact form</span></a></li></ul></div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">&#169; 2026 <span>REMAP Academy</span>. <span class="pt">Todos os direitos reservados.</span><span class="en">All rights reserved.</span></p>
+    <div class="footer-legal">
+      <a href="#"><span class="pt">Pol&#237;tica de Privacidade</span><span class="en">Privacy Policy</span></a>
+      <a href="#"><span class="pt">Termos e Condi&#231;&#245;es</span><span class="en">Terms &amp; Conditions</span></a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── CONFIGURAÇÃO DA PRÓXIMA FORMAÇÃO PRESENCIAL ──────────────────────────────
+// Altera estes valores para atualizar a data em toda a página automaticamente
+// Valores por defeito — substituídos automaticamente pelo backoffice via localStorage
+const NEXT_TRAINING_DEFAULT = {
+  date_pt: '14 a 17 de Maio 2026 · Lisboa',
+  date_en: 'May 14–17, 2026 · Lisboa',
+  essential_pt: 'Essential: 14–15 Mai',
+  essential_en: 'Essential: 14–15 May',
+  advanced_pt: 'Advanced: 14–17 Mai',
+  advanced_en: 'Advanced: 14–17 May',
+  slots_essential_pt: '3 vagas Essential',
+  slots_essential_en: '3 spots Essential',
+  slots_advanced_pt: '2 vagas Advanced',
+  slots_advanced_en: '2 spots Advanced',
+  announce_pt: '📅 <strong>Próxima formação presencial — Essential:</strong> 14 e 15 Mai 2026 &nbsp;·&nbsp; <strong>Advanced:</strong> 14–17 Mai 2026',
+  announce_en: '📅 <strong>Next in-person training — Essential:</strong> 14–15 May 2026 &nbsp;·&nbsp; <strong>Advanced:</strong> 14–17 May 2026'
+};
+// Lê do backoffice (ra_next_training) se existir, senão usa os valores por defeito
+let NEXT_TRAINING = NEXT_TRAINING_DEFAULT;
+(function(){
+  try {
+    const stored = localStorage.getItem('ra_next_training');
+    if (stored) {
+      const d = JSON.parse(stored);
+      // Merge — só substitui os campos que existem no objeto guardado
+      NEXT_TRAINING = Object.assign({}, NEXT_TRAINING_DEFAULT, d);
+    }
+  } catch(e) {}
+})();
+// ─────────────────────────────────────────────────────────────────────────────
+
+function setLang(lang) {
+  document.body.classList.toggle('lang-en', lang === 'en');
+  document.getElementById('btn-pt').classList.toggle('active', lang === 'pt');
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  document.documentElement.lang = lang;
+  localStorage.setItem('ra-lang', lang);
+  renderTrainingDates();
+}
+
+function renderTrainingDates() {
+  const isEn = document.body.classList.contains('lang-en');
+  const el_date = document.getElementById('ndb-date-text');
+  const el_sub = document.getElementById('ndb-sub-text');
+  const el_ann = document.getElementById('announce-text-inner');
+  const el_slots_ess = document.getElementById('ndb-slot-ess');
+  const el_slots_adv = document.getElementById('ndb-slot-adv');
+  if (el_date) el_date.textContent = isEn ? NEXT_TRAINING.date_en : NEXT_TRAINING.date_pt;
+  if (el_sub) el_sub.textContent = (isEn ? NEXT_TRAINING.essential_en : NEXT_TRAINING.essential_pt) + '  ·  ' + (isEn ? NEXT_TRAINING.advanced_en : NEXT_TRAINING.advanced_pt);
+  // announce bar removed — no el_ann to update
+  if (el_slots_ess) el_slots_ess.textContent = isEn ? NEXT_TRAINING.slots_essential_en : NEXT_TRAINING.slots_essential_pt;
+  if (el_slots_adv) el_slots_adv.textContent = isEn ? NEXT_TRAINING.slots_advanced_en : NEXT_TRAINING.slots_advanced_pt;
+}
+
+(function(){ const s = localStorage.getItem('ra-lang'); if(s === 'en') setLang('en'); else renderTrainingDates(); })();
+function toggleMenu() {
+  const menu = document.getElementById('mobile-menu');
+  const ham = document.getElementById('hamburger');
+  menu.classList.toggle('open');
+  ham.classList.toggle('open');
+}
+document.addEventListener('click', e => {
+  const nav = document.querySelector('.nav');
+  const menu = document.getElementById('mobile-menu');
+  const ham = document.getElementById('hamburger');
+  if (!nav.contains(e.target) && !menu.contains(e.target)) {
+    menu.classList.remove('open');
+    ham.classList.remove('open');
+  }
+});
+function handleForm(e) {
+  e.preventDefault();
+  const form = e.target;
+  const btn = form.querySelector('[type=submit]');
+  const isEn = document.body.classList.contains('lang-en');
+  const FORMSPREE_ID = 'meenrzjj'; // ← substitui pelo teu ID do Formspree
+
+  // Sync hidden curso field (two selects PT/EN, only one visible)
+  const selPt = form.querySelector('#contact-select-pt');
+  const selEn = form.querySelector('#contact-select-en');
+  if (selEn && selPt) selPt.value = selEn.value || selPt.value;
+
+  btn.innerHTML = isEn ? 'A enviar...' : 'A enviar...';
+  btn.disabled = true;
+
+  const data = new FormData(form);
+
+  fetch('https://formspree.io/f/' + FORMSPREE_ID, {
+    method: 'POST',
+    body: data,
+    headers: { 'Accept': 'application/json' }
+  })
+  .then(function(r) {
+    if (r.ok) {
+      btn.innerHTML = isEn ? 'Sent! We will be in touch soon ✓' : 'Enviado! Entraremos em contacto brevemente ✓';
+      btn.style.background = '#22c55e';
+      form.reset();
+    } else {
+      btn.innerHTML = isEn ? 'Error — try again' : 'Erro — tenta novamente';
+      btn.style.background = '#ef4444';
+      btn.disabled = false;
+    }
+  })
+  .catch(function() {
+    btn.innerHTML = isEn ? 'Error — try again' : 'Erro — tenta novamente';
+    btn.style.background = '#ef4444';
+    btn.disabled = false;
+  });
+}
+const secs = document.querySelectorAll('section[id]');
+const navAs = document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll', () => {
+  let cur = '';
+  secs.forEach(s => { if(window.scrollY >= s.offsetTop - 110) cur = s.id; });
+  navAs.forEach(a => { a.style.color = a.getAttribute('href') === '#'+cur ? '#0BABDD' : ''; });
+}, {passive:true});
+</script>
+</body>
+</html>

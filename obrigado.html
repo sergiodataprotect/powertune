@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>Pagamento confirmado — REMAP Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root{--black:#231F20;--black-2:#1a1718;--black-3:#141213;--cyan:#0BABDD;--orange:#F36308;--green:#22c55e;--white:#fff}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--black-3);color:var(--white);font-family:'Barlow',sans-serif;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1rem}
+    h1,h2{font-family:'Barlow Condensed',sans-serif;font-weight:700}
+    .card{background:var(--black-2);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:2.5rem 2rem;max-width:480px;width:100%;text-align:center}
+    .icon{font-size:3.5rem;margin-bottom:1.25rem;display:block}
+    .title{font-size:2rem;margin-bottom:.75rem}
+    .sub{font-size:14px;color:rgba(255,255,255,.5);line-height:1.75;margin-bottom:2rem}
+    .divider{border:none;border-top:1px solid rgba(255,255,255,.07);margin:1.5rem 0}
+    .info-row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px}
+    .info-label{color:rgba(255,255,255,.4)}
+    .info-val{color:rgba(255,255,255,.8);font-weight:500}
+    .btn{display:inline-block;margin-top:1.5rem;padding:13px 32px;border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:700;background:var(--cyan);color:#fff;text-decoration:none;transition:opacity .2s}
+    .btn:hover{opacity:.85}
+    .badge-ok{display:inline-block;background:rgba(34,197,94,.15);color:#4ade80;font-size:12px;font-weight:700;padding:4px 14px;border-radius:20px;margin-bottom:1rem;letter-spacing:.05em}
+    .en{display:none}
+  </style>
+</head>
+<body>
+<div class="card">
+  <span class="badge-ok">&#10003; <span class="pt">Pagamento confirmado</span><span class="en">Payment confirmed</span></span>
+  <span class="icon">&#127881;</span>
+  <h1 class="title"><span class="pt">Inscrição recebida!</span><span class="en">Enrolment received!</span></h1>
+  <p class="sub pt">Obrigado por escolheres a REMAP Academy. Receberás um email de confirmação em breve com todos os detalhes da tua inscrição.</p>
+  <p class="sub en">Thank you for choosing REMAP Academy. You will receive a confirmation email shortly with all the details of your enrolment.</p>
+  <div class="divider"></div>
+  <div class="info-row"><span class="info-label pt">Próximo passo</span><span class="info-label en">Next step</span><span class="info-val pt">Email de confirmação</span><span class="info-val en">Confirmation email</span></div>
+  <div class="info-row"><span class="info-label pt">Suporte</span><span class="info-label en">Support</span><span class="info-val">info@remapacademy.pt</span></div>
+  <a href="index.html" class="btn"><span class="pt">← Voltar ao site</span><span class="en">← Back to site</span></a>
+</div>
+<script>
+  const lang = localStorage.getItem('ra-lang') || 'pt';
+  if (lang === 'en') {
+    document.querySelectorAll('.pt').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.en').forEach(el => el.style.display = 'revert');
+    document.documentElement.lang = 'en';
+    document.title = 'Payment confirmed — REMAP Academy';
+  }
+</script>
+</body>
+</html>

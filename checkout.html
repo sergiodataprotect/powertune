@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1a1718">
+  <title>Comprar Curso — REMAP Academy</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root{--black:#231F20;--black-2:#1a1718;--black-3:#141213;--cyan:#0BABDD;--orange:#F36308;--green:#22c55e;--white:#fff}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:var(--black-3);color:var(--white);font-family:'Barlow',sans-serif;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh}
+    h1,h2,h3,h4{font-family:'Barlow Condensed',sans-serif;font-weight:700;line-height:1.15}
+    .en{display:none}
+    body.lang-en .pt{display:none}
+    body.lang-en .en{display:revert}
+    .topbar{background:var(--black-2);border-bottom:1px solid rgba(255,255,255,.07);padding:0 max(1.25rem,env(safe-area-inset-left));height:62px;display:flex;align-items:center;justify-content:space-between;gap:.75rem}
+    .topbar-logo{display:flex;align-items:center;text-decoration:none}
+    .topbar-logo svg{height:46px;width:auto}
+    .topbar-right{display:flex;align-items:center;gap:10px}
+    .topbar-secure{display:flex;align-items:center;gap:5px;font-size:11px;color:rgba(255,255,255,.35);white-space:nowrap}
+    .topbar-secure svg{width:12px;height:12px;flex-shrink:0}
+    .lang-toggle{display:flex;align-items:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:20px;overflow:hidden;flex-shrink:0}
+    .lang-toggle button{font-size:11px;font-weight:700;letter-spacing:.05em;padding:5px 11px;background:transparent;border:none;color:rgba(255,255,255,.4);cursor:pointer;transition:all .2s;font-family:'Barlow Condensed',sans-serif}
+    .lang-toggle button.active{background:var(--cyan);color:#fff}
+    .topbar-back{font-size:12px;color:rgba(255,255,255,.4);text-decoration:none;display:flex;align-items:center;gap:4px;transition:color .2s;white-space:nowrap;flex-shrink:0}
+    .topbar-back:hover{color:rgba(255,255,255,.75)}
+    .page-wrap{max-width:1080px;margin:0 auto;padding:2rem max(1rem,env(safe-area-inset-right)) max(2rem,calc(1rem + env(safe-area-inset-bottom))) max(1rem,env(safe-area-inset-left));display:grid;grid-template-columns:1fr 360px;gap:1.5rem;align-items:start}
+    .steps-col{display:flex;flex-direction:column;gap:12px}
+    .step-block{background:var(--black-2);border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden}
+    .step-head{padding:1rem 1.25rem;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:10px}
+    .step-num{width:26px;height:26px;border-radius:50%;background:var(--cyan);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .step-title{font-family:'Barlow Condensed',sans-serif;font-size:1.05rem;font-weight:700}
+    .step-body{padding:1.25rem}
+    .cb{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:10px;margin-bottom:.65rem}
+    .cb-ess{background:rgba(11,171,221,.15);color:var(--cyan)}
+    .cb-adv{background:rgba(243,99,8,.15);color:#f8a97a}
+    .curso-title{font-size:1.55rem;color:#fff;margin-bottom:4px}
+    .curso-meta{font-size:12px;color:rgba(255,255,255,.38);display:flex;gap:10px;flex-wrap:wrap}
+    .format-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .fcard{border:2px solid rgba(255,255,255,.1);border-radius:12px;padding:1rem;cursor:pointer;transition:all .2s;position:relative;background:rgba(255,255,255,.02);user-select:none;-webkit-tap-highlight-color:transparent}
+    .fcard:hover{border-color:rgba(255,255,255,.25)}
+    .fcard.sel-pres{border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.04)}
+    .fcard.sel-online{border-color:var(--cyan);background:rgba(11,171,221,.07)}
+    .fcard input{position:absolute;opacity:0;width:0;height:0}
+    .fcard-check{position:absolute;top:10px;right:10px;width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:10px;color:#fff}
+    .fcard.sel-pres .fcard-check{border-color:#fff;background:rgba(255,255,255,.15)}
+    .fcard.sel-online .fcard-check{border-color:var(--cyan);background:var(--cyan)}
+    .fcard-icon{font-size:1.2rem;margin-bottom:.4rem}
+    .fcard-label{font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:700;color:#fff;margin-bottom:3px}
+    .fcard-desc{font-size:11px;color:rgba(255,255,255,.38);line-height:1.4;margin-bottom:.5rem}
+    .fcard-price{font-family:'Barlow Condensed',sans-serif;font-size:1.45rem;font-weight:700}
+    .fp-pres{color:rgba(255,255,255,.85)}
+    .fp-online{color:var(--cyan)}
+    .fcard-vat{font-size:10px;color:rgba(255,255,255,.28);margin-top:2px}
+    .fcard-note{margin-top:10px;padding:10px 12px;border-radius:8px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);font-size:12px;color:rgba(255,255,255,.42);line-height:1.55}
+    .fcard-note strong{color:rgba(255,255,255,.7);font-weight:500}
+    .fg-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .fg{margin-bottom:10px}
+    .fg:last-child{margin-bottom:0}
+    .fg label{display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.35);letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px}
+    .fg input,.fg select,.fg textarea{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:9px;padding:13px 14px;color:#fff;font-family:'Barlow',sans-serif;font-size:16px;outline:none;transition:border-color .2s,background .2s;-webkit-appearance:none;appearance:none;-webkit-text-size-adjust:100%}
+    .fg input::placeholder,.fg textarea::placeholder{color:rgba(255,255,255,.2)}
+    .fg input:focus,.fg select:focus,.fg textarea:focus{border-color:rgba(11,171,221,.5);background:rgba(11,171,221,.04)}
+    .fg select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(255,255,255,0.3)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+    .fg select option{background:var(--black-2);color:#fff}
+    .field-hint{font-size:11px;color:rgba(255,255,255,.25);margin-top:5px}
+    .pay-list{display:flex;flex-direction:column;gap:8px}
+    .popt{border:2px solid rgba(255,255,255,.08);border-radius:12px;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent;overflow:hidden}
+    .popt.psel{border-color:var(--cyan)}
+    .popt-head{display:flex;align-items:center;gap:13px;padding:14px 15px;transition:background .2s}
+    .popt:hover .popt-head{background:rgba(255,255,255,.03)}
+    .popt input{display:none}
+    .pradio{width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,.2);flex-shrink:0;transition:all .2s;display:flex;align-items:center;justify-content:center}
+    .popt.psel .pradio{border-color:var(--cyan);background:var(--cyan)}
+    .pradio::after{content:'';width:6px;height:6px;border-radius:50%;background:#fff;opacity:0;transition:opacity .2s}
+    .popt.psel .pradio::after{opacity:1}
+    .popt-icon{font-size:1.3rem;flex-shrink:0}
+    .popt-info{flex:1}
+    .popt-name{font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:700;color:#fff}
+    .popt-desc{font-size:11px;color:rgba(255,255,255,.38);margin-top:1px}
+    .ptag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px;letter-spacing:.03em;white-space:nowrap}
+    .ptag-pop{background:rgba(243,99,8,.15);color:#f8a97a}
+    .ptag-fast{background:rgba(34,197,94,.15);color:#4ade80}
+    .ptag-crypto{background:rgba(255,169,0,.15);color:#fbbf24}
+    .ppanel{display:none;padding:0 15px 15px}
+    .ppanel.show{display:block}
+    .ppanel label{font-size:11px;font-weight:700;color:rgba(255,255,255,.35);letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px;display:block}
+    .ppanel input{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:9px;padding:12px 14px;color:#fff;font-family:'Barlow',sans-serif;font-size:16px;outline:none;transition:border-color .2s;-webkit-appearance:none}
+    .ppanel input:focus{border-color:rgba(11,171,221,.4)}
+    .card-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+    .transfer-info,.crypto-info{font-size:12px;color:rgba(255,255,255,.48);line-height:1.65;background:rgba(255,255,255,.03);border-radius:8px;padding:12px;border:1px solid rgba(255,255,255,.07)}
+    .transfer-info strong,.crypto-info strong{color:rgba(255,255,255,.78);font-weight:500}
+    .crypto-tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+    .ctab{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;padding:6px 14px;border-radius:8px;cursor:pointer;transition:all .2s;border:1px solid rgba(255,255,255,.12);background:transparent;color:rgba(255,255,255,.45);-webkit-tap-highlight-color:transparent;min-height:36px}
+    .ctab.active{background:rgba(255,169,0,.15);border-color:rgba(255,169,0,.4);color:#fbbf24}
+    .crypto-wallet{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:12px 14px;margin-bottom:10px}
+    .wallet-addr{font-family:monospace;font-size:11px;color:rgba(255,255,255,.65);flex:1;word-break:break-all;line-height:1.5}
+    .copy-btn{font-size:11px;font-weight:700;padding:6px 12px;border-radius:7px;border:1px solid rgba(255,255,255,.15);background:transparent;color:rgba(255,255,255,.5);cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0;font-family:'Barlow Condensed',sans-serif;min-height:36px}
+    .copy-btn:hover{border-color:rgba(255,255,255,.3);color:#fff}
+    .crypto-note{font-size:11px;color:rgba(255,255,255,.35);line-height:1.55}
+    .crypto-note strong{color:rgba(255,169,0,.8)}
+    .terms-wrap{display:flex;align-items:flex-start;gap:10px;padding:1rem;background:rgba(11,171,221,.05);border:1px solid rgba(11,171,221,.25);border-radius:10px}
+    .terms-wrap input[type=checkbox]{width:20px;height:20px;flex-shrink:0;margin-top:1px;accent-color:var(--cyan);cursor:pointer}
+    .terms-text{font-size:13px;color:rgba(255,255,255,.42);line-height:1.6}
+    .terms-text a{color:var(--cyan);text-decoration:none}
+    .summary-col{position:sticky;top:1.25rem}
+    .summary-card{background:var(--black-2);border:1px solid rgba(255,255,255,.1);border-radius:16px;overflow:hidden}
+    .sum-head{padding:1rem 1.25rem;border-bottom:1px solid rgba(255,255,255,.07);font-family:'Barlow Condensed',sans-serif;font-size:.95rem;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.08em}
+    .sum-course{padding:1.1rem 1.25rem;border-bottom:1px solid rgba(255,255,255,.07)}
+    .sum-badge{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 9px;border-radius:10px;display:inline-block;margin-bottom:7px}
+    .sum-name{font-size:1.15rem;color:#fff;margin-bottom:4px}
+    .sum-format{font-size:12px;color:rgba(255,255,255,.38);margin-bottom:10px;display:flex;align-items:center;gap:5px}
+    .sum-format span{color:rgba(255,255,255,.7);font-weight:500}
+    .sum-inc{border-top:1px solid rgba(255,255,255,.06);padding-top:10px;display:flex;flex-direction:column;gap:5px}
+    .si{display:flex;align-items:flex-start;gap:7px;font-size:12px;color:rgba(255,255,255,.42);line-height:1.4}
+    .si::before{content:'\2713';color:var(--green);font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px}
+    .sum-price{padding:1rem 1.25rem;border-bottom:1px solid rgba(255,255,255,.07)}
+    .pl{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;font-size:13px}
+    .pl-label{color:rgba(255,255,255,.42)}
+    .pl-val{color:rgba(255,255,255,.65);font-weight:500}
+    .pl-total{display:flex;justify-content:space-between;align-items:baseline;padding-top:8px;border-top:1px solid rgba(255,255,255,.1);margin-top:2px}
+    .pl-total-label{font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase}
+    .pl-total-val{font-family:'Barlow Condensed',sans-serif;font-size:1.85rem;font-weight:700;color:#fff}
+    .sum-cta{padding:1.1rem 1.25rem}
+    .btn-pay{display:block;width:100%;text-align:center;padding:15px;border-radius:11px;font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:.04em;background:var(--orange);color:#fff;border:none;cursor:pointer;transition:opacity .2s,transform .15s;min-height:54px}
+    .btn-pay:hover:not(:disabled){opacity:.88;transform:translateY(-1px)}
+    .btn-pay:disabled{opacity:.35;cursor:not-allowed;transform:none}
+    .invoice-toggle{display:flex;align-items:center;gap:10px;padding:.85rem 1rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:10px;cursor:pointer;margin-top:.5rem;transition:border-color .2s}
+    .invoice-toggle:hover{border-color:rgba(255,255,255,.18)}
+    .invoice-toggle input[type=checkbox]{width:16px;height:16px;accent-color:var(--cyan);cursor:pointer;flex-shrink:0}
+    .invoice-toggle-label{font-size:13px;color:rgba(255,255,255,.65);cursor:pointer;line-height:1.3}
+    .vat-field{display:none;margin-top:.75rem;animation:fadeUp .2s ease}
+    .vat-field.show{display:block}
+    .vat-input-wrap{display:flex;gap:8px;align-items:flex-start}
+    .vat-prefix{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:11px 13px;font-size:14px;font-weight:700;color:rgba(255,255,255,.5);white-space:nowrap;flex-shrink:0}
+    .vat-status{margin-top:8px;font-size:12px;border-radius:8px;padding:8px 12px;display:none}
+    .vat-status.show{display:flex;align-items:center;gap:8px}
+    .vat-status.valid{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);color:#86efac}
+    .vat-status.invalid{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);color:#f87171}
+    .vat-status.checking{background:rgba(11,171,221,.07);border:1px solid rgba(11,171,221,.2);color:rgba(11,171,221,.8)}
+    .vat-tax-note{font-size:11px;color:rgba(255,255,255,.4);margin-top:6px}
+    .price-breakdown{font-size:12px;color:rgba(255,255,255,.45);margin-top:4px}
+    .sum-secure{display:flex;align-items:center;justify-content:center;gap:5px;font-size:11px;color:rgba(255,255,255,.28);margin-top:10px}
+    .sum-secure svg{width:11px;height:11px}
+    .sum-methods{display:flex;justify-content:center;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.06);flex-wrap:wrap}
+    .meth{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:4px 9px;font-size:11px;font-weight:700;color:rgba(255,255,255,.45)}
+    .mobile-pay-bar{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--black-2);border-top:1px solid rgba(255,255,255,.1);padding:.9rem max(1rem,env(safe-area-inset-right)) max(.9rem,env(safe-area-inset-bottom)) max(1rem,env(safe-area-inset-left));z-index:50}
+    .mobile-pay-content{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+    .mobile-pay-total{font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:700;color:#fff}
+    .mobile-pay-label{font-size:11px;color:rgba(255,255,255,.35)}
+    .mobile-btn-pay{flex-shrink:0;padding:13px 24px;border-radius:11px;font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:700;background:var(--orange);color:#fff;border:none;cursor:pointer;transition:opacity .2s;min-width:160px;text-align:center;min-height:50px}
+    .mobile-btn-pay:disabled{opacity:.35;cursor:not-allowed}
+    .success-page{display:none;flex-direction:column;align-items:center;text-align:center;padding:4rem 1.5rem;max-width:520px;margin:0 auto}
+    .success-page.show{display:flex}
+    .success-icon{font-size:3.5rem;margin-bottom:1.25rem}
+    .success-h{font-size:2rem;color:#fff;margin-bottom:.75rem}
+    .success-sub{font-size:14px;color:rgba(255,255,255,.5);line-height:1.75}
+    .success-back{display:inline-block;margin-top:2rem;color:var(--cyan);font-size:14px;text-decoration:none}
+    @media(max-width:860px){.page-wrap{grid-template-columns:1fr;padding-bottom:100px}.summary-col{display:none}.mobile-pay-bar{display:block}}
+    @media(max-width:540px){.format-grid{grid-template-columns:1fr}.fg-row{grid-template-columns:1fr}.card-row{grid-template-columns:1fr}.topbar-secure{display:none}.page-wrap{padding-top:1.25rem}.step-body{padding:1rem}.step-head{padding:.85rem 1rem}}
+  </style>
+<!-- REMAP JSONBin sync -->
+<script>
+(function(){
+  var b=localStorage.getItem("ra_bo_binid")||"";
+  if(!b)return;
+  fetch("https://api.jsonbin.io/v3/b/"+b+"/latest")
+    .then(function(r){return r.json();})
+    .then(function(j){var d=j.record&&j.record.dates;if(d)localStorage.setItem("ra_next_training",JSON.stringify(d));})
+    .catch(function(){});
+})();
+</script>
+</head>
+<body>
+<header class="topbar">
+  <a href="index.html" class="topbar-back">&larr; <span class="pt">Voltar</span><span class="en">Back</span></a>
+  <a href="index.html" class="topbar-logo" aria-label="REMAP Academy">
+    <svg viewBox="118 135 265 220" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"><defs><linearGradient id="tlg1" gradientUnits="userSpaceOnUse" x1="203.76" y1="229.07" x2="357.75" y2="229.07"><stop offset="0" stop-color="#0BABDD"/><stop offset="1" stop-color="#1B6F92"/></linearGradient><linearGradient id="tlg2" gradientUnits="userSpaceOnUse" x1="249.99" y1="229.23" x2="142.5" y2="229.23"><stop offset="0" stop-color="#DB3832"/><stop offset=".5025" stop-color="#E46E3A"/><stop offset="1" stop-color="#EDA342"/></linearGradient><linearGradient id="tlg3" gradientUnits="userSpaceOnUse" x1="148.64" y1="306.52" x2="148.64" y2="274.31"><stop offset="0" stop-color="#DB3832"/><stop offset="1" stop-color="#EDA342"/></linearGradient><linearGradient id="tlg4" gradientUnits="userSpaceOnUse" x1="355.74" y1="306.52" x2="355.74" y2="274.31"><stop offset="0" stop-color="#1B6F92"/><stop offset="1" stop-color="#0BABDD"/></linearGradient></defs><circle fill="#0BABDD" cx="322" cy="193.8" r="4.7"/><circle fill="#0BABDD" cx="244.1" cy="168.1" r="4.7"/><circle fill="#0BABDD" cx="369.7" cy="217" r="4.7"/><circle fill="#0BABDD" cx="298.8" cy="157.4" r="5.1"/><circle fill="#F36308" cx="177.2" cy="168.1" r="6.4"/><circle fill="#F36308" cx="146.1" cy="196.7" r="6.4"/><circle fill="#0BABDD" cx="191.5" cy="200.6" r="5"/><circle fill="#F36308" cx="134.8" cy="217" r="5.8"/><path fill="none" stroke="#F36308" stroke-width="2.5" d="M142.4,230.2c0,0,5.1-33.9,53.4-58.7"/><path fill="none" stroke="#F36308" stroke-width="2.5" d="M130.7,264.8c0,0-11.7-44.8,27.7-81.6c0,0,34.6-37.2,100.9-34.6"/><path fill="none" stroke="#0BABDD" stroke-width="2.5" d="M300.9,158.6c0,0,34.1,10.9,56.8,39.9s19.1,45.2,17.6,65.4"/><path fill="none" stroke="#F36308" stroke-width="2.2" d="M182.3,200.8c0,0-10.9,7.2-19.1,22.9"/><path fill="none" stroke="#0BABDD" stroke-width="2.2" d="M221.8,186.3c0,0-16.5,3.7-29.7,14.3"/><path fill="none" stroke="#0BABDD" stroke-width="2.2" d="M244.1,168.1c0,0,29.8-3.1,61.5,13.8c0,0,20.3,10,33.1,31.9"/><path fill="none" stroke="#0BABDD" stroke-width="2.2" d="M303.9,190.8c0,0-22-18.1-64.5-15.4"/><circle fill="#0BABDD" cx="260.6" cy="148.6" r="6.4"/><path fill="url(#tlg1)" d="M351.1,242.2l6.7,3.3c-2.2-5.5-3.6-11-3.6-11c-2.4-5.8,0.8-9.9,0.8-9.9l2.7-3.5l-28.3,0.6C293.2,199.7,261.1,200,250,201h0c-25.4,9.5-46.2,26.9-46.2,26.9h14.5c0,0,1.9,0.1,0.7,2.3c0,0-5.3,6.8-8.5,18.8c29.1-7,79.9-12,79.9-12l-8,12l21.2,8.5h0.5c2-18.2,17.4-17.5,17.4-17.5c5,0.5,8.8,1.9,11.7,3.8l3.4-16.3C336.5,227.4,352.7,242.3,351.1,242.2z M303.9,225.3h-80c0,0-1-7.8-3.1-7.9c0,0,14.6-11,40.7-10.8c0,0,34,1.9,53.8,15L303.9,225.3z"/><path fill="url(#tlg2)" d="M250,201c-2.7,0.2-4.2,0.5-4.2,0.5c-23.7,2.5-51.7,22.3-51.7,22.3c-32.2,2.1-49.3,18.7-49.3,18.7c-3.9,3-1.8,8.1-1.8,8.1l2,6.9h22.6c1.9-20.1,16.9-20.6,16.9-20.6c10.3,0.3,11.3,8.4,11.3,8.4c-4-6.2-13.1-4-13.1-4c-11.6,4.2-11,16.2-11,16.2h31.1c0,0,0-0.1,0-0.1c0-0.1,0-0.1,0-0.2c0-0.1,0-0.2,0.1-0.3c3.6-18.3,11.7-27.8,12.6-28.9c0,0,0-0.1,0.1-0.1c0,0,0,0,0,0h-12C203.8,227.9,224.6,210.5,250,201z M164.1,243.5c0,0-4.1,2-12.4,2.7c0,0,2.2-3.2,6.5-5.2l10.1-6.1C168.2,235.1,166.6,239.2,164.1,243.5z"/><path fill="#1B6F92" d="M303.3,257.5h-94.8c0.5-3,1.1-5.8,1.8-8.4c29.1-7,79.9-12,79.9-12l-8,12L303.3,257.5z"/><path fill="#1B6F92" d="M351.1,242.2c-1.7-0.2-4.5,0.2-4.5,0.2c-5.6,0.2-9.1,1.5-11.3,3.1c-0.7-0.6-1.4-1.2-2.2-1.7l3.4-16.3C336.5,227.4,352.7,242.3,351.1,242.2z"/><path fill="#343F52" d="M354.5,257h-12.6c0,0-0.8-6.6-6.5-11.6c2.2-1.6,5.7-2.9,11.3-3.1c0,0,2.8-0.3,4.5-0.2l6.7,3.3c0.6,1.5,1.3,3.1,2,4.5C359.8,250,363.8,257.4,354.5,257z"/><path fill="url(#tlg3)" d="M156.6,306.5l-8.3-10.2h-9.2v10.2H130v-32.2h22c8,0,14.2,3.6,14.2,11c0,5.4-3.3,8.8-8.2,10.3l9.2,10.9H156.6z M151.3,289.5c3.3,0,5.6-0.9,5.6-4s-2.4-4-5.6-4h-12.3v8.1H151.3z"/><path fill="#FFF" d="M210,299.3v7.2h-33.6v-32.2h33.1v7.2h-24.1v5.3h19.9v6.9h-19.9v5.7H210z"/><path fill="#FFF" d="M279.4,274.3v32.2h-8.7V286l-11.9,15.7h-0.4L246.4,286v20.6H238v-32.2h9.5l11.2,15.5l11.3-15.5H279.4z"/><path fill="#FFF" d="M317,300.4h-18.1l-3.1,6.2h-10.1l17.1-32.2h10.5l17.1,32.2h-10.2L317,300.4z M313.7,293.7l-5.7-11.4l-5.8,11.4H313.7z"/><path fill="url(#tlg4)" d="M374.3,285.6c0,7.5-5.8,11.3-14.6,11.3h-13v9.7h-9.4V290h21.6c3.5,0,5.9-1.1,5.9-4.3c0-3.3-2.4-4.3-5.9-4.3h-12.1l-9.5-7.1h22.4C368.4,274.3,374.3,278.2,374.3,285.6z"/><polygon fill="#FFF" points="217.3,295.7 230.3,295.7 223.8,307.5"/><polygon fill="#0BABDD" points="230.3,288.6 217.3,288.6 223.8,276.8"/><path fill="#FFF" d="M164.4,342.4h-4.8l-2.5-5.9h-9.7l-2.5,5.9h-4.5l9.8-22.3h4.3L164.4,342.4z M155.7,332.9l-3.3-8l-3.4,8H155.7z"/><path fill="#FFF" d="M185.6,342.8c-2.3,0-4.4-0.5-6.2-1.5c-1.8-1-3.2-2.4-4.1-4.1c-1-1.7-1.4-3.7-1.4-5.9c0-2.2,0.5-4.2,1.4-5.9c1-1.7,2.3-3.1,4.1-4.1c1.8-1,3.8-1.5,6.1-1.5c4.1,0,7.4,1.6,9.8,4.9l-3.4,2.2c-0.8-1.1-1.7-2-2.8-2.5c-1-0.5-2.2-0.8-3.6-0.8c-2.2,0-4,0.7-5.4,2.1c-1.3,1.4-2,3.3-2,5.7c0,2.4,0.7,4.3,2,5.7c1.3,1.4,3.1,2.1,5.3,2.1c2.6,0,4.8-1.2,6.4-3.5l3.5,2.1C193.1,341.1,189.7,342.8,185.6,342.8z"/><path fill="#FFF" d="M228.2,342.4h-4.8l-2.5-5.9h-9.7l-2.5,5.9h-4.5l9.8-22.3h4.3L228.2,342.4z M219.5,332.9l-3.3-8l-3.4,8H219.5z"/><path fill="#FFF" d="M248.5,342.4H239v-22.3h9.5c2.4,0,4.5,0.5,6.3,1.5c1.8,1,3.1,2.3,4,4c0.9,1.7,1.3,3.6,1.3,5.7c0,2.1-0.4,4-1.3,5.7c-0.9,1.7-2.2,3-4,4C253.1,341.9,250.9,342.4,248.5,342.4z M248.5,323.9h-5.1v14.8h5.1c2.3,0,4.1-0.7,5.4-2s1.9-3.1,1.9-5.5c0-2.3-0.6-4.1-1.9-5.5S250.9,323.9,248.5,323.9z"/><path fill="#FFF" d="M290.5,342.4h-17.8v-22.3h17.4v3.7H277v5h11.4v3.6H277v6.2h13.5V342.4z"/><path fill="#FFF" d="M328.2,342.4H324v-16.1l-6.7,16.1h-3.5l-6.7-16.1v16.1h-4.2v-22.3h5.7l7,16.7l7-16.7h5.6V342.4z"/><path fill="#FFF" d="M361.7,320.1l-9.3,13.2v9.1H348v-9l-9.2-13.2h5l6.4,9.5l6.5-9.5H361.7z"/></svg>
+  </a>
+  <div class="topbar-right">
+    <div class="topbar-secure"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span class="pt">Pagamento seguro</span><span class="en">Secure payment</span></div>
+    <div class="lang-toggle"><button id="btn-pt" class="active" onclick="setLang('pt')">PT</button><button id="btn-en" onclick="setLang('en')">EN</button></div>
+  </div>
+</header>
+
+<div class="page-wrap" id="page-wrap">
+  <div class="steps-col">
+
+    <div class="step-block">
+      <div class="step-head"><div class="step-num">1</div><div class="step-title"><span class="pt">Curso selecionado</span><span class="en">Selected course</span></div></div>
+      <div class="step-body">
+        <div id="c-badge" class="cb cb-ess">Essential</div>
+        <div id="c-title" class="curso-title">Fundamentos ECU</div>
+        <div class="curso-meta"><span id="c-meta-dias"></span><span>&middot;</span><span id="c-meta-alunos"></span></div>
+      </div>
+    </div>
+
+    <div class="step-block">
+      <div class="step-head"><div class="step-num">2</div><div class="step-title"><span class="pt">Formato do curso</span><span class="en">Course format</span></div></div>
+      <div class="step-body">
+        <div class="format-grid">
+          <label class="fcard sel-pres" id="fc-pres" onclick="selFormat('pres')">
+            <input type="radio" name="fmt" value="pres" checked>
+            <div class="fcard-check">&#10003;</div>
+            <div class="fcard-icon">&#127970;</div>
+            <div class="fcard-label"><span class="pt">Presencial</span><span class="en">In-person</span></div>
+            <div class="fcard-desc"><span class="pt">Forma&ccedil;&atilde;o intensiva em ban&ccedil;ada com equipamento real</span><span class="en">Intensive bench training with real equipment</span></div>
+            <div class="fcard-price fp-pres" id="fp-pres">&#8364;1.299</div>
+            <div class="fcard-vat"><span class="pt">IVA calculado no checkout</span><span class="en">VAT calculated at checkout</span></div>
+          </label>
+          <label class="fcard" id="fc-online" onclick="selFormat('online')">
+            <input type="radio" name="fmt" value="online">
+            <div class="fcard-check">&#10003;</div>
+            <div class="fcard-icon">&#127916;</div>
+            <div class="fcard-label">Online</div>
+            <div class="fcard-desc"><span class="pt">V&iacute;deo-aulas com acesso vital&iacute;cio ao teu ritmo</span><span class="en">Video lessons with lifetime access at your pace</span></div>
+            <div class="fcard-price fp-online" id="fp-online">&#8364;499</div>
+            <div class="fcard-vat"><span class="pt">IVA calculado no checkout</span><span class="en">VAT calculated at checkout</span></div>
+          </label>
+        </div>
+        <div class="fcard-note" id="fmt-note"></div>
+      </div>
+    </div>
+
+    <div class="step-block">
+      <div class="step-head"><div class="step-num">3</div><div class="step-title"><span class="pt">Os teus dados</span><span class="en">Your details</span></div></div>
+      <div class="step-body">
+        <div class="fg-row">
+          <div class="fg"><label><span class="pt">Nome *</span><span class="en">First name *</span></label><input type="text" id="f-nome" placeholder="Jo&atilde;o" autocomplete="given-name" required></div>
+          <div class="fg"><label><span class="pt">Apelido *</span><span class="en">Last name *</span></label><input type="text" id="f-apelido" placeholder="Silva" autocomplete="family-name" required></div>
+        </div>
+        <div class="fg"><label>Email *</label><input type="email" id="f-email" placeholder="joao@email.com" autocomplete="email" inputmode="email" required><div class="field-hint"><span class="pt">Confirma&ccedil;&atilde;o e dados de acesso enviados para este email.</span><span class="en">Confirmation and access details sent to this email.</span></div></div>
+        <div class="fg-row">
+          <div class="fg"><label><span class="pt">Telefone *</span><span class="en">Phone *</span></label><input type="tel" id="f-tel" placeholder="+351 9XX XXX XXX" autocomplete="tel" inputmode="tel" required></div>
+          <!-- INVOICE TOGGLE -->
+          <label class="invoice-toggle" id="invoice-toggle">
+            <input type="checkbox" id="cb-invoice" onchange="toggleInvoice()">
+            <span class="invoice-toggle-label">
+              <span class="pt"><strong>Desejo fatura</strong> — Preenche o teu NIF / NIF de empresa</span>
+              <span class="en"><strong>I need an invoice</strong> — Enter your VAT ID for tax purposes</span>
+            </span>
+          </label>
+          <div class="vat-field" id="vat-field">
+            <label style="font-size:11px;font-weight:700;color:rgba(255,255,255,.35);letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px;display:block">
+              <span class="pt">NIF / VAT ID</span><span class="en">VAT ID / Tax Number</span>
+            </label>
+            <div class="vat-input-wrap">
+              <select id="vat-country" onchange="onVatChange()" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:11px 10px;font-size:13px;color:rgba(255,255,255,.7);width:90px;flex-shrink:0;appearance:none;text-align:center">
+                <option value="PT">🇵🇹 PT</option>
+                <option value="ES">🇪🇸 ES</option>
+                <option value="DE">🇩🇪 DE</option>
+                <option value="FR">🇫🇷 FR</option>
+                <option value="IT">🇮🇹 IT</option>
+                <option value="NL">🇳🇱 NL</option>
+                <option value="BE">🇧🇪 BE</option>
+                <option value="PL">🇵🇱 PL</option>
+                <option value="SE">🇸🇪 SE</option>
+                <option value="OTHER">🌍 Other</option>
+              </select>
+              <div style="flex:1">
+                <input type="text" id="f-nif" placeholder="123456789" inputmode="text" oninput="onVatChange()" style="width:100%;text-transform:uppercase">
+              </div>
+            </div>
+            <div class="vat-status" id="vat-status"></div>
+            <div class="vat-tax-note" id="vat-tax-note"></div>
+          </div>
+        </div>
+        <div class="fg"><label><span class="pt">Empresa (opcional)</span><span class="en">Company (optional)</span></label><input type="text" id="f-empresa" autocomplete="organization"></div>
+        <div class="fg" style="margin-bottom:0"><label><span class="pt">Como nos encontraste?</span><span class="en">How did you find us?</span></label>
+          <select id="f-origem">
+            <option value="" disabled selected></option>
+            <option value="instagram">Instagram</option>
+            <option value="youtube">YouTube</option>
+            <option value="google"><span class="pt">Pesquisa Google</span><span class="en">Google Search</span></option>
+            <option value="recomendacao"><span class="pt">Recomenda&ccedil;&atilde;o</span><span class="en">Recommendation</span></option>
+            <option value="outro"><span class="pt">Outro</span><span class="en">Other</span></option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-block">
+      <div class="step-head"><div class="step-num">4</div><div class="step-title"><span class="pt">M&eacute;todo de pagamento</span><span class="en">Payment method</span></div></div>
+      <div class="step-body">
+        <div class="pay-list">
+          <div class="popt psel" id="p-mbway" onclick="selPay('mbway')">
+            <div class="popt-head"><input type="radio" name="pay" value="mbway" checked><div class="pradio"></div><div class="popt-icon">&#128241;</div><div class="popt-info"><div class="popt-name">MB Way</div><div class="popt-desc"><span class="pt">Pagamento imediato pelo telemovel</span><span class="en">Instant mobile payment</span></div></div><span class="ptag ptag-pop"><span class="pt">Popular</span><span class="en">Popular</span></span></div>
+            <div class="ppanel show" id="pp-mbway">
+              <div class="transfer-info"><span class="pt">&#128241; Ser&aacute;s redireccionado para a p&aacute;gina segura do Stripe onde introduces o teu n&uacute;mero de telemovel e confirmas o pagamento na app MB Way.</span><span class="en">&#128241; You will be redirected to Stripe&rsquo;s secure page where you enter your phone number and confirm the payment in the MB Way app.</span></div>
+            </div>
+          </div>
+          <div class="popt" id="p-cartao" onclick="selPay('cartao')">
+            <div class="popt-head"><input type="radio" name="pay" value="cartao"><div class="pradio"></div><div class="popt-icon">&#128179;</div><div class="popt-info"><div class="popt-name"><span class="pt">Cart&atilde;o de Cr&eacute;dito / D&eacute;bito</span><span class="en">Credit / Debit Card</span></div><div class="popt-desc">Visa &middot; Mastercard &middot; American Express</div></div><span class="ptag ptag-fast"><span class="pt">Imediato</span><span class="en">Instant</span></span></div>
+            <div class="ppanel" id="pp-cartao">
+              <div class="transfer-info"><span class="pt">&#128274; Ser&aacute;s redireccionado para a p&aacute;gina segura do Stripe para introduzires os dados do cart&atilde;o. Os teus dados s&atilde;o processados directamente pelo Stripe &mdash; nunca passam pelo nosso servidor.</span><span class="en">&#128274; You will be redirected to Stripe&rsquo;s secure page to enter your card details. Your data is processed directly by Stripe &mdash; never through our server.</span></div>
+            </div>
+          </div>
+
+          <div class="popt" id="p-cripto" onclick="selPay('cripto')">
+            <div class="popt-head"><input type="radio" name="pay" value="cripto"><div class="pradio"></div><div class="popt-icon">&#129689;</div><div class="popt-info"><div class="popt-name"><span class="pt">Criptomoeda</span><span class="en">Cryptocurrency</span></div><div class="popt-desc">Bitcoin &middot; Ethereum &middot; USDT (TRC-20)</div></div><span class="ptag ptag-crypto">Crypto</span></div>
+            <div class="ppanel" id="pp-cripto">
+              <div class="crypto-tabs"><button class="ctab active" onclick="selCrypto('BTC',event)">&#8383; Bitcoin</button><button class="ctab" onclick="selCrypto('ETH',event)">&Xi; Ethereum</button><button class="ctab" onclick="selCrypto('USDT',event)">&#8366; USDT TRC-20</button></div>
+              <div class="crypto-wallet"><div class="wallet-addr" id="wallet-addr">bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</div><button class="copy-btn" onclick="copyWallet(event)"><span class="pt">Copiar</span><span class="en">Copy</span></button></div>
+              <div id="crypto-amount-box" style="background:rgba(255,169,0,.07);border:1px solid rgba(255,169,0,.25);border-radius:9px;padding:12px 14px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:10px">
+                <div>
+                  <div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,169,0,.6);margin-bottom:4px"><span class="pt">Valor a enviar em cripto</span><span class="en">Amount to send in crypto</span></div>
+                  <div id="crypto-amount-val" style="font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:700;color:#fbbf24">...</div>
+                  <div id="crypto-amount-eur" style="font-size:11px;color:rgba(255,255,255,.35);margin-top:2px"></div>
+                </div>
+                <button class="copy-btn" onclick="copyCryptoAmount(event)"><span class="pt">Copiar</span><span class="en">Copy</span></button>
+              </div>
+              <div class="crypto-info"><span class="pt"><strong>Aten&ccedil;&atilde;o:</strong> Envia o valor correspondente ao curso em <strong id="cc-pt">BTC</strong>. Ap&oacute;s a transfer&ecirc;ncia, envia o hash da transa&ccedil;&atilde;o para <strong>info@remapacademy.pt</strong> com o teu nome e curso. A inscri&ccedil;&atilde;o &eacute; ativada ap&oacute;s confirma&ccedil;&atilde;o na blockchain.</span><span class="en"><strong>Important:</strong> Send the course amount in <strong id="cc-en">BTC</strong>. After the transfer, send the transaction hash to <strong>info@remapacademy.pt</strong> with your name and course. Enrolment is activated after blockchain confirmation.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p style="font-size:11px;color:rgba(11,171,221,.7);margin-bottom:.5rem">&#9888;&#65039; <span class="pt">Aceita os termos abaixo para activar o bot&#227;o de pagamento</span><span class="en">Accept the terms below to enable the payment button</span></p>
+          <div class="terms-wrap"><input type="checkbox" id="terms" onchange="updateBtn()"><div class="terms-text"><span class="pt">Li e aceito os <a href="#">Termos e Condi&ccedil;&otilde;es</a> e a <a href="#">Pol&iacute;tica de Privacidade</a> da REMAP Academy. Compreendo a <a href="#">pol&iacute;tica de reembolso</a> e autorizo o tratamento dos meus dados para processamento desta inscri&ccedil;&atilde;o.</span><span class="en">I have read and accept the <a href="#">Terms &amp; Conditions</a> and <a href="#">Privacy Policy</a> of REMAP Academy. I understand the <a href="#">refund policy</a> and authorise use of my data to process this enrolment.</span></div></div>
+  </div>
+
+  <aside class="summary-col">
+    <div class="summary-card">
+      <div class="sum-head"><span class="pt">Resumo do pedido</span><span class="en">Order summary</span></div>
+      <div class="sum-course"><div id="s-badge" class="sum-badge cb-ess">Essential</div><div id="s-name" class="sum-name">Fundamentos ECU</div><div class="sum-format"><span class="pt">Formato:</span><span class="en">Format:</span>&nbsp;<span id="s-fmt"></span></div><div class="sum-inc" id="s-inc"></div></div>
+      <div class="sum-price"><div class="pl"><span class="pl-label"><span class="pt">Subtotal</span><span class="en">Subtotal</span></span><span class="pl-val" id="s-sub">&#8364;1.299</span></div><div class="pl" id="iva-row"><span class="pl-label">IVA</span><span class="pl-val" id="iva-val"><span class="pt">Inclu&iacute;do</span><span class="en">Included</span></span></div><div class="pl-total"><span class="pl-total-label">Total</span><span class="pl-total-val" id="s-tot">&#8364;1.299</span></div></div>
+      <div class="sum-cta"><button class="btn-pay" id="btn-pay" disabled onclick="submitOrder()"><span class="pt">Confirmar e pagar</span><span class="en">Confirm &amp; pay</span></button><div class="sum-secure"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span class="pt">Pagamento encriptado e seguro</span><span class="en">Encrypted &amp; secure payment</span></div><div class="sum-methods"><div class="meth">MB Way</div><div class="meth">VISA</div><div class="meth">MC</div><div class="meth">&#8383; Cripto</div></div></div>
+    </div>
+  </aside>
+</div>
+
+<div class="mobile-pay-bar" id="mobile-bar"><div class="mobile-pay-content"><div><div class="mobile-pay-label"><span class="pt">Total a pagar</span><span class="en">Total</span></div><div class="mobile-pay-total" id="mob-total">&#8364;1.299</div></div><button class="mobile-btn-pay" id="mob-btn" disabled onclick="submitOrder()"><span class="pt">Confirmar e pagar</span><span class="en">Confirm &amp; pay</span></button></div></div>
+
+<div class="success-page" id="success-page"><div class="success-icon">&#9989;</div><h2 class="success-h"><span class="pt">Inscri&ccedil;&atilde;o recebida!</span><span class="en">Enrolment received!</span></h2><p class="success-sub" id="success-msg"></p><a href="index.html" class="success-back">&larr; <span class="pt">Voltar ao site</span><span class="en">Back to site</span></a></div>
+
+<script>
+// ─── STRIPE ──────────────────────────────────────────────────────────────────
+// Substitui pela tua chave pública LIVE quando estiveres em produção:
+// pk_test_... → pk_live_...
+const STRIPE_PK = 'pk_live_51TeeGJJqXObPmkGVAMaIMax3nlo9KetEqVc1BwXZ0AtkLsKDzNqts1lFvUtAbCekHcexW2ks7HrV6X2Tb6yQ2y6x008gJpJ42b';
+
+const PRICE_IDS = {
+  essential: { pres: 'price_1Tf6hTJqXObPmkGV4DIA5vNO', online: 'price_1Tf6i1JqXObPmkGVgTjKf8rI' },
+  advanced:  { pres: 'price_1Tf6iRJqXObPmkGVQDaF3vCB', online: 'price_1Tf6ipJqXObPmkGVoqCCZ0Rd' },
+  consult4:  { pres: 'price_1Tf6jtJqXObPmkGVf0vOUQDj', online: 'price_1Tf6jtJqXObPmkGVf0vOUQDj' },
+  consult1:  { pres: 'price_1Tf6jgJqXObPmkGVxqBHJ0fq', online: 'price_1Tf6jgJqXObPmkGVxqBHJ0fq' },
+};
+// ─────────────────────────────────────────────────────────────────────────────
+
+const DATA={essential:{tier_pt:'Essential',tier_en:'Essential',nome_pt:'REMAP Start',nome_en:'REMAP Start',dias_pt:'2 dias · 16h',dias_en:'2 days · 16h',alunos_pt:'máx. 8 alunos',alunos_en:'max. 8 students',pres:1299,online:499,badge:'cb-ess',inc_pres_pt:['2 dias de formação intensiva','Materiais e consumiveis incluidos','Certificado REMAP Academy','Suporte pós-curso incluido'],inc_pres_en:['2 days intensive training','Materials & consumables included','REMAP Academy certificate','Post-course support included'],inc_online_pt:['Acesso vitalício às vídeo-aulas','+30 aulas em vídeo HD','Ficheiros de treino para praticar','Certificado digital REMAP Academy','Suporte técnico via canal dedicado'],inc_online_en:['Lifetime access to video lessons','30+ HD video lessons','Practice training files','Digital REMAP Academy certificate','Technical support via dedicated channel']},advanced:{tier_pt:'Advanced',tier_en:'Advanced',nome_pt:'REMAP Pro',nome_en:'REMAP Pro',dias_pt:'4 dias · 32h',dias_en:'4 days · 32h',alunos_pt:'máx. 6 alunos',alunos_en:'max. 6 students',pres:1799,online:799,badge:'cb-adv',inc_pres_pt:['4 dias de formação (inclui Essential)','Materiais e consumiveis incluidos','Certificado REMAP Academy Advanced','Suporte pós-curso prioritário'],inc_pres_en:['4 days training (includes Essential)','Materials & consumables included','REMAP Academy Advanced certificate','Priority post-course support'],inc_online_pt:['Acesso vitalício (Essential + Advanced)','+60 aulas em vídeo HD','Ficheiros de treino avançados','Certificado digital Advanced','Suporte técnico prioritário'],inc_online_en:['Lifetime access (Essential + Advanced)','60+ HD video lessons','Advanced practice training files','Digital Advanced certificate','Priority technical support']}};
+const WALLETS={BTC:'138n7gX37CXJSLwqtCkcQc9vdNZw7pf32r',ETH:'0x09e4b47e46fc673b186f08e6c76e354373f55abe',USDT:'THdoBgjDoFYQy3M6FQ9wQRzPASRzY4T6w6'};
+let curso='essential',formato='pres',pagamento='mbway',cryptoCoin='BTC',isEn=false;
+
+// EU VAT rates by country
+const EU_VAT_RATES = {
+  PT:23, ES:21, DE:19, FR:20, IT:22, NL:21, BE:21,
+  PL:23, SE:25, AT:20, DK:25, FI:24, GR:24, HU:27,
+  IE:23, LU:17, RO:19, HR:25, BG:20, CZ:21, EE:22,
+  LV:21, LT:21, SK:20, SI:22, CY:19, MT:18
+};
+
+let vatValid = false;
+let vatRate = 23; // default PT
+let vatDebounce = null;
+let basePrice = 0; // price ex-VAT
+
+function toggleInvoice() {
+  const cb = document.getElementById('cb-invoice');
+  const field = document.getElementById('vat-field');
+  field.classList.toggle('show', cb.checked);
+  if (!cb.checked) {
+    vatValid = false;
+    document.getElementById('vat-status').className = 'vat-status';
+    document.getElementById('vat-tax-note').textContent = '';
+    resetVatPricing();
+  }
+}
+
+function onVatChange() {
+  clearTimeout(vatDebounce);
+  vatDebounce = setTimeout(checkVat, 600);
+}
+
+async function checkVat() {
+  const country = document.getElementById('vat-country').value;
+  const number = document.getElementById('f-nif').value.trim().replace(/[\s\.\-]/g, '');
+  const status = document.getElementById('vat-status');
+  const note = document.getElementById('vat-tax-note');
+
+  if (!number || number.length < 5) {
+    status.className = 'vat-status';
+    note.textContent = '';
+    resetVatPricing();
+    return;
+  }
+
+  if (country === 'OTHER') {
+    status.className = 'vat-status invalid show';
+    status.innerHTML = '⚠️ País não pertence à UE — IVA aplicado normalmente';
+    note.textContent = '';
+    vatValid = false;
+    applyVat(23);
+    return;
+  }
+
+  status.className = 'vat-status checking show';
+  status.innerHTML = '⏳ <span class="pt">A verificar no VIES...</span><span class="en">Checking VIES...</span>';
+  note.textContent = '';
+
+  try {
+    // VIES public API via a CORS proxy (vatcomply.com)
+    const res = await fetch(`https://api.vatcomply.com/vat?vat_number=${country}${number}`);
+    const data = await res.json();
+
+    if (data.valid) {
+      vatValid = true;
+      const name = data.name && data.name !== '---' ? ` · ${data.name}` : '';
+      status.className = 'vat-status valid show';
+      status.innerHTML = `✅ VAT ID válido${name} — <strong>IVA a 0% (reverse charge)</strong>`;
+      note.textContent = isEn
+        ? 'B2B intra-EU transaction — VAT exempt (Art. 44 Directive 2006/112/EC)'
+        : 'Transação B2B intra-UE — isento de IVA (Art. 44 Diretiva 2006/112/CE)';
+      applyVat(0);
+    } else {
+      throw new Error('invalid');
+    }
+  } catch(e) {
+    vatValid = false;
+    const rate = EU_VAT_RATES[country] || 23;
+    vatRate = rate;
+    status.className = 'vat-status invalid show';
+    status.innerHTML = `❌ <span class="pt">VAT ID não encontrado no VIES — IVA de ${rate}% aplicado</span><span class="en">VAT ID not found in VIES — ${rate}% VAT applied</span>`;
+    note.textContent = '';
+    applyVat(rate);
+  }
+}
+
+function applyVat(rate) {
+  const d = DATA[curso];
+  const priceWithVat = formato === 'pres' ? d.pres : d.online;
+  // prices in DATA already include VAT at PT rate (23%)
+  // calculate base price (ex-VAT) then apply new rate
+  const base = Math.round(priceWithVat / 1.23 * 100) / 100;
+  const newVat = Math.round(base * rate) / 100;
+  const newTotal = rate === 0 ? base : Math.round((base + newVat) * 100) / 100;
+
+  const fmt = v => '€' + v.toLocaleString('pt-PT', {minimumFractionDigits:2, maximumFractionDigits:2});
+
+  document.getElementById('s-sub').textContent = fmt(base);
+  document.getElementById('s-tot').textContent = fmt(newTotal);
+  document.getElementById('mob-total').textContent = fmt(newTotal);
+
+  const ivaVal = document.getElementById('iva-val');
+  if (rate === 0) {
+    ivaVal.innerHTML = '<strong style="color:#86efac">€0,00 (Reverse charge)</strong>';
+  } else {
+    ivaVal.innerHTML = `${fmt(newVat)} <span style="color:rgba(255,255,255,.4);font-size:11px">(${rate}%)</span>`;
+  }
+}
+
+function resetVatPricing() {
+  renderSummary(); // restores original prices
+  const ivaVal = document.getElementById('iva-val');
+  ivaVal.innerHTML = '<span class="pt">Incluído</span><span class="en">Included</span>';
+}
+
+(function init(){const p=new URLSearchParams(window.location.search);if(p.get('curso')==='advanced')curso='advanced';const saved=localStorage.getItem('ra-lang');if(saved==='en'){isEn=true;document.body.classList.add('lang-en');document.getElementById('btn-pt').classList.remove('active');document.getElementById('btn-en').classList.add('active');document.documentElement.lang='en';}renderPage();renderSummary();enableBtnOnLoad();})();
+function setLang(lang){isEn=lang==='en';document.body.classList.toggle('lang-en',isEn);document.getElementById('btn-pt').classList.toggle('active',!isEn);document.getElementById('btn-en').classList.toggle('active',isEn);document.documentElement.lang=lang;localStorage.setItem('ra-lang',lang);renderPage();renderSummary();}
+function renderPage(){const d=DATA[curso];const b=document.getElementById('c-badge');b.textContent=isEn?d.tier_en:d.tier_pt;b.className='cb '+d.badge;document.getElementById('c-title').textContent=isEn?d.nome_en:d.nome_pt;document.getElementById('c-meta-dias').textContent=isEn?d.dias_en:d.dias_pt;document.getElementById('c-meta-alunos').textContent=isEn?d.alunos_en:d.alunos_pt;document.getElementById('fp-pres').textContent='€'+d.pres.toLocaleString('pt-PT');document.getElementById('fp-online').textContent='€'+d.online.toLocaleString('pt-PT');updateFmtNote();document.title=(isEn?'Buy ':'Comprar ')+(isEn?d.tier_en:d.tier_pt)+' — REMAP Academy';}
+function updateFmtNote(){const n=document.getElementById('fmt-note');if(formato==='online'){n.innerHTML=isEn?'<span class="en"><strong>Online:</strong> Immediate access after payment confirmation. Video lessons available in your member area with no expiry.</span>':'<span class="pt"><strong>Online:</strong> Acesso imediato após confirmação do pagamento. Vídeo-aulas disponíveis na tua área de membros sem prazo de expiração.</span>';}else{n.innerHTML=isEn?'<span class="en"><strong>In-person:</strong> Next class dates confirmed by email. Small classes for individual support. Materials, certificate and post-course support included.</span>':'<span class="pt"><strong>Presencial:</strong> Datas da próxima turma confirmadas por email. Turmas reduzidas (máx. 8 alunos). Materiais, certificado e suporte incluídos.</span>';}}
+function selFormat(fmt){formato=fmt;document.getElementById('fc-pres').className='fcard'+(fmt==='pres'?' sel-pres':'');document.getElementById('fc-online').className='fcard'+(fmt==='online'?' sel-online':'');updateFmtNote();renderSummary();}
+function renderSummary(){const d=DATA[curso];const preco=formato==='pres'?d.pres:d.online;const pf='€'+preco.toLocaleString('pt-PT');document.getElementById('s-badge').textContent=isEn?d.tier_en:d.tier_pt;document.getElementById('s-badge').className='sum-badge '+d.badge;document.getElementById('s-name').textContent=isEn?d.nome_en:d.nome_pt;document.getElementById('s-fmt').textContent=formato==='pres'?(isEn?'In-person':'Presencial'):'Online';document.getElementById('s-sub').textContent=pf;document.getElementById('s-tot').textContent=pf;document.getElementById('mob-total').textContent=pf;const incs=formato==='pres'?(isEn?d.inc_pres_en:d.inc_pres_pt):(isEn?d.inc_online_en:d.inc_online_pt);document.getElementById('s-inc').innerHTML=incs.map(i=>'<div class="si">'+i+'</div>').join('');}
+function selPay(m){pagamento=m;['mbway','cartao','cripto'].forEach(id=>{document.getElementById('p-'+id).classList.toggle('psel',id===m);document.getElementById('pp-'+id).classList.toggle('show',id===m);});if(m==='cripto')fetchCryptoAmount();}
+function selCrypto(coin,e){
+  e.stopPropagation();
+  cryptoCoin=coin;
+  document.querySelectorAll('.ctab').forEach(t=>t.classList.remove('active'));
+  e.target.classList.add('active');
+  document.getElementById('wallet-addr').textContent=WALLETS[coin];
+  document.getElementById('cc-pt').textContent=coin;
+  document.getElementById('cc-en').textContent=coin;
+  fetchCryptoAmount();
+}
+function getEurTotal(){
+  const txt=(document.getElementById('s-tot').textContent||'').replace('EUR','').replace('€','').replace(/\s/g,'').replace(/\./g,'').replace(',','.');
+  return parseFloat(txt)||(formato==='pres'?DATA[curso].pres:DATA[curso].online);
+}
+async function fetchCryptoAmount(){
+  const valEl=document.getElementById('crypto-amount-val');
+  const eurEl=document.getElementById('crypto-amount-eur');
+  if(!valEl)return;
+  valEl.textContent='...';
+  eurEl.textContent='';
+  const eurBase=getEurTotal();
+  const eurWithFee=Math.round(eurBase*1.04*100)/100;
+  const fmtE=v=>'EUR '+v.toLocaleString('pt-PT',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const coinIds={BTC:'bitcoin',ETH:'ethereum',USDT:'tether'};
+  const coinId=coinIds[cryptoCoin]||'bitcoin';
+  try{
+    const r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids='+coinId+'&vs_currencies=eur');
+    const d=await r.json();
+    const rate=d[coinId]&&d[coinId].eur;
+    if(!rate)throw new Error('no rate');
+    const decimals=cryptoCoin==='BTC'?8:cryptoCoin==='ETH'?6:2;
+    const amount=(eurWithFee/rate).toFixed(decimals);
+    valEl.textContent=amount+' '+cryptoCoin;
+    eurEl.textContent='';
+  }catch(err){
+    valEl.textContent=isEn?'Could not fetch price':'Erro ao obter cotacao';
+    eurEl.textContent=isEn?'Try refreshing the page':'Actualiza a pagina';
+  }
+}
+function copyCryptoAmount(e){
+  e.stopPropagation();
+  const val=(document.getElementById('crypto-amount-val').textContent||'').split(' ')[0];
+  navigator.clipboard.writeText(val).then(()=>{
+    const btn=e.target;const orig=btn.innerHTML;
+    btn.textContent=isEn?'Copied!':'Copiado!';
+    setTimeout(()=>{btn.innerHTML=orig;},2000);
+  });
+}
+function copyWallet(e){e.stopPropagation();navigator.clipboard.writeText(WALLETS[cryptoCoin]).then(()=>{const btn=e.target;const orig=btn.innerHTML;btn.textContent=isEn?'Copied!':'Copiado!';setTimeout(()=>{btn.innerHTML=orig;},2000);});}
+function updateBtn(){const ok=document.getElementById('terms').checked;document.getElementById('btn-pay').disabled=!ok;document.getElementById('mob-btn').disabled=!ok;}
+function enableBtnOnLoad(){const terms=document.getElementById('terms');if(!terms){document.getElementById('btn-pay').disabled=false;document.getElementById('mob-btn').disabled=false;}}
+function validateForm(){const n=document.getElementById('f-nome').value.trim();const e=document.getElementById('f-email').value.trim();const t=document.getElementById('f-tel').value.trim();if(!n){alert(isEn?'Please enter your first name.':'Por favor, introduz o teu nome.');return false;}if(!e||!e.includes('@')){alert(isEn?'Please enter a valid email.':'Por favor, introduz um email válido.');return false;}if(!t){alert(isEn?'Please enter your phone number.':'Por favor, introduz o teu número de telefone.');return false;}return true;}
+async function submitOrder(){
+  // Cripto: fluxo manual — mantém o comportamento original
+  if(pagamento==='cripto'){
+    if(!validateForm())return;
+    const d=DATA[curso];
+    const fmt=formato==='pres'?(isEn?'in-person':'presencial'):'online';
+    const msg=isEn?'Send the transaction hash for your <strong>'+cryptoCoin+'</strong> payment to <strong>info@remapacademy.pt</strong>. Enrolment activated after blockchain confirmation.':'Envia o hash da transação do teu pagamento em <strong>'+cryptoCoin+'</strong> para <strong>info@remapacademy.pt</strong>. Inscrição ativada após confirmação na blockchain.';
+    const prefix=isEn?'Enrolment in <strong>'+d.tier_en+' — '+d.nome_en+'</strong> ('+fmt+') received.<br><br>':'Inscrição no curso <strong>'+d.tier_pt+' — '+d.nome_pt+'</strong> ('+fmt+') recebida.<br><br>';
+    document.getElementById('page-wrap').style.display='none';
+    document.getElementById('mobile-bar').style.display='none';
+    document.getElementById('success-page').classList.add('show');
+    document.getElementById('success-msg').innerHTML=prefix+msg;
+    window.scrollTo({top:0,behavior:'smooth'});
+    return;
+  }
+
+  // MB WAY e Cartão: redireciona para Stripe Checkout
+  if(!validateForm())return;
+
+  const btn=document.getElementById('btn-pay');
+  const mob=document.getElementById('mob-btn');
+  btn.disabled=true; mob.disabled=true;
+  btn.textContent=isEn?'Redirecting…':'A redirecionar…';
+
+  // Determinar o Price ID correcto
+  const priceId=(PRICE_IDS[curso]||PRICE_IDS.essential)[formato];
+
+  // Calcular total final com IVA (o que está visível no ecrã)
+  const totalEl=document.getElementById('s-tot');
+  const totalText=(totalEl.textContent||'').replace('€','').replace(/\s/g,'').replace(/\./g,'').replace(',','.');
+  const totalEur=parseFloat(totalText)||(formato==='pres'?DATA[curso].pres:DATA[curso].online);
+
+  const nome=document.getElementById('f-nome').value.trim()+' '+(document.getElementById('f-apelido')?document.getElementById('f-apelido').value.trim():'');
+  const email=document.getElementById('f-email').value.trim();
+  const tel=document.getElementById('f-tel').value.trim();
+  const nif=document.getElementById('f-nif')?document.getElementById('f-nif').value.trim():'';
+  const empresa=document.getElementById('f-empresa')?document.getElementById('f-empresa').value.trim():'';
+
+  try{
+    const resp=await fetch('/.netlify/functions/create-checkout',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        priceId,
+        email,
+        nome:nome.trim(),
+        curso,
+        formato,
+        tel,
+        nif,
+        empresa,
+        totalEur,
+        lang:isEn?'en':'pt'
+      })
+    });
+
+    if(!resp.ok) throw new Error('Netlify function error '+resp.status);
+    const data=await resp.json();
+    if(data.url) window.location.href=data.url;
+    else throw new Error('no url');
+
+  }catch(err){
+    console.error('Stripe checkout error:',err);
+    btn.disabled=false; mob.disabled=false;
+    btn.textContent=isEn?'Confirm & pay':'Confirmar e pagar';
+    alert(isEn?'Payment error. Please try again or use cryptocurrency.':'Erro no pagamento. Tenta novamente ou usa criptomoeda.');
+  }
+}
+// card-num field removed — Stripe handles card input on its own secure page
+</script>
+</body>
+</html>

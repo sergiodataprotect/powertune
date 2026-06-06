@@ -1,0 +1,517 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300&family=Barlow:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Barlow',sans-serif}
+.app{display:grid;grid-template-columns:340px 1fr;gap:20px;padding:1rem 0;align-items:start}
+.sidebar{display:flex;flex-direction:column;gap:14px}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.1rem}
+.card-title{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.14em;color:var(--color-text-tertiary);text-transform:uppercase;margin-bottom:.85rem;display:flex;align-items:center;gap:8px}
+.card-title::after{content:'';flex:1;height:1px;background:var(--color-border-tertiary)}
+.f{margin-bottom:10px}
+.f label{display:block;font-size:12px;color:var(--color-text-secondary);margin-bottom:4px}
+.f input,.f textarea,.f select{width:100%;font-size:13px;font-family:'Barlow',sans-serif}
+.f textarea{resize:vertical;min-height:56px;font-size:12px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tier-row{display:flex;gap:6px;margin-bottom:10px}
+.tb{flex:1;padding:6px 8px;border-radius:var(--border-radius-md);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:.08em;cursor:pointer;border:1px solid;transition:all .15s;text-align:center}
+.tb-e{background:#f0fbff;color:#0BABDD;border-color:#b3e8f7}
+.tb-e.on{background:#0BABDD;color:#fff;border-color:#0BABDD}
+.tb-a{background:#fff8f4;color:#F36308;border-color:#fcd0b3}
+.tb-a.on{background:#F36308;color:#fff;border-color:#F36308}
+.plist{display:flex;flex-direction:column;gap:6px;max-height:220px;overflow-y:auto}
+.prow{display:grid;grid-template-columns:1fr 1fr auto;gap:5px;align-items:center}
+.prow input{font-size:12px}
+.rmb{background:none;border:0.5px solid var(--color-border-tertiary);color:var(--color-text-tertiary);width:28px;height:32px;cursor:pointer;border-radius:var(--border-radius-md);font-size:16px;display:flex;align-items:center;justify-content:center}
+.rmb:hover{background:#fff0f0;color:#ef4444;border-color:#fca5a5}
+.add-btn{width:100%;margin-top:6px;padding:7px;background:none;border:0.5px dashed #b3e8f7;color:#0BABDD;border-radius:var(--border-radius-md);font-size:12px;cursor:pointer;font-family:'Barlow',sans-serif}
+.add-btn:hover{background:#f0fbff}
+.wa-btn{width:100%;padding:10px;background:#25D366;border:none;color:#fff;border-radius:var(--border-radius-md);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:10px}
+.wa-btn:hover{background:#1db954}
+.cnt{font-size:10px;background:#f0fbff;color:#0BABDD;padding:2px 7px;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-weight:700}
+.preview-col{display:flex;flex-direction:column;gap:10px}
+.cert-wrap{background:#e8e8e8;border-radius:var(--border-radius-lg);padding:16px;display:flex;align-items:center;justify-content:center}
+canvas#cc{width:100%;display:block;border-radius:4px}
+.pnav{display:flex;gap:6px}
+.pbtn{flex:1;padding:7px;background:none;border:0.5px solid var(--color-border-tertiary);color:var(--color-text-secondary);border-radius:var(--border-radius-md);font-size:12px;cursor:pointer;font-family:'Barlow',sans-serif;display:flex;align-items:center;justify-content:center;gap:4px}
+.pbtn:hover{background:var(--color-background-secondary)}
+.pdf-btn{padding:8px 14px;background:none;border:0.5px solid #b3e8f7;color:#0BABDD;border-radius:var(--border-radius-md);font-size:12px;cursor:pointer;font-family:'Barlow',sans-serif;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.pdf-btn:hover{background:#f0fbff}
+.pinfo{flex:1;font-size:11px;color:var(--color-text-tertiary);background:var(--color-background-secondary);padding:5px 9px;border-radius:var(--border-radius-md);display:flex;align-items:center}
+.note{font-size:11px;color:var(--color-text-tertiary);background:var(--color-background-secondary);padding:8px 10px;border-radius:var(--border-radius-md);line-height:1.5}
+.note strong{color:var(--color-text-secondary)}
+</style>
+
+<h2 class="sr-only">Gerador de certificados técnicos REMAP Academy — PDF e WhatsApp</h2>
+
+<div class="app">
+<div class="sidebar">
+
+  <div class="card">
+    <div class="card-title">Curso</div>
+    <div class="tier-row">
+      <button class="tb tb-e on" id="be" onclick="setTier('e')">ESSENTIAL</button>
+      <button class="tb tb-a" id="ba" onclick="setTier('a')">ADVANCED</button>
+    </div>
+    <div class="f"><label>Datas da formação</label><input id="fDates" value="14 e 15 de Maio de 2025" oninput="sp()"></div>
+    <div class="g2">
+      <div class="f"><label>Horas</label><input id="fH" type="number" value="16" min="1" oninput="sp()"></div>
+      <div class="f"><label>Nº certificado</label><input id="fN" value="RA-2025-001" oninput="sp()"></div>
+    </div>
+    <div class="f"><label>Local</label><input id="fL" value="Lisboa, Portugal" oninput="sp()"></div>
+    <div class="f"><label>Formador</label><input id="fFm" value="João Silva" oninput="sp()"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Participantes <span class="cnt" id="cnt">0</span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:5px;margin-bottom:5px">
+      <span style="font-size:10px;color:var(--color-text-tertiary)">Nome</span>
+      <span style="font-size:10px;color:var(--color-text-tertiary)">WhatsApp</span>
+      <span></span>
+    </div>
+    <div class="plist" id="pl"></div>
+    <button class="add-btn" onclick="addP()">+ Adicionar participante</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Mensagem WhatsApp</div>
+    <div class="f"><label>Texto (use <code style="font-size:10px">{nome}</code> e <code style="font-size:10px">{curso}</code>)</label>
+    <textarea id="fMsg">Olá {nome}! 🎓 Parabéns pela conclusão do curso REMAP Academy {curso}. Em anexo encontras o teu certificado técnico em PDF. Bom trabalho!</textarea></div>
+    <div class="note"><strong>Nota:</strong> O WhatsApp não permite envio automático de ficheiros. Ao clicar em enviar: (1) o PDF é descarregado automaticamente, (2) abre o WhatsApp com a mensagem. Anexa o PDF manualmente antes de enviar.</div>
+    <button class="wa-btn" onclick="sendAll()">
+      <svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.558 4.121 1.532 5.853L0 24l6.335-1.507A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.817 9.817 0 01-5.006-1.373l-.36-.213-3.731.888.941-3.638-.234-.374A9.768 9.768 0 012.182 12C2.182 6.579 6.579 2.182 12 2.182c5.421 0 9.818 4.397 9.818 9.818 0 5.421-4.397 9.818-9.818 9.818z"/></svg>
+      DESCARREGAR PDFs E ABRIR WHATSAPP
+    </button>
+  </div>
+
+</div>
+
+<div class="preview-col">
+  <div class="cert-wrap">
+    <canvas id="cc"></canvas>
+  </div>
+  <div style="display:flex;gap:6px;align-items:center">
+    <div class="pinfo" id="pi">Adicione participantes para pré-visualizar</div>
+    <button class="pdf-btn" onclick="dlPDF()"><i class="ti ti-file-type-pdf" aria-hidden="true"></i> Baixar PDF</button>
+  </div>
+  <div class="pnav">
+    <button class="pbtn" onclick="prevP()"><i class="ti ti-arrow-left" aria-hidden="true"></i> Anterior</button>
+    <button class="pbtn" onclick="nextP()">Próximo <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+  </div>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const CY='#0BABDD',OR='#F36308',BK='#1C1A1B',GY='#6B6B6B',LG='#C8C8C8',WH='#FFFFFF';
+
+const LOGO=`<svg viewBox="0 0 500 280" xmlns="http://www.w3.org/2000/svg">
+<circle fill="#0BABDD" cx="387.8" cy="147.5" r="9.2"/>
+<circle fill="#0BABDD" cx="235.9" cy="97.4" r="9.2"/>
+<circle fill="#0BABDD" cx="480.8" cy="192.8" r="9.2"/>
+<circle fill="#0BABDD" cx="342.6" cy="76.6" r="9.9"/>
+<circle fill="#F36308" cx="105.4" cy="97.4" r="12.5"/>
+<circle fill="#F36308" cx="44.8" cy="153.2" r="12.5"/>
+<circle fill="#0BABDD" cx="133.3" cy="160.8" r="9.8"/>
+<circle fill="#F36308" cx="22.8" cy="192.8" r="11.3"/>
+<path fill="none" stroke="#F36308" stroke-width="4.875" d="M37.6,218.5c0,0,9.9-66.1,104.1-114.5"/>
+<path fill="none" stroke="#F36308" stroke-width="4.875" d="M14.8,286c0,0-22.8-87.4,54-159.1c0,0,67.5-72.5,196.8-67.5"/>
+<path fill="none" stroke="#0BABDD" stroke-width="4.875" d="M346.7,78.9c0,0,66.5,21.3,110.8,77.8s37.2,88.1,34.3,127.5"/>
+<path fill="none" stroke="#F36308" stroke-width="4.29" d="M115.4,161.2c0,0-21.3,14-37.2,44.7"/>
+<path fill="none" stroke="#0BABDD" stroke-width="4.29" d="M192.4,132.9c0,0-32.2,7.2-57.9,27.9"/>
+<path fill="none" stroke="#0BABDD" stroke-width="4.29" d="M235.9,97.4c0,0,58.1-6,119.9,26.9c0,0,39.6,19.5,64.5,62.2"/>
+<path fill="none" stroke="#0BABDD" stroke-width="4.29" d="M352.5,141.7c0,0-42.9-35.3-125.8-30"/>
+<circle fill="#0BABDD" cx="268.1" cy="59.4" r="12.5"/>
+<path fill="#0BABDD" d="M444.6,241.9l13.1,6.4c-4.3-10.7-7-21.5-7-21.5c-4.7-11.3,1.6-19.3,1.6-19.3l5.3-6.8l-55.2,1.2c-70.6-42.9-133.2-42.3-154.8-40.4l0,0c-49.5,18.5-90.1,52.5-90.1,52.5h28.3c0,0,3.7,0.2,1.4,4.5c0,0-10.3,13.3-16.6,36.7c56.7-13.7,155.8-23.4,155.8-23.4l-15.6,23.4l41.3,16.6h1c3.9-35.5,33.9-34.1,33.9-34.1c9.8,1,17.2,3.7,22.8,7.4l6.6-31.8C416.1,213.1,447.7,242.1,444.6,241.9z"/>
+<path fill="#EDA342" d="M247.4,161.6c-5.3,0.4-8.2,1-8.2,1C193,167.4,138.4,206,138.4,206c-62.8,4.1-96.1,36.5-96.1,36.5c-7.6,5.9-3.5,15.8-3.5,15.8l3.9,13.5h44.1c3.7-39.2,33-40.2,33-40.2c20.1,0.6,22,16.4,22,16.4c-7.8-12.1-25.5-7.8-25.5-7.8c-22.6,8.2-21.4,31.6-21.4,31.6h60.6c7-35.7,22.8-54.2,24.6-56.4C157.3,214,197.9,180.1,247.4,161.6z"/>
+<path fill="#231F20" d="M65.3,367.3l-16.2-19.9H31.2v19.9H13.4v-62.8h42.9c15.6,0,27.7,7,27.7,21.4c0,10.5-6.4,17.2-16,20.1l17.9,21.3L65.3,367.3z"/>
+<path fill="#231F20" d="M169.4,353.3v14h-65.5v-62.8h64.5v14h-47v10.3h38.8v13.5h-38.8v11.1h48V353.3z"/>
+<path fill="#231F20" d="M304.7,304.5v62.8h-17v-40l-23.2,30.6h-0.8l-23.4-30.6v40.2H224v-62.8h18.5l21.8,30.2l22-30.2h18.3V304.5z"/>
+<path fill="#231F20" d="M378.1,355.4h-35.3l-6,12.1H317l33.3-62.8h20.5l33.3,62.8h-19.9L378.1,355.4z M371.6,342.3l-11.1-22.2l-11.3,22.2H371.6z"/>
+<path fill="#0BABDD" d="M489.8,326.5c0,14.6-11.3,22-28.5,22H436v18.9h-18.3v-32.4h42.1c6.8,0,11.5-2.1,11.5-8.4c0-6.4-4.7-8.4-11.5-8.4h-23.6l-18.5-13.8h43.7C478.3,304.5,489.8,312.1,489.8,326.5z"/>
+<polygon fill="#231F20" points="183.6,346.2 209,346.2 196.3,369.2"/>
+<polygon fill="#0BABDD" points="209,332.4 183.6,332.4 196.3,309.4"/>
+<path fill="#231F20" d="M80.5,437.3h-9.4l-4.9-11.5H47.3l-4.9,11.5h-8.8l19.1-43.5h8.4L80.5,437.3z M63.5,418.8l-6.4-15.6l-6.6,15.6H63.5z"/>
+<path fill="#231F20" d="M121.8,438.1c-4.5,0-8.6-1-12.1-2.9c-3.5-2-6.2-4.7-8-8c-1.9-3.3-2.7-7.2-2.7-11.5s1-8.2,2.7-11.5c1.9-3.3,4.5-6,8-8c3.5-2,7.4-2.9,11.9-2.9c8,0,14.4,3.1,19.1,9.6l-6.6,4.3c-1.6-2.1-3.3-3.9-5.5-4.9c-1.9-1-4.3-1.6-7-1.6c-4.3,0-7.8,1.4-10.5,4.1c-2.5,2.7-3.9,6.4-3.9,11.1s1.4,8.4,3.9,11.1c2.5,2.7,6,4.1,10.3,4.1c5.1,0,9.4-2.3,12.5-6.8l6.8,4.1C136.5,434.8,129.8,438.1,121.8,438.1z"/>
+<path fill="#231F20" d="M244.5,437.3H226v-43.5h18.5c4.7,0,8.8,1,12.3,2.9c3.5,1.9,6,4.5,7.8,7.8c1.8,3.3,2.5,7,2.5,11.1s-0.8,7.8-2.5,11.1c-1.8,3.3-4.3,5.9-7.8,7.8C253.5,436.3,249.2,437.3,244.5,437.3z M244.5,401.2h-9.9v28.9h9.9c4.5,0,8-1.4,10.5-3.9c2.5-2.5,3.7-6,3.7-10.7s-1.2-8-3.7-10.7C252.5,402,249.2,401.2,244.5,401.2z"/>
+<path fill="#231F20" d="M326.4,437.3h-34.7v-43.5h33.9v7.2h-25.5v9.8h22.2v7h-22.2v12.1h26.3V437.3z"/>
+<path fill="#231F20" d="M204.9,437.3h-9.4l-4.9-11.5h-18.9l-4.9,11.5h-8.8l19.1-43.5h8.4L204.9,437.3z M187.9,418.8l-6.4-15.6l-6.6,15.6H187.9z"/>
+</svg>`;
+
+let tier='e', pidx=0;
+let parts=[{name:'Maria Fernanda Santos',phone:'351912345678'},{name:'Carlos Eduardo Melo',phone:'351923456789'}];
+let logoImg=null, qrImg=null;
+
+(function(){
+  const b=new Blob([LOGO],{type:'image/svg+xml'});
+  const u=URL.createObjectURL(b);
+  const i=new Image();
+  i.onload=()=>{logoImg=i;sp()};
+  i.src=u;
+})();
+
+function genQR(certNum,cb){
+  const d=document.createElement('div');
+  d.style.cssText='position:absolute;left:-9999px;top:-9999px';
+  document.body.appendChild(d);
+  new QRCode(d,{text:'https://remapacademy.pt/verificar/'+certNum,width:128,height:128,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.M});
+  setTimeout(()=>{
+    const el=d.querySelector('canvas')||d.querySelector('img');
+    if(el){const i=new Image();i.onload=()=>{qrImg=i;document.body.removeChild(d);cb()};i.src=el.tagName==='CANVAS'?el.toDataURL():el.src;}
+    else{document.body.removeChild(d);cb();}
+  },350);
+}
+
+function cfg(){
+  return{
+    tier,
+    dates:document.getElementById('fDates').value||'—',
+    hours:document.getElementById('fH').value||'—',
+    certNum:document.getElementById('fN').value||'RA-2025-001',
+    loc:document.getElementById('fL').value||'—',
+    trainer:document.getElementById('fFm').value||'—',
+    acc:tier==='e'?CY:OR,
+    label:tier==='e'?'ESSENTIAL':'ADVANCED',
+    subtitle:tier==='e'?'Reprogramação Automóvel — Fundamentos & Prática':'Reprogramação Avançada — ECU, DSG & Diagnóstico'
+  };
+}
+
+function drawCert(name){
+  const canvas=document.getElementById('cc');
+  const W=1123,H=794; // A4 landscape px @ 96dpi ratio
+  canvas.width=W; canvas.height=H;
+  const ctx=canvas.getContext('2d');
+  const c=cfg();
+
+  // White background
+  ctx.fillStyle='#FFFFFF';
+  ctx.fillRect(0,0,W,H);
+
+  // Left accent strip
+  ctx.fillStyle=c.acc;
+  ctx.fillRect(0,0,8,H);
+
+  // Top thin line
+  ctx.fillStyle=c.acc;
+  ctx.fillRect(8,0,W-8,4);
+
+  // Bottom thin line
+  ctx.fillStyle=c.acc;
+  ctx.fillRect(8,H-4,W-8,4);
+
+  // Subtle top right corner decoration
+  ctx.fillStyle=c.acc;
+  ctx.globalAlpha=0.08;
+  ctx.beginPath();
+  ctx.moveTo(W,0);ctx.lineTo(W-320,0);ctx.lineTo(W,320);ctx.closePath();
+  ctx.fill();
+  ctx.globalAlpha=1;
+
+  // Light diagonal watermark pattern
+  ctx.strokeStyle=c.acc;
+  ctx.lineWidth=0.4;
+  ctx.globalAlpha=0.04;
+  for(let i=-H;i<W+H;i+=38){
+    ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i+H,H);ctx.stroke();
+  }
+  ctx.globalAlpha=1;
+
+  // Header background strip
+  ctx.fillStyle='#F7F7F7';
+  ctx.fillRect(8,0,W-8,118);
+
+  // Header bottom border
+  ctx.strokeStyle=LG;
+  ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(8,118);ctx.lineTo(W,118);ctx.stroke();
+
+  // Logo
+  if(logoImg){
+    ctx.drawImage(logoImg,28,8,380,100);
+  }
+
+  // Header right — cert type badge
+  const bW=tier==='e'?180:180;
+  ctx.fillStyle=c.acc;
+  rr(ctx,W-bW-36,22,bW,34,5);ctx.fill();
+  ctx.font='700 13px "Barlow Condensed",sans-serif';
+  ctx.fillStyle='#fff';
+  ctx.textAlign='center';
+  ctx.letterSpacing='0.12em';
+  ctx.fillText('CURSO '+c.label,W-bW/2-36,44);
+  ctx.letterSpacing='0';
+
+  ctx.font='400 11px "Barlow",sans-serif';
+  ctx.fillStyle=GY;
+  ctx.textAlign='right';
+  ctx.fillText('remapacademy.pt',W-36,78);
+  ctx.font='400 11px "Barlow",sans-serif';
+  ctx.fillText('Nº '+c.certNum,W-36,96);
+
+  // CERTIFICADO TÉCNICO DE CONCLUSÃO
+  ctx.textAlign='left';
+  ctx.font='300 13px "Barlow",sans-serif';
+  ctx.fillStyle=GY;
+  ctx.letterSpacing='0.18em';
+  ctx.fillText('CERTIFICADO TÉCNICO DE CONCLUSÃO',38,162);
+  ctx.letterSpacing='0';
+
+  // Thin accent line under label
+  ctx.strokeStyle=c.acc;
+  ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(38,170);ctx.lineTo(380,170);ctx.stroke();
+
+  // "Certifica-se que"
+  ctx.font='300 italic 17px "Barlow",sans-serif';
+  ctx.fillStyle='#999';
+  ctx.fillText('Certifica-se que',38,210);
+
+  // Name — big
+  const nm=name||'Nome do Participante';
+  ctx.font='800 66px "Barlow Condensed",sans-serif';
+  ctx.fillStyle=BK;
+  ctx.fillText(nm,36,288);
+
+  // Underline name
+  const nmW=Math.min(ctx.measureText(nm).width,W-200);
+  ctx.strokeStyle=c.acc;
+  ctx.lineWidth=3;
+  ctx.beginPath();ctx.moveTo(36,298);ctx.lineTo(36+nmW,298);ctx.stroke();
+
+  // Completion text
+  ctx.font='300 17px "Barlow",sans-serif';
+  ctx.fillStyle=GY;
+  ctx.fillText('concluiu com aproveitamento o curso',36,340);
+
+  // Course full name
+  ctx.font='700 28px "Barlow Condensed",sans-serif';
+  ctx.fillStyle=BK;
+  ctx.fillText('REMAP ACADEMY — '+c.label+': '+c.subtitle,36,378);
+
+  // Horizontal divider
+  ctx.strokeStyle='#E0E0E0';
+  ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(36,410);ctx.lineTo(W-260,410);ctx.stroke();
+
+  // Meta info row
+  const metas=[
+    {l:'DATA DA FORMAÇÃO',v:c.dates},
+    {l:'DURAÇÃO',v:c.hours+' horas'},
+    {l:'LOCAL',v:c.loc},
+    {l:'FORMADOR',v:c.trainer},
+  ];
+  let mx=36;
+  metas.forEach(m=>{
+    ctx.font='700 9px "Barlow Condensed",sans-serif';
+    ctx.letterSpacing='0.12em';
+    ctx.fillStyle=c.acc;
+    ctx.textAlign='left';
+    ctx.fillText(m.l,mx,438);
+    ctx.letterSpacing='0';
+    ctx.font='500 15px "Barlow",sans-serif';
+    ctx.fillStyle=BK;
+    ctx.fillText(m.v,mx,458);
+    mx+=Math.max(ctx.measureText(m.v).width+40,130);
+  });
+
+  // Divider before signatures
+  ctx.strokeStyle='#E0E0E0';
+  ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(36,490);ctx.lineTo(W-260,490);ctx.stroke();
+
+  // Signature area
+  const sigY=580;
+  const sig1x=60,sig2x=340;
+
+  // Sig lines
+  ctx.strokeStyle='#BCBCBC';
+  ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(sig1x,sigY-18);ctx.lineTo(sig1x+180,sigY-18);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(sig2x,sigY-18);ctx.lineTo(sig2x+180,sigY-18);ctx.stroke();
+
+  ctx.font='500 14px "Barlow",sans-serif';
+  ctx.fillStyle=BK;
+  ctx.textAlign='left';
+  ctx.fillText(c.trainer,sig1x,sigY);
+  ctx.font='400 11px "Barlow",sans-serif';
+  ctx.fillStyle=GY;
+  ctx.fillText('Formador / Instrutor',sig1x,sigY+17);
+
+  ctx.font='500 14px "Barlow",sans-serif';
+  ctx.fillStyle=BK;
+  ctx.fillText('REMAP Academy',sig2x,sigY);
+  ctx.font='400 11px "Barlow",sans-serif';
+  ctx.fillStyle=GY;
+  ctx.fillText('Entidade Formadora',sig2x,sigY+17);
+
+  // REMAP seal circle
+  const seaX=580,seaY=560,seaR=52;
+  ctx.strokeStyle=c.acc;
+  ctx.lineWidth=2;
+  ctx.beginPath();ctx.arc(seaX,seaY,seaR,0,Math.PI*2);ctx.stroke();
+  ctx.strokeStyle=c.acc;
+  ctx.lineWidth=1;
+  ctx.globalAlpha=0.3;
+  ctx.beginPath();ctx.arc(seaX,seaY,seaR-8,0,Math.PI*2);ctx.stroke();
+  ctx.globalAlpha=1;
+  ctx.font='700 10px "Barlow Condensed",sans-serif';
+  ctx.fillStyle=c.acc;
+  ctx.letterSpacing='0.1em';
+  ctx.textAlign='center';
+  ctx.fillText('REMAP',seaX,seaY-8);
+  ctx.fillText('ACADEMY',seaX,seaY+6);
+  ctx.font='400 8px "Barlow",sans-serif';
+  ctx.fillStyle=GY;
+  ctx.fillText('remapacademy.pt',seaX,seaY+20);
+  ctx.letterSpacing='0';
+
+  // Right column — vertical accent + QR
+  ctx.fillStyle=c.acc;
+  ctx.globalAlpha=0.12;
+  ctx.fillRect(W-240,118,240,H-122);
+  ctx.globalAlpha=1;
+
+  ctx.strokeStyle=c.acc;
+  ctx.lineWidth=1;
+  ctx.globalAlpha=0.3;
+  ctx.beginPath();ctx.moveTo(W-240,118);ctx.lineTo(W-240,H-4);ctx.stroke();
+  ctx.globalAlpha=1;
+
+  // Right column content
+  ctx.textAlign='center';
+  const rx=W-120;
+
+  ctx.font='700 9px "Barlow Condensed",sans-serif';
+  ctx.letterSpacing='0.14em';
+  ctx.fillStyle=GY;
+  ctx.fillText('VERIFICAR CERTIFICADO',rx,152);
+  ctx.letterSpacing='0';
+
+  if(qrImg){
+    const qs=110;
+    ctx.fillStyle='#fff';
+    rr(ctx,rx-qs/2-6,162,qs+12,qs+12,4);ctx.fill();
+    ctx.drawImage(qrImg,rx-qs/2,168,qs,qs);
+  }
+
+  ctx.font='400 10px "Barlow",sans-serif';
+  ctx.fillStyle=GY;
+  ctx.fillText('remapacademy.pt/verificar',rx,298);
+
+  // Vertical text — FORMAÇÃO PROFISSIONAL
+  ctx.save();
+  ctx.translate(W-16,H/2);
+  ctx.rotate(-Math.PI/2);
+  ctx.font='700 10px "Barlow Condensed",sans-serif';
+  ctx.letterSpacing='0.18em';
+  ctx.fillStyle=c.acc;
+  ctx.globalAlpha=0.35;
+  ctx.textAlign='center';
+  ctx.fillText('FORMAÇÃO PROFISSIONAL EM REPROGRAMAÇÃO AUTOMÓVEL',0,0);
+  ctx.restore();
+  ctx.letterSpacing='0';
+  ctx.globalAlpha=1;
+
+  // Footer
+  ctx.fillStyle='#F7F7F7';
+  ctx.fillRect(8,H-52,W-8,48);
+  ctx.strokeStyle=LG;
+  ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(8,H-52);ctx.lineTo(W,H-52);ctx.stroke();
+
+  ctx.font='400 10px "Barlow",sans-serif';
+  ctx.fillStyle='#AAAAAA';
+  ctx.textAlign='left';
+  ctx.fillText('Este certificado foi emitido pela REMAP Academy — Formação Profissional em Reprogramação Automóvel.',36,H-30);
+  ctx.textAlign='right';
+  ctx.fillText(c.certNum+' · '+c.dates,W-36,H-30);
+}
+
+function rr(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath();
+}
+
+function setTier(t){
+  tier=t;
+  document.getElementById('be').classList.toggle('on',t==='e');
+  document.getElementById('ba').classList.toggle('on',t==='a');
+  sp();
+}
+
+let spT=null;
+function sp(){
+  clearTimeout(spT);
+  spT=setTimeout(()=>{
+    const cn=document.getElementById('fN').value||'RA-2025-001';
+    genQR(cn,()=>{
+      if(parts.length===0){drawCert('');document.getElementById('pi').textContent='Adicione participantes';}
+      else{drawCert(parts[pidx].name||'Nome do Participante');document.getElementById('pi').textContent=`${parts[pidx].name||'(sem nome)'} · ${pidx+1}/${parts.length}`;}
+    });
+  },250);
+}
+
+function renderList(){
+  const pl=document.getElementById('pl');
+  document.getElementById('cnt').textContent=parts.length;
+  pl.innerHTML='';
+  parts.forEach((p,i)=>{
+    const r=document.createElement('div');
+    r.className='prow';
+    r.innerHTML=`<input type="text" value="${p.name}" placeholder="Nome" oninput="parts[${i}].name=this.value;sp()"><input type="text" value="${p.phone}" placeholder="351912..." oninput="parts[${i}].phone=this.value"><button class="rmb" onclick="rmP(${i})">×</button>`;
+    pl.appendChild(r);
+  });
+  sp();
+}
+
+function addP(){parts.push({name:'',phone:''});renderList();document.getElementById('pl').scrollTop=9999}
+function rmP(i){parts.splice(i,1);if(pidx>=parts.length)pidx=Math.max(0,parts.length-1);renderList()}
+function prevP(){if(!parts.length)return;pidx=(pidx-1+parts.length)%parts.length;sp();document.getElementById('pi').textContent=`${parts[pidx].name||'(sem nome)'} · ${pidx+1}/${parts.length}`}
+function nextP(){if(!parts.length)return;pidx=(pidx+1)%parts.length;sp();document.getElementById('pi').textContent=`${parts[pidx].name||'(sem nome)'} · ${pidx+1}/${parts.length}`}
+
+function makePDF(name){
+  const {jsPDF}=window.jspdf;
+  const c=cfg();
+  drawCert(name);
+  const canvas=document.getElementById('cc');
+  const img=canvas.toDataURL('image/jpeg',0.97);
+  const pdf=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
+  pdf.addImage(img,'JPEG',0,0,297,210);
+  return pdf;
+}
+
+function dlPDF(){
+  if(!parts.length)return;
+  const p=parts[pidx];
+  const pdf=makePDF(p.name||'Participante');
+  pdf.save(`certificado_remap_${(p.name||'participante').replace(/\s+/g,'_')}.pdf`);
+}
+
+function sendAll(){
+  if(!parts.length){alert('Adicione pelo menos um participante!');return}
+  const ok=confirm(`Processo para ${parts.length} participante(s):\n\n1. O PDF de cada participante será descarregado\n2. O WhatsApp abrirá com a mensagem pré-preenchida\n3. Anexe o PDF manualmente antes de enviar\n\nContinuar?`);
+  if(!ok)return;
+  const tpl=document.getElementById('fMsg').value;
+  const cursoLabel=tier==='a'?'Advanced':'Essential';
+  parts.forEach((p,i)=>{
+    setTimeout(()=>{
+      const pdf=makePDF(p.name||'Participante');
+      pdf.save(`certificado_remap_${(p.name||'participante').replace(/\s+/g,'_')}.pdf`);
+      setTimeout(()=>{
+        const phone=(p.phone||'').replace(/\D/g,'');
+        if(!phone){alert('Número inválido: '+p.name);return}
+        const msg=tpl.replace(/\{nome\}/g,p.name).replace(/\{curso\}/g,cursoLabel);
+        window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(msg),'_blank');
+      },600);
+    },i*1800);
+  });
+}
+
+document.querySelectorAll('input,textarea').forEach(el=>el.addEventListener('input',sp));
+renderList();
+</script>
