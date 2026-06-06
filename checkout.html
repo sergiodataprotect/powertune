@@ -301,7 +301,24 @@
             </div>
           </div>
 
-          <div class="popt" id="p-cripto" onclick="selPay('cripto')">
+          <div class="popt" id="p-transferencia" onclick="selPay('transferencia')">
+            <div class="popt-head"><input type="radio" name="pay" value="transferencia"><div class="pradio"></div><div class="popt-icon">&#127981;</div><div class="popt-info"><div class="popt-name"><span class="pt">Transfer&ecirc;ncia Banc&aacute;ria</span><span class="en">Bank Transfer</span></div><div class="popt-desc">SEPA &middot; International Wire</div></div><span class="ptag ptag-crypto"><span class="pt">Manual</span><span class="en">Manual</span></span></div>
+            <div class="ppanel" id="pp-transferencia">
+              <div class="transfer-info" style="margin-bottom:10px">
+                <div style="display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin-bottom:10px">
+                  <span style="color:rgba(255,255,255,.35);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding-top:1px"><span class="pt">Benefici&aacute;rio</span><span class="en">Account name</span></span><span style="color:rgba(255,255,255,.8);font-weight:500">REMAP LLC</span>
+                  <span style="color:rgba(255,255,255,.35);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding-top:1px">IBAN</span>
+                  <span style="display:flex;align-items:center;gap:8px"><span style="font-family:monospace;color:rgba(255,255,255,.8);font-weight:500;letter-spacing:.03em">DE34 2022 0800 0029 6821 40</span><button class="copy-btn" onclick="copyText('DE34202208000029682140',event)"><span class="pt">Copiar</span><span class="en">Copy</span></button></span>
+                  <span style="color:rgba(255,255,255,.35);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding-top:1px">SWIFT/BIC</span><span style="color:rgba(255,255,255,.8);font-weight:500">SXPYDEHH</span>
+                  <span style="color:rgba(255,255,255,.35);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding-top:1px"><span class="pt">Banco</span><span class="en">Bank</span></span><span style="color:rgba(255,255,255,.8);font-weight:500">Banking Circle S.A.</span>
+                  <span style="color:rgba(255,255,255,.35);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding-top:1px"><span class="pt">Pa&iacute;s</span><span class="en">Country</span></span><span style="color:rgba(255,255,255,.8);font-weight:500">Germany</span>
+                </div>
+                <span class="pt"><strong>Importante:</strong> Ap&oacute;s a transfer&ecirc;ncia, envia o comprovativo para <strong>info@remapacademy.pt</strong> com o teu nome e curso. A inscri&ccedil;&atilde;o &eacute; ativada ap&oacute;s confirma&ccedil;&atilde;o do pagamento.</span><span class="en"><strong>Important:</strong> After the transfer, send the payment receipt to <strong>info@remapacademy.pt</strong> with your name and course. Enrolment is activated after payment confirmation.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="popt" id="p-cripto" onclick="selPay('cripto')" >
             <div class="popt-head"><input type="radio" name="pay" value="cripto"><div class="pradio"></div><div class="popt-icon">&#129689;</div><div class="popt-info"><div class="popt-name"><span class="pt">Criptomoeda</span><span class="en">Cryptocurrency</span></div><div class="popt-desc">Bitcoin &middot; Ethereum &middot; USDT (TRC-20)</div></div><span class="ptag ptag-crypto">Crypto</span></div>
             <div class="ppanel" id="pp-cripto">
               <div class="crypto-tabs"><button class="ctab active" onclick="selCrypto('BTC',event)">&#8383; Bitcoin</button><button class="ctab" onclick="selCrypto('ETH',event)">&Xi; Ethereum</button><button class="ctab" onclick="selCrypto('USDT',event)">&#8366; USDT TRC-20</button></div>
@@ -343,7 +360,7 @@
 // ─── STRIPE ──────────────────────────────────────────────────────────────────
 // Substitui pela tua chave pública LIVE quando estiveres em produção:
 // pk_test_... → pk_live_...
-const STRIPE_PK = 'pk_live_51TeeGJJqXObPmkGVAMaIMax3nlo9KetEqVc1BwXZ0AtkLsKDzNqts1lFvUtAbCekHcexW2ks7HrV6X2Tb6yQ2y6x008gJpJ42b';
+const STRIPE_PK = 'pk_test_SUBSTITUI_PELA_TUA_CHAVE_PUBLICA';
 
 const PRICE_IDS = {
   essential: { pres: 'price_1Tf6hTJqXObPmkGV4DIA5vNO', online: 'price_1Tf6i1JqXObPmkGVgTjKf8rI' },
@@ -476,7 +493,7 @@ function renderPage(){const d=DATA[curso];const b=document.getElementById('c-bad
 function updateFmtNote(){const n=document.getElementById('fmt-note');if(formato==='online'){n.innerHTML=isEn?'<span class="en"><strong>Online:</strong> Immediate access after payment confirmation. Video lessons available in your member area with no expiry.</span>':'<span class="pt"><strong>Online:</strong> Acesso imediato após confirmação do pagamento. Vídeo-aulas disponíveis na tua área de membros sem prazo de expiração.</span>';}else{n.innerHTML=isEn?'<span class="en"><strong>In-person:</strong> Next class dates confirmed by email. Small classes for individual support. Materials, certificate and post-course support included.</span>':'<span class="pt"><strong>Presencial:</strong> Datas da próxima turma confirmadas por email. Turmas reduzidas (máx. 8 alunos). Materiais, certificado e suporte incluídos.</span>';}}
 function selFormat(fmt){formato=fmt;document.getElementById('fc-pres').className='fcard'+(fmt==='pres'?' sel-pres':'');document.getElementById('fc-online').className='fcard'+(fmt==='online'?' sel-online':'');updateFmtNote();renderSummary();}
 function renderSummary(){const d=DATA[curso];const preco=formato==='pres'?d.pres:d.online;const pf='€'+preco.toLocaleString('pt-PT');document.getElementById('s-badge').textContent=isEn?d.tier_en:d.tier_pt;document.getElementById('s-badge').className='sum-badge '+d.badge;document.getElementById('s-name').textContent=isEn?d.nome_en:d.nome_pt;document.getElementById('s-fmt').textContent=formato==='pres'?(isEn?'In-person':'Presencial'):'Online';document.getElementById('s-sub').textContent=pf;document.getElementById('s-tot').textContent=pf;document.getElementById('mob-total').textContent=pf;const incs=formato==='pres'?(isEn?d.inc_pres_en:d.inc_pres_pt):(isEn?d.inc_online_en:d.inc_online_pt);document.getElementById('s-inc').innerHTML=incs.map(i=>'<div class="si">'+i+'</div>').join('');}
-function selPay(m){pagamento=m;['mbway','cartao','cripto'].forEach(id=>{document.getElementById('p-'+id).classList.toggle('psel',id===m);document.getElementById('pp-'+id).classList.toggle('show',id===m);});if(m==='cripto')fetchCryptoAmount();}
+function selPay(m){pagamento=m;['mbway','cartao','cripto','transferencia'].forEach(id=>{document.getElementById('p-'+id).classList.toggle('psel',id===m);document.getElementById('pp-'+id).classList.toggle('show',id===m);});if(m==='cripto')fetchCryptoAmount();}
 function selCrypto(coin,e){
   e.stopPropagation();
   cryptoCoin=coin;
@@ -525,11 +542,27 @@ function copyCryptoAmount(e){
     setTimeout(()=>{btn.innerHTML=orig;},2000);
   });
 }
+function copyText(text,e){e.stopPropagation();navigator.clipboard.writeText(text).then(()=>{const btn=e.target;const orig=btn.innerHTML;btn.textContent=isEn?'Copied!':'Copiado!';setTimeout(()=>{btn.innerHTML=orig;},2000);});}
 function copyWallet(e){e.stopPropagation();navigator.clipboard.writeText(WALLETS[cryptoCoin]).then(()=>{const btn=e.target;const orig=btn.innerHTML;btn.textContent=isEn?'Copied!':'Copiado!';setTimeout(()=>{btn.innerHTML=orig;},2000);});}
 function updateBtn(){const ok=document.getElementById('terms').checked;document.getElementById('btn-pay').disabled=!ok;document.getElementById('mob-btn').disabled=!ok;}
 function enableBtnOnLoad(){const terms=document.getElementById('terms');if(!terms){document.getElementById('btn-pay').disabled=false;document.getElementById('mob-btn').disabled=false;}}
 function validateForm(){const n=document.getElementById('f-nome').value.trim();const e=document.getElementById('f-email').value.trim();const t=document.getElementById('f-tel').value.trim();if(!n){alert(isEn?'Please enter your first name.':'Por favor, introduz o teu nome.');return false;}if(!e||!e.includes('@')){alert(isEn?'Please enter a valid email.':'Por favor, introduz um email válido.');return false;}if(!t){alert(isEn?'Please enter your phone number.':'Por favor, introduz o teu número de telefone.');return false;}return true;}
 async function submitOrder(){
+  // Transferência bancária: fluxo manual
+  if(pagamento==='transferencia'){
+    if(!validateForm())return;
+    const d=DATA[curso];
+    const fmt=formato==='pres'?(isEn?'in-person':'presencial'):'online';
+    const msg=isEn?'After the transfer, send the payment receipt to <strong>info@remapacademy.pt</strong> with your name and course. Enrolment is activated after payment confirmation.':'Após a transferência, envia o comprovativo para <strong>info@remapacademy.pt</strong> com o teu nome e curso. A inscrição é ativada após confirmação do pagamento.';
+    const prefix=isEn?'Enrolment in <strong>'+d.tier_en+' — '+d.nome_en+'</strong> ('+fmt+') received.<br><br>':'Inscrição no curso <strong>'+d.tier_pt+' — '+d.nome_pt+'</strong> ('+fmt+') recebida.<br><br>';
+    document.getElementById('page-wrap').style.display='none';
+    document.getElementById('mobile-bar').style.display='none';
+    document.getElementById('success-page').classList.add('show');
+    document.getElementById('success-msg').innerHTML=prefix+msg;
+    window.scrollTo({top:0,behavior:'smooth'});
+    return;
+  }
+
   // Cripto: fluxo manual — mantém o comportamento original
   if(pagamento==='cripto'){
     if(!validateForm())return;
