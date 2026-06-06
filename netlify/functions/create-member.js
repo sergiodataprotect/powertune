@@ -49,7 +49,7 @@ async function createUserInDB({ nome, email, tel, curso, formato, password }) {
     nome,
     email,
     tel:      tel || '',
-    password,
+    pass:     password,  // campo usado pela área de membros e backoffice
     curso,   // 'essential' ou 'advanced'
     formato,
     estado:   'active',
@@ -177,7 +177,7 @@ async function createMemberAndSendCredentials({ nome, email, tel, curso, formato
   const { user, isNew } = await createUserInDB({ nome, email, tel, curso, formato, password });
 
   // Se já existia, usa a password existente (não sobrescreve)
-  const finalPassword = isNew ? password : user.password;
+  const finalPassword = isNew ? password : (user.pass || user.password || password);
 
   await sendCredentialsEmail({ nome, email, curso, formato, password: finalPassword, lang });
 
