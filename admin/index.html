@@ -309,7 +309,10 @@
             <button class="tab" onclick="filterContent('essential',this)">Essential</button>
             <button class="tab" onclick="filterContent('advanced',this)">Advanced</button>
           </div>
-          <button class="btn btn-cyan btn-sm" onclick="openAddContent()">+ Adicionar Módulo</button>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-ghost btn-sm" onclick="initRoteiro()" title="Preenche todos os módulos e aulas do roteiro oficial">📋 Inicializar Roteiro</button>
+            <button class="btn btn-cyan btn-sm" onclick="openAddContent()">+ Adicionar Módulo</button>
+          </div>
         </div>
 
         <div class="card" style="padding:0">
@@ -1622,6 +1625,75 @@ async function pgResetCounter() {
   } catch(e) {
     toast('Erro: ' + e.message, 'error');
   }
+}
+
+
+// ── ROTEIRO OFICIAL ───────────────────────────────────────────────────────────
+const ROTEIRO = [
+  // ── ESSENTIAL ──
+  {id:'em1-1',curso:'essential',titulo:'M1 · Aula 1 — A Profissão de Tuner: Mercado, Ética e Potencial',desc:'Mercado PT/EU, tipos de serviço, ética e legalidade, estrutura de negócio. 45min',url:'',visivel:true},
+  {id:'em1-2',curso:'essential',titulo:'M1 · Aula 2 — Ferramentas de Leitura e Escrita',desc:'Ferramentas de leitura/escrita, diferenças Master vs Slave, tokens e subscrições. 50min',url:'',visivel:true},
+  {id:'em1-3',curso:'essential',titulo:'M1 · Aula 3 — Arquitetura das Centralinas',desc:'Flash vs EEPROM, microprocessador, pinagem e conectores, identificação de ECU. 55min',url:'',visivel:true},
+  {id:'em1-4',curso:'essential',titulo:'M1 · Aula 4 — Protocolos de Comunicação',desc:'OBD vs Bench vs BDM, Boot e JTAG, quando usar cada via, riscos. 60min',url:'',visivel:true},
+  {id:'em1-5',curso:'essential',titulo:'M1 · Aula 5 — O Seguro de Vida da ECU: Energia e Voltagem',desc:'Risco de voltagem instável, estabilizadores, 13.5V–14V obrigatório, procedimento seguro. 45min',url:'',visivel:true},
+
+  {id:'em2-1',curso:'essential',titulo:'M2 · Aula 1 — Máquinas de Diagnóstico Profissional',desc:'Ferramentas de diagnóstico profissional, menus e navegação, leitura de DTCs, funções de adaptação. 50min',url:'',visivel:true},
+  {id:'em2-2',curso:'essential',titulo:'M2 · Aula 2 — Interpretação de Erros (DTCs) Pré-Leitura',desc:'DTCs críticos vs intermitentes, erros que bloqueiam leitura, priorizar resolução, documentar estado inicial. 50min',url:'',visivel:true},
+  {id:'em2-3',curso:'essential',titulo:'M2 · Aula 3 — Protocolos Físicos: CAN-Bus vs K-Line',desc:'CAN-Bus vs K-Line, identificação por OBD, velocidade de transferência, implicações na escrita. 45min',url:'',visivel:true},
+  {id:'em2-4',curso:'essential',titulo:'M2 · Aula 4 — Diagnóstico em Bancada',desc:'Alimentação de bancada, ligação scanner em bench, ECU morta vs comunicação, recuperação básica. 55min',url:'',visivel:true},
+
+  {id:'em3-1',curso:'essential',titulo:'M3 · Aula 1 — Sistemas e Nomenclaturas',desc:'DPF/FAP/GPF, EGR e variantes, SCR e AdBlue (ureia), Euro 5 vs Euro 6. 50min',url:'',visivel:true},
+  {id:'em3-2',curso:'essential',titulo:'M3 · Aula 2 — Software para Edição de Emissões',desc:'Switch off vs tabelas de erro, verificação pós-edição, custo do software. 45min',url:'',visivel:true},
+  {id:'em3-3',curso:'essential',titulo:'M3 · Aula 3 — Verificação Prática de Dados DPF',desc:'Leitura de fuligem/cinzas, última regeneração, limites de intervenção, decisão de diagnóstico. 40min',url:'',visivel:true},
+  {id:'em3-4',curso:'essential',titulo:'M3 · Aula 4 — Casos Práticos com ECUs Reais',desc:'Caso diesel DPF+EGR, caso AdBlue SCR, erros pós-anulação, verificação com scanner. 45min',url:'',visivel:true},
+
+  {id:'em4-1',curso:'essential',titulo:'M4 · Aula 1 — Equipamentos e Software Dedicados',desc:'Ferramentas dedicadas, software específico, riscos legais e técnicos, documentação de trabalho. 50min',url:'',visivel:true},
+  {id:'em4-2',curso:'essential',titulo:'M4 · Aula 2 — Tipos de Odómetros e Acesso EEPROM',desc:'Quadrante analógico vs digital, identificar chip EEPROM, leitura com programmer, mapa de dados km. 50min',url:'',visivel:true},
+  {id:'em4-3',curso:'essential',titulo:'M4 · Aula 3 — Calibração via OBD e BDM',desc:'OBD: limites e possibilidades, BDM: acesso direto, verificação cruzada, actualizar clusters digitais. 60min',url:'',visivel:true},
+
+  {id:'em5-1',curso:'essential',titulo:'M5 · Aula 1 — Módulos SRS — Estrutura e Protocolos',desc:'Tipos de módulos SRS, crash data vs soft codes, comunicação CAN/K-Line, ferramentas compatíveis. 45min',url:'',visivel:true},
+  {id:'em5-2',curso:'essential',titulo:'M5 · Aula 2 — Leitura e Limpeza de Crash Data via EEPROM',desc:'Identificar chip EEPROM do SRS, leitura com programmer, apagar crash data, gravar de volta. 55min',url:'',visivel:true},
+  {id:'em5-3',curso:'essential',titulo:'M5 · Aula 3 — Reset com Ferramentas Dedicadas — Casos Práticos',desc:'Reset via OBD, ferramentas dedicadas SRS, verificação pós-reset, casos BMW/VW/Ford. 60min',url:'',visivel:true},
+
+  // ── ADVANCED ──
+  {id:'am6-1',curso:'advanced',titulo:'M6 · Aula 1 — Fundamentos de Calibração',desc:'Boost/pressão turbo, mapa de combustível (lambda), avanço à ignição, margem de fábrica e Stage 1. 55min',url:'',visivel:true},
+  {id:'am6-2',curso:'advanced',titulo:'M6 · Aula 2 — Workflow de Projeto: Do Cliente ao Ficheiro Final',desc:'Ficha de cliente e diagnóstico, expectativas e garantias, protocolo de leitura OBD, entrega e documentação. 60min',url:'',visivel:true},
+  {id:'am6-3',curso:'advanced',titulo:'M6 · Aula 3 — Software Automático de Stage 1/2',desc:'Interface do software automático, seleção de opções Stage 1/2, validação automática, download e escrita do ficheiro. 60min',url:'',visivel:true},
+  {id:'am6-4',curso:'advanced',titulo:'M6 · Aula 4 — Software de Gestão de Projetos de Potência',desc:'Abrir ficheiro, drivers e navegação, visualização de maps alterados, relatório de projeto. 60min',url:'',visivel:true},
+  {id:'am6-5',curso:'advanced',titulo:'M6 · Aula 5 — Software de Verificação e Controlo de Qualidade',desc:'Interface básica, comparação original vs modificado, identificar alterações, controlo de qualidade. 60min',url:'',visivel:true},
+
+  {id:'am7-1',curso:'advanced',titulo:'M7 · Aula 1 — Clonagem OBD e BDM — Procedimentos e Riscos',desc:'Clone OBD: limitações, clone BDM: leitura completa, riscos de incompatibilidade, verificação pós-clone. 60min',url:'',visivel:true},
+  {id:'am7-2',curso:'advanced',titulo:'M7 · Aula 2 — Transferência entre ECUs da Mesma Família',desc:'Identificar família ECU, compatibilidade de hardware, transferência de dados, imobilizador na transferência. 55min',url:'',visivel:true},
+  {id:'am7-3',curso:'advanced',titulo:'M7 · Aula 3 — Casos Práticos — Substituição de ECU Defeituosa',desc:'ECU morta: diagnóstico, sourcing de segunda vida, procedimento completo, verificação final no veículo. 65min',url:'',visivel:true},
+
+  {id:'am8-1',curso:'advanced',titulo:'M8 · Aula 1 — Sistemas de Imobilização — Tipos e Protocolos',desc:'Megamos/Hitag2/Texas, como funciona o imobilizador, localização na ECU, ferramentas compatíveis. 50min',url:'',visivel:true},
+  {id:'am8-2',curso:'advanced',titulo:'M8 · Aula 2 — Bypass via EEPROM e Emuladores',desc:'Leitura EEPROM do imobilizador, anulação por edição directa, emuladores: quando usar, riscos e limitações. 55min',url:'',visivel:true},
+  {id:'am8-3',curso:'advanced',titulo:'M8 · Aula 3 — Programação de Chaves Transponder',desc:'Tipos de transponder, ferramentas dedicadas, adição de chave nova, recuperação de chave perdida. 50min',url:'',visivel:true},
+  {id:'am8-4',curso:'advanced',titulo:'M8 · Aula 4 — Casos Práticos — VW, BMW, Mercedes, Ford',desc:'VW/Audi IMMO3/4, BMW EWS/CAS, Mercedes ESL/EZS, Ford PATS. 55min',url:'',visivel:true},
+  {id:'am8-5',curso:'advanced',titulo:'M8 · Aula 5 — Sistemas de Coluna Elétrica (EPS/EPAS)',desc:'EPS vs EPAS, causas de bloqueio, ferramentas de diagnóstico, identificação de defeito. 50min',url:'',visivel:true},
+  {id:'am8-6',curso:'advanced',titulo:'M8 · Aula 6 — Anulação via EEPROM e OBD',desc:'Anulação OBD (marcas compatíveis), acesso EEPROM da coluna, edição de dados, verificação pós-anulação. 45min',url:'',visivel:true},
+
+  {id:'am9-1',curso:'advanced',titulo:'M9 · Aula 1 — Fundamentos de Eletrónica — Componentes SMD',desc:'Resistências/condensadores SMD, transistores e CIs, leitura de marcações, multímetro em componentes. 50min',url:'',visivel:true},
+  {id:'am9-2',curso:'advanced',titulo:'M9 · Aula 2 — Técnicas de Soldadura com Ferro de Ponta Fina',desc:'Temperatura do ferro, estanho e fluxo, componentes 0402/0603/SOIC, limpeza da soldadura. 65min',url:'',visivel:true},
+  {id:'am9-3',curso:'advanced',titulo:'M9 · Aula 3 — Rework com Ar Quente — Remoção e Recolocação de BGA',desc:'Estação de ar quente, remoção de TQFP/BGA, reballing básico, recolocação e verificação. 65min',url:'',visivel:true},
+  {id:'am9-4',curso:'advanced',titulo:'M9 · Aula 4 — Prática — Reparação de PCB Real com Defeito',desc:'Diagnóstico de PCB, localização de falha, substituição de componente, teste de funcionamento. 60min',url:'',visivel:true},
+
+  {id:'am10-1',curso:'advanced',titulo:'M10 · Aula 1 — Precificação de Serviços',desc:'Custo real por serviço, margem mínima e ideal, tabela de preços por serviço, preços de mercado PT/EU. 55min',url:'',visivel:true},
+  {id:'am10-2',curso:'advanced',titulo:'M10 · Aula 2 — Apresentação de Orçamentos e Comunicação com o Cliente',desc:'Estrutura do orçamento, garantias e prazo, gestão de objeções de preço, confiança e posicionamento. 45min',url:'',visivel:true},
+  {id:'am10-3',curso:'advanced',titulo:'M10 · Aula 3 — Gestão de Ficheiros de Clientes e Operação Diária',desc:'Ficha de cliente obrigatória, backup e rastreabilidade, ferramentas de gestão (CRM simples), responsabilidade legal. 50min',url:'',visivel:true},
+
+  {id:'am11-1',curso:'advanced',titulo:'M11 · Aula 1 — Do Curso ao Negócio: Simulação, Primeiros Passos e Certificado',desc:'Simulação do 1.º cliente, erros comuns nos primeiros 3-6 meses, área de membros, canal de suporte, entrega do certificado. 35min',url:'',visivel:true},
+];
+
+async function initRoteiro() {
+  if (!BIN_ID) { toast('Configura o JSONBin primeiro.', 'error'); return; }
+  const existing = DB.content || [];
+  if (existing.length > 0) {
+    if (!confirm(`Já existem ${existing.length} módulos. Queres SUBSTITUIR tudo pelo roteiro oficial? Esta acção não pode ser desfeita.`)) return;
+  }
+  DB.content = ROTEIRO.map(m => ({...m}));
+  renderAll();
+  toast(`✅ ${ROTEIRO.length} aulas do roteiro carregadas. Clica "Guardar na Cloud" para guardar.`, 'success');
 }
 
 // Inicializar e arrancar tudo quando a página carrega
