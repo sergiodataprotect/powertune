@@ -1,5 +1,6 @@
 // REMAP Academy — Send Welcome Email
-// Env vars: RESEND_API_KEY, STRIPE_SECRET_KEY
+// Env vars: RESEND_API_KEY, STRIPE_SECRET_KEY, JSONBIN_API_KEY, JSONBIN_BIN_ID
+const { createMemberAndSendCredentials } = require('./create-member');
 
 const SELLER_EMAIL = 'info@remapacademy.pt';
 const FROM_EMAIL   = 'REMAP Academy <invoices@remapacademy.pt>';
@@ -156,6 +157,19 @@ exports.handler = async (event) => {
     });
     const result = await r.json();
     if (!r.ok) throw new Error(JSON.stringify(result));
+
+    // Se pagamento Stripe confirmado → criar membro e enviar credenciais
+    if (paymentMethod === 'stripe') {
+      await createMemberAndSendCredentials({
+        nome,
+        email,
+        tel:     '',
+        curso,
+        formato,
+        lang,
+      });
+    }
+
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },

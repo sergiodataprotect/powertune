@@ -4,6 +4,7 @@
 // POST body: { orderId, secret }  (secret = ADMIN_SECRET env var)
 
 const { processInvoice } = require('./send-invoice');
+const { createMemberAndSendCredentials } = require('./create-member');
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
@@ -59,7 +60,17 @@ exports.handler = async (event) => {
       body: JSON.stringify({ ...record, pending_transfers: updated })
     });
 
-    console.log(`Transfer confirmed, invoice ${invoiceNumber} sent`);
+    // Criar membro e enviar credenciais de acesso
+    await createMemberAndSendCredentials({
+      nome:    order.customer.name,
+      email:   order.customer.email,
+      tel:     order.customer.tel || '',
+      curso:   order.curso,
+      formato: order.formato,
+      lang:    order.lang,
+    });
+
+    console.log(`Transfer confirmed, invoice ${invoiceNumber} sent, member created`);
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
