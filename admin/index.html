@@ -1508,7 +1508,7 @@ async function pgLoad() {
       wrapC.innerHTML = '<div class="empty"><span class="empty-icon">📋</span>Sem pagamentos confirmados ainda.</div>';
     } else {
       wrapC.innerHTML = `<table>
-        <thead><tr><th>Data</th><th>Cliente</th><th>Curso</th><th>Fatura</th><th>Total</th></tr></thead>
+        <thead><tr><th>Data</th><th>Cliente</th><th>Curso</th><th>Fatura</th><th>Total</th><th></th></tr></thead>
         <tbody>${confirmed.slice().reverse().map(o => `
           <tr>
             <td style="white-space:nowrap">${new Date(o.confirmedAt||o.createdAt).toLocaleDateString('pt-PT')}</td>
@@ -1519,6 +1519,7 @@ async function pgLoad() {
             <td><span class="badge ${o.curso === 'advanced' ? 'badge-adv' : 'badge-ess'}">${o.curso === 'advanced' ? 'Pro' : 'Start'}</span></td>
             <td style="font-family:monospace;font-size:12px;color:rgba(255,255,255,.5)">${o.invoiceNumber || '—'}</td>
             <td style="font-weight:600">€${Number(o.total).toFixed(2)}</td>
+            <td><button class="btn btn-red btn-sm" onclick="pgDelete('${o.id}')">🗑</button></td>
           </tr>`).join('')}
         </tbody>
       </table>`;
@@ -1576,6 +1577,27 @@ async function pgReject(orderId) {
       body: JSON.stringify({ ...record, pending_transfers: updated })
     });
     toast('Pagamento removido.', 'info');
+    pgLoad();
+  } catch(e) {
+    toast('Erro: ' + e.message, 'error');
+  }
+}
+
+async function pgDelete(orderId) {
+  if (!confirm('Apagar este registo permanentemente?')) return;
+  const binId  = BIN_ID;
+  const apiKey = API_KEY;
+  try {
+    const r = await fetch(`${JSONBIN_BASE}/b/${binId}/latest`, { headers: { 'X-Master-Key': apiKey } });
+    const data = await r.json();
+    const record = data.record || {};
+    const updated = (record.pending_transfers || []).filter(o => o.id !== orderId);
+    await fetch(`${JSONBIN_BASE}/b/${binId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'X-Master-Key': apiKey },
+      body: JSON.stringify({ ...record, pending_transfers: updated })
+    });
+    toast('Registo apagado.', 'info');
     pgLoad();
   } catch(e) {
     toast('Erro: ' + e.message, 'error');
