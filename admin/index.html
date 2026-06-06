@@ -1492,7 +1492,7 @@ async function pgLoad() {
               <span class="badge ${o.curso === 'advanced' ? 'badge-adv' : 'badge-ess'}">${o.curso === 'advanced' ? 'Pro' : 'Start'}</span>
               <span class="badge ${o.formato === 'pres' ? 'badge-pres' : 'badge-online'}" style="margin-left:4px">${o.formato === 'pres' ? 'Presencial' : 'Online'}</span>
             </td>
-            <td><span class="badge badge-pending">${o.customer.email.includes('@') ? 'Transferência' : '—'}</span></td>
+            <td><span class="badge badge-pending">${o.paymentType==='cripto'?'🪙 Cripto':'🏦 Transferência'}</span>${o.cryptoCoin?`<br><span style='font-size:11px;color:rgba(255,255,255,.4)'>${o.cryptoCoin} ${o.cryptoAmount||''}</span>`:''}</td>
             <td style="font-weight:600">€${Number(o.total).toFixed(2)}</td>
             <td>
               <div style="display:flex;gap:6px">
