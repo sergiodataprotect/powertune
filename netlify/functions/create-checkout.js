@@ -25,8 +25,9 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: 'Missing priceId or email' };
   }
 
-  // Determinar métodos de pagamento disponíveis
-  // mb_way e multibanco só estão disponíveis para contas Stripe PT
+  // Métodos de pagamento activos
+  // Após activar MB WAY e Multibanco em dashboard.stripe.com/settings/payment_methods
+  // adiciona 'mb_way' e 'multibanco' a este array
   const paymentMethods = ['card', 'mb_way', 'multibanco'];
 
   // Metadata para referência interna (aparece no dashboard Stripe)
@@ -55,12 +56,9 @@ exports.handler = async (event) => {
       mode: 'payment',
       customer_email: email,
       metadata,
-      // Páginas de retorno — ajusta o domínio se necessário
       success_url: 'https://remapacademy.pt/obrigado.html?session_id={CHECKOUT_SESSION_ID}',
       cancel_url:  'https://remapacademy.pt/checkout.html',
-      // Locale da página Stripe
       locale: isEn ? 'en' : 'pt',
-      // Campos adicionais na página Stripe (nome e telefone)
       phone_number_collection: { enabled: true },
     });
 
