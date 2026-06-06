@@ -173,6 +173,10 @@
 
     <div class="sb-label">Ferramentas</div>
     <div class="sb-link" onclick="showSection('certificados')"><span class="sb-icon">🎓</span> Certificados</div>
+    <div class="sb-link" onclick="showSection('pagamentos')"><span class="sb-icon">💳</span> Pagamentos</div>
+
+
+    <div class="sb-link" onclick="showSection('pagamentos')"><span class="sb-icon">💳</span> Pagamentos</div>
 
     <div class="sb-label">Sistema</div>
     <div class="sb-link" onclick="showSection('config')"><span class="sb-icon">⚙️</span> Configuração</div>
@@ -404,6 +408,38 @@
                 </div>
             </div>
 
+        </div>
+      </div>
+
+      <div class="section" id="section-pagamentos">
+        <div class="stat-grid" style="grid-template-columns:repeat(3,1fr)">
+          <div class="stat-card"><div class="stat-val c-orange" id="pg-pending">—</div><div class="stat-lbl">Pendentes</div></div>
+          <div class="stat-card"><div class="stat-val c-green" id="pg-confirmed">—</div><div class="stat-lbl">Confirmados</div></div>
+          <div class="stat-card"><div class="stat-val c-cyan" id="pg-counter">—</div><div class="stat-lbl">Próximo Nº Fatura</div></div>
+        </div>
+
+        <div class="card">
+          <div class="card-h" style="justify-content:space-between">
+            <span>💳 Pagamentos Pendentes</span>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-ghost btn-sm" onclick="pgLoad()">↻ Actualizar</button>
+              <button class="btn btn-red btn-sm" onclick="pgResetCounter()">🔄 Reset Nº Fatura</button>
+            </div>
+          </div>
+          <div class="alert alert-info" style="margin-bottom:1rem">
+            <span>ℹ️</span>
+            <span>Aqui aparecem os pagamentos por transferência bancária e cripto que aguardam confirmação. Ao confirmares, a fatura é gerada e enviada automaticamente para o cliente.</span>
+          </div>
+          <div id="pg-table-wrap" class="table-wrap">
+            <div class="empty"><span class="empty-icon">⏳</span>A carregar pagamentos…</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-h"><span>✅</span> Confirmados Recentemente</div>
+          <div id="pg-confirmed-wrap" class="table-wrap">
+            <div class="empty"><span class="empty-icon">📋</span>Sem pagamentos confirmados ainda.</div>
+          </div>
         </div>
       </div>
 
@@ -1013,7 +1049,7 @@ function filterContent(f,btn) {
 }
 
 // ── NAVIGATION ────────────────────────────────────────────────────────────────
-const SECTION_TITLES = { dashboard:'Dashboard', membros:'Membros', datas:'Datas da Formação', conteudo:'Conteúdo', config:'Configuração', certificados:'Gerador de Certificados' };
+const SECTION_TITLES = { dashboard:'Dashboard', membros:'Membros', datas:'Datas da Formação', conteudo:'Conteúdo', config:'Configuração', certificados:'Gerador de Certificados', pagamentos:'Pagamentos' };
 function showSection(name) {
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.sb-link').forEach(l=>l.classList.remove('active'));
@@ -1026,6 +1062,7 @@ function showSection(name) {
   document.getElementById('topbar-title').textContent = SECTION_TITLES[name]||name;
   
   if(name === 'certificados') certUpdate();
+  if(name === 'pagamentos') pgLoad();
 }
 
 // ── MODALS ────────────────────────────────────────────────────────────────────
@@ -1406,6 +1443,163 @@ function certImportFromDB() {
     certIdx = 0;
     certRenderList();
     toast(`${users.length} alunos importados com sucesso!`, 'success');
+}
+
+
+// ── PAGAMENTOS ────────────────────────────────────────────────────────────────
+const ADMIN_SECRET = localStorage.getItem('ra_bo_admin_secret') || '';
+
+async function pgLoad() {
+  const binId  = BIN_ID;
+  const apiKey = API_KEY;
+  if (!binId || !apiKey) { toast('Configura o JSONBin primeiro.', 'error'); return; }
+
+  try {
+    const r = await fetch(`${JSONBIN_BASE}/b/${binId}/latest`, {
+      headers: { 'X-Master-Key': apiKey }
+    });
+    const data = await r.json();
+    const record = data.record || {};
+    const pending   = (record.pending_transfers || []).filter(o => o.status === 'pending');
+    const confirmed = (record.pending_transfers || []).filter(o => o.status === 'confirmed');
+    const counter   = (record.invoice_counter || 0) + 1;
+
+    document.getElementById('pg-pending').textContent   = pending.length;
+    document.getElementById('pg-confirmed').textContent = confirmed.length;
+    document.getElementById('pg-counter').textContent   = `REMAP-${new Date().getFullYear()}-${String(counter).padStart(4,'0')}`;
+
+    // Tabela pendentes
+    const wrap = document.getElementById('pg-table-wrap');
+    if (!pending.length) {
+      wrap.innerHTML = '<div class="empty"><span class="empty-icon">✅</span>Sem pagamentos pendentes.</div>';
+    } else {
+      wrap.innerHTML = `<table>
+        <thead><tr>
+          <th>Data</th><th>Cliente</th><th>Curso</th><th>Método</th><th>Total</th><th>Ações</th>
+        </tr></thead>
+        <tbody>${pending.map(o => `
+          <tr>
+            <td style="white-space:nowrap">${new Date(o.createdAt).toLocaleDateString('pt-PT')}</td>
+            <td>
+              <div style="font-weight:500">${o.customer.name}</div>
+              <div style="font-size:11px;color:rgba(255,255,255,.4)">${o.customer.email}</div>
+              ${o.customer.nif ? `<div style="font-size:11px;color:rgba(255,255,255,.3)">NIF: ${o.customer.nif}</div>` : ''}
+            </td>
+            <td>
+              <span class="badge ${o.curso === 'advanced' ? 'badge-adv' : 'badge-ess'}">${o.curso === 'advanced' ? 'Pro' : 'Start'}</span>
+              <span class="badge ${o.formato === 'pres' ? 'badge-pres' : 'badge-online'}" style="margin-left:4px">${o.formato === 'pres' ? 'Presencial' : 'Online'}</span>
+            </td>
+            <td><span class="badge badge-pending">${o.customer.email.includes('@') ? 'Transferência' : '—'}</span></td>
+            <td style="font-weight:600">€${Number(o.total).toFixed(2)}</td>
+            <td>
+              <div style="display:flex;gap:6px">
+                <button class="btn btn-green btn-sm" onclick="pgConfirm('${o.id}')">✓ Confirmar</button>
+                <button class="btn btn-red btn-sm" onclick="pgReject('${o.id}')">✕</button>
+              </div>
+            </td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`;
+    }
+
+    // Tabela confirmados
+    const wrapC = document.getElementById('pg-confirmed-wrap');
+    if (!confirmed.length) {
+      wrapC.innerHTML = '<div class="empty"><span class="empty-icon">📋</span>Sem pagamentos confirmados ainda.</div>';
+    } else {
+      wrapC.innerHTML = `<table>
+        <thead><tr><th>Data</th><th>Cliente</th><th>Curso</th><th>Fatura</th><th>Total</th></tr></thead>
+        <tbody>${confirmed.slice().reverse().map(o => `
+          <tr>
+            <td style="white-space:nowrap">${new Date(o.confirmedAt||o.createdAt).toLocaleDateString('pt-PT')}</td>
+            <td>
+              <div style="font-weight:500">${o.customer.name}</div>
+              <div style="font-size:11px;color:rgba(255,255,255,.4)">${o.customer.email}</div>
+            </td>
+            <td><span class="badge ${o.curso === 'advanced' ? 'badge-adv' : 'badge-ess'}">${o.curso === 'advanced' ? 'Pro' : 'Start'}</span></td>
+            <td style="font-family:monospace;font-size:12px;color:rgba(255,255,255,.5)">${o.invoiceNumber || '—'}</td>
+            <td style="font-weight:600">€${Number(o.total).toFixed(2)}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`;
+    }
+
+  } catch(e) {
+    toast('Erro ao carregar pagamentos: ' + e.message, 'error');
+  }
+}
+
+async function pgConfirm(orderId) {
+  const secret = localStorage.getItem('ra_bo_admin_secret');
+  if (!secret) {
+    const s = prompt('Introduz o ADMIN_SECRET (configurado no Netlify):');
+    if (!s) return;
+    localStorage.setItem('ra_bo_admin_secret', s);
+  }
+  const adminSecret = localStorage.getItem('ra_bo_admin_secret');
+
+  if (!confirm('Confirmar pagamento e enviar fatura ao cliente?')) return;
+
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = 'A processar…';
+
+  try {
+    const r = await fetch('/.netlify/functions/confirm-transfer', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ orderId, secret: adminSecret })
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || r.status);
+    toast(`✅ Fatura ${data.invoiceNumber} enviada ao cliente!`, 'success');
+    pgLoad();
+  } catch(e) {
+    toast('Erro: ' + e.message, 'error');
+    btn.disabled = false;
+    btn.textContent = '✓ Confirmar';
+  }
+}
+
+async function pgReject(orderId) {
+  if (!confirm('Rejeitar este pagamento? O registo será removido.')) return;
+  const binId  = BIN_ID;
+  const apiKey = API_KEY;
+  try {
+    const r = await fetch(`${JSONBIN_BASE}/b/${binId}/latest`, { headers: { 'X-Master-Key': apiKey } });
+    const data = await r.json();
+    const record = data.record || {};
+    const updated = (record.pending_transfers || []).filter(o => o.id !== orderId);
+    await fetch(`${JSONBIN_BASE}/b/${binId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'X-Master-Key': apiKey },
+      body: JSON.stringify({ ...record, pending_transfers: updated })
+    });
+    toast('Pagamento removido.', 'info');
+    pgLoad();
+  } catch(e) {
+    toast('Erro: ' + e.message, 'error');
+  }
+}
+
+async function pgResetCounter() {
+  if (!confirm('Resetar o contador de faturas para 0? O próximo número será REMAP-' + new Date().getFullYear() + '-0001.')) return;
+  const binId  = BIN_ID;
+  const apiKey = API_KEY;
+  try {
+    const r = await fetch(`${JSONBIN_BASE}/b/${binId}/latest`, { headers: { 'X-Master-Key': apiKey } });
+    const data = await r.json();
+    const record = data.record || {};
+    await fetch(`${JSONBIN_BASE}/b/${binId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'X-Master-Key': apiKey },
+      body: JSON.stringify({ ...record, invoice_counter: 0 })
+    });
+    toast('Contador resetado para 0. Próxima fatura: REMAP-' + new Date().getFullYear() + '-0001', 'success');
+    pgLoad();
+  } catch(e) {
+    toast('Erro: ' + e.message, 'error');
+  }
 }
 
 // Inicializar e arrancar tudo quando a página carrega
