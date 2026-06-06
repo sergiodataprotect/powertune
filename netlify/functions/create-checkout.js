@@ -27,7 +27,7 @@ exports.handler = async (event) => {
 
   // Determinar métodos de pagamento disponíveis
   // mb_way e multibanco só estão disponíveis para contas Stripe PT
-  const paymentMethods = ['card'];
+  const paymentMethods = ['card', 'mb_way', 'multibanco'];
 
   // Metadata para referência interna (aparece no dashboard Stripe)
   const metadata = {
