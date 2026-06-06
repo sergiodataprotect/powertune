@@ -639,7 +639,15 @@ function renderTrainingDates() {
   if (el_slots_adv) el_slots_adv.textContent = isEn ? NEXT_TRAINING.slots_advanced_en : NEXT_TRAINING.slots_advanced_pt;
 }
 
-(function(){ const s = localStorage.getItem('ra-lang'); if(s === 'en') setLang('en'); else renderTrainingDates(); })();
+(function(){
+  // Detecção automática de língua por domínio
+  // remap.academy → EN | remapacademy.pt → PT
+  // O utilizador pode sempre mudar manualmente — fica guardado em localStorage
+  const isEnDomain = window.location.hostname.includes('remap.academy');
+  const saved = localStorage.getItem('ra-lang');
+  const lang = saved !== null ? saved : (isEnDomain ? 'en' : 'pt');
+  if (lang === 'en') setLang('en'); else renderTrainingDates();
+})();
 function toggleMenu() {
   const menu = document.getElementById('mobile-menu');
   const ham = document.getElementById('hamburger');

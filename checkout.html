@@ -491,7 +491,26 @@ function resetVatPricing() {
   ivaVal.innerHTML = '<span class="pt">Não aplicável</span><span class="en">Not applicable</span>';
 }
 
-(function init(){const p=new URLSearchParams(window.location.search);if(p.get('curso')==='advanced')curso='advanced';const saved=localStorage.getItem('ra-lang');if(saved==='en'){isEn=true;document.body.classList.add('lang-en');document.getElementById('btn-pt').classList.remove('active');document.getElementById('btn-en').classList.add('active');document.documentElement.lang='en';}renderPage();renderSummary();applyVat(vatRate);enableBtnOnLoad();})();
+(function init(){
+  const p=new URLSearchParams(window.location.search);
+  if(p.get('curso')==='advanced')curso='advanced';
+  // Detectar língua: domínio remap.academy → EN, remapacademy.pt → PT
+  // O utilizador pode sempre mudar manualmente — guardado em localStorage
+  const isEnDomain = window.location.hostname.includes('remap.academy');
+  const saved = localStorage.getItem('ra-lang');
+  // Domínio EN: forçar EN a menos que utilizador tenha escolhido PT manualmente nesta sessão
+  // Domínio PT: forçar PT a menos que utilizador tenha escolhido EN manualmente nesta sessão
+  const forcedByDomain = saved === null; // sem escolha manual → domínio decide
+  const useLangEn = forcedByDomain ? isEnDomain : (saved === 'en');
+  if(useLangEn){
+    isEn=true;
+    document.body.classList.add('lang-en');
+    document.getElementById('btn-pt').classList.remove('active');
+    document.getElementById('btn-en').classList.add('active');
+    document.documentElement.lang='en';
+  }
+  renderPage();renderSummary();applyVat(vatRate);enableBtnOnLoad();
+})();
 function setLang(lang){isEn=lang==='en';document.body.classList.toggle('lang-en',isEn);document.getElementById('btn-pt').classList.toggle('active',!isEn);document.getElementById('btn-en').classList.toggle('active',isEn);document.documentElement.lang=lang;localStorage.setItem('ra-lang',lang);renderPage();renderSummary();if(pagamento!=='cripto'){applyVat(vatValid?0:vatRate);}}
 function renderPage(){const d=DATA[curso];const b=document.getElementById('c-badge');b.textContent=isEn?d.tier_en:d.tier_pt;b.className='cb '+d.badge;document.getElementById('c-title').textContent=isEn?d.nome_en:d.nome_pt;document.getElementById('c-meta-dias').textContent=isEn?d.dias_en:d.dias_pt;document.getElementById('c-meta-alunos').textContent=isEn?d.alunos_en:d.alunos_pt;document.getElementById('fp-pres').textContent='€'+d.pres.toLocaleString('pt-PT');document.getElementById('fp-online').textContent='€'+d.online.toLocaleString('pt-PT');updateFmtNote();document.title=(isEn?'Buy ':'Comprar ')+(isEn?d.tier_en:d.tier_pt)+' — REMAP Academy';}
 function updateFmtNote(){const n=document.getElementById('fmt-note');if(formato==='online'){n.innerHTML=isEn?'<span class="en"><strong>Online:</strong> Immediate access after payment confirmation. Video lessons available in your member area with no expiry.</span>':'<span class="pt"><strong>Online:</strong> Acesso imediato após confirmação do pagamento. Vídeo-aulas disponíveis na tua área de membros sem prazo de expiração.</span>';}else{n.innerHTML=isEn?'<span class="en"><strong>In-person:</strong> Next class dates confirmed by email. Small classes for individual support. Materials, certificate and post-course support included.</span>':'<span class="pt"><strong>Presencial:</strong> Datas da próxima turma confirmadas por email. Turmas reduzidas (máx. 8 alunos). Materiais, certificado e suporte incluídos.</span>';}}
