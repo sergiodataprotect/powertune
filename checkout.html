@@ -589,12 +589,19 @@ async function submitOrder(){
     btn.disabled=true; mob.disabled=true;
     btn.textContent=isEn?'Sending…':'A enviar…';
     try{
-      await fetch('/.netlify/functions/send-payment-instructions',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({nome,email,curso,formato,pagamento:'cripto',cryptoCoin,cryptoAmount:cryptoAmountVal,totalEur,lang:isEn?'en':'pt'})
-      });
-    }catch(e){console.warn('send instructions failed',e);}
+      await Promise.all([
+        fetch('/.netlify/functions/send-payment-instructions',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({nome,email,curso,formato,pagamento:'cripto',cryptoCoin,cryptoAmount:cryptoAmountVal,totalEur,lang:isEn?'en':'pt'})
+        }),
+        fetch('/.netlify/functions/send-welcome-email',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({nome,email,curso,formato,total:totalEur,paymentMethod:'cripto',lang:isEn?'en':'pt'})
+        })
+      ]);
+    }catch(e){console.warn('send emails failed',e);}
     const msg=isEn?'Payment instructions have been sent to <strong>'+email+'</strong>. After sending the crypto, forward the transaction hash to <strong>info@remapacademy.pt</strong>. Enrolment activated after blockchain confirmation.':'As instruções de pagamento foram enviadas para <strong>'+email+'</strong>. Após o envio do cripto, encaminha o hash da transacção para <strong>info@remapacademy.pt</strong>. Inscrição activada após confirmação na blockchain.';
     showSuccess(prefix+msg);
     return;
@@ -620,6 +627,11 @@ async function submitOrder(){
           method:'POST',
           headers:{'Content-Type':'application/json'},
           body:JSON.stringify({nome,email,curso,formato,pagamento:'transferencia',totalEur,lang:isEn?'en':'pt'})
+        }),
+        fetch('/.netlify/functions/send-welcome-email',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({nome,email,curso,formato,total:totalEur,paymentMethod:'transfer',lang:isEn?'en':'pt'})
         })
       ]);
     }catch(e){console.warn('send instructions failed',e);}

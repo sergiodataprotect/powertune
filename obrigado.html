@@ -47,6 +47,20 @@
     document.documentElement.lang = 'en';
     document.title = 'Payment confirmed — REMAP Academy';
   }
+
+  // Enviar email de boas-vindas se vier do Stripe (tem session_id na URL)
+  (async function() {
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get('session_id');
+    if (!sessionId) return; // cripto/transferência já enviam email pelo checkout.html
+    try {
+      await fetch('/.netlify/functions/send-welcome-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId })
+      });
+    } catch(e) { console.warn('Welcome email failed:', e); }
+  })();
 </script>
 </body>
 </html>
