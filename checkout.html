@@ -604,10 +604,10 @@ async function submitOrder(){
   const fmt=formato==='pres'?(isEn?'in-person':'presencial'):'online';
   const prefix=isEn?'Enrolment in <strong>'+d.tier_en+' — '+d.nome_en+'</strong> ('+fmt+') received.<br><br>':'Inscrição no curso <strong>'+d.tier_pt+' — '+d.nome_pt+'</strong> ('+fmt+') recebida.<br><br>';
 
-  // ── Cripto: sem IVA, fluxo manual, envia email com dados de pagamento ──────
+  // ── Cripto: sem IVA, fluxo manual, guarda pendente + envia emails ───────────
   if(pagamento==='cripto'){
     if(!validateForm())return;
-    const {nome,email,totalEur}=getFormData();
+    const {nome,email,tel,nif,empresa,country,totalEur,subtotal}=getFormData();
     const cryptoAmountVal=(document.getElementById('crypto-amount-val').textContent||'').split(' ')[0];
     const btn=document.getElementById('btn-pay');
     const mob=document.getElementById('mob-btn');
@@ -615,6 +615,11 @@ async function submitOrder(){
     btn.textContent=isEn?'Sending…':'A enviar…';
     try{
       await Promise.all([
+        fetch('/.netlify/functions/save-pending-transfer',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({nome,email,tel,nif,empresa,country,curso,formato,subtotal,vatRate:0,total:totalEur,paymentType:'cripto',cryptoCoin,cryptoAmount:cryptoAmountVal,lang:isEn?'en':'pt'})
+        }),
         fetch('/.netlify/functions/send-payment-instructions',{
           method:'POST',
           headers:{'Content-Type':'application/json'},
