@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>REMAP Academy — Backoffice</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&display=swap" rel="stylesheet">
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <style>
+    :root{--black:#231F20;--black-2:#1a1718;--black-3:#141213;--cyan:#0BABDD;--orange:#F36308;--white:#fff;--green:#22c55e;--red:#ef4444}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--black-3);color:var(--white);font-family:'Barlow',sans-serif;font-size:15px;line-height:1.6;min-height:100vh}
+    h1,h2,h3,h4{font-family:'Barlow Condensed',sans-serif;font-weight:700;line-height:1.15}
+    a{text-decoration:none;color:var(--cyan)}
+    ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--black-3)}::-webkit-scrollbar-thumb{background:rgba(11,171,221,.35);border-radius:3px}
+
+    /* Layout */
+    .app{display:flex;min-height:100vh}
+    .sidebar{width:220px;background:var(--black-2);border-right:1px solid rgba(255,255,255,.06);padding:1.5rem 0;flex-shrink:0;display:flex;flex-direction:column}
+    .sb-logo{padding:0 1.25rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.06)}
+    .sb-logo svg{height:48px;width:auto}
+    .sb-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.25);padding:.75rem 1.25rem .35rem}
+    .sb-link{display:flex;align-items:center;gap:10px;padding:.6rem 1.25rem;font-size:13px;color:rgba(255,255,255,.5);cursor:pointer;transition:all .2s;border-left:2px solid transparent}
+    .sb-link:hover{color:#fff;background:rgba(255,255,255,.04)}
+    .sb-link.active{color:#fff;background:rgba(11,171,221,.07);border-left-color:var(--cyan)}
+    .sb-icon{font-size:1rem;width:18px;text-align:center}
+    .sb-bottom{margin-top:auto;padding:1rem 1.25rem;border-top:1px solid rgba(255,255,255,.06)}
+    .sync-status{font-size:11px;color:rgba(255,255,255,.3);display:flex;align-items:center;gap:6px}
+    .sync-dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0}
+    .sync-dot.error{background:var(--red)}
+    .sync-dot.loading{background:var(--orange);animation:pulse 1s infinite}
+
+    .main{flex:1;overflow-y:auto}
+    .topbar{background:var(--black-2);border-bottom:1px solid rgba(255,255,255,.06);padding:.9rem 2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;position:sticky;top:0;z-index:50}
+    .topbar-title{font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:700}
+    .topbar-right{display:flex;align-items:center;gap:.75rem}
+    .content{padding:2rem}
+
+    /* Cards */
+    .card{background:var(--black-2);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem}
+    .card-h{font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:1.25rem;display:flex;align-items:center;gap:8px}
+    .card-h span{font-size:1rem}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
+
+    /* Form elements */
+    .fg{margin-bottom:.85rem}
+    .fg label{display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.35);letter-spacing:.07em;text-transform:uppercase;margin-bottom:5px}
+    .fg input,.fg select,.fg textarea{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:9px;padding:10px 13px;color:#fff;font-family:'Barlow',sans-serif;font-size:14px;outline:none;transition:border-color .2s}
+    .fg input:focus,.fg select:focus,.fg textarea:focus{border-color:rgba(11,171,221,.45)}
+    .fg input::placeholder,.fg textarea::placeholder{color:rgba(255,255,255,.2)}
+    .fg select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(255,255,255,0.3)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:34px;cursor:pointer}
+    .fg select option{background:var(--black)}
+    .fg textarea{resize:vertical;min-height:70px}
+
+    /* Buttons */
+    .btn{display:inline-flex;align-items:center;gap:6px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:.04em;border-radius:9px;padding:9px 20px;cursor:pointer;border:none;transition:all .2s; justify-content:center;}
+    .btn:hover{opacity:.85;transform:translateY(-1px)}
+    .btn:active{transform:scale(.97)}
+    .btn-cyan{background:var(--cyan);color:#fff}
+    .btn-orange{background:var(--orange);color:#fff}
+    .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6)}
+    .btn-ghost:hover{border-color:rgba(255,255,255,.3);color:#fff}
+    .btn-red{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#f87171}
+    .btn-green{background:var(--green);color:#fff}
+    .btn-sm{font-size:12px;padding:6px 14px}
+    .btn-icon{padding:6px; width:34px; height:34px; display:flex; align-items:center; justify-content:center; border-radius:9px;}
+
+    /* Toast */
+    .toast-wrap{position:fixed;top:1.25rem;right:1.25rem;z-index:999;display:flex;flex-direction:column;gap:.5rem;pointer-events:none}
+    .toast{background:var(--black-2);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:.75rem 1.1rem;font-size:13px;color:#fff;min-width:240px;transform:translateX(110%);transition:transform .3s;pointer-events:auto;display:flex;align-items:center;gap:8px}
+    .toast.show{transform:translateX(0)}
+    .toast.success{border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.07)}
+    .toast.error{border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.07)}
+    .toast.info{border-color:rgba(11,171,221,.3);background:rgba(11,171,221,.07)}
+
+    /* Table */
+    .table-wrap{overflow-x:auto;margin:-0.25rem}
+    table{width:100%;border-collapse:collapse;min-width:600px}
+    th{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);text-align:left;padding:.6rem .85rem;border-bottom:1px solid rgba(255,255,255,.07)}
+    td{padding:.7rem .85rem;border-bottom:1px solid rgba(255,255,255,.05);font-size:13px;color:rgba(255,255,255,.7);vertical-align:middle}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:rgba(255,255,255,.02)}
+    .badge{font-size:10px;font-weight:700;padding:2px 9px;border-radius:10px;white-space:nowrap}
+    .badge-ess{background:rgba(11,171,221,.15);color:var(--cyan)}
+    .badge-adv{background:rgba(243,99,8,.15);color:#f8a97a}
+    .badge-pres{background:rgba(255,255,255,.07);color:rgba(255,255,255,.55)}
+    .badge-online{background:rgba(34,197,94,.12);color:#86efac}
+    .badge-active{background:rgba(34,197,94,.12);color:#86efac}
+    .badge-pending{background:rgba(243,99,8,.15);color:#fbbf24}
+    .badge-blocked{background:rgba(239,68,68,.12);color:#f87171}
+
+    /* Stats */
+    .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.25rem}
+    .stat-card{background:var(--black-2);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:1.25rem 1.5rem}
+    .stat-val{font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:700;line-height:1;margin-bottom:4px}
+    .stat-lbl{font-size:11px;color:rgba(255,255,255,.38)}
+    .c-cyan{color:var(--cyan)}.c-orange{color:var(--orange)}.c-green{color:var(--green)}.c-white{color:#fff}
+
+    /* Tabs */
+    .tabs{display:flex;gap:4px;background:rgba(255,255,255,.04);border-radius:10px;padding:3px;margin-bottom:1.25rem;width:fit-content}
+    .tab{font-size:12px;font-weight:700;font-family:'Barlow Condensed',sans-serif;letter-spacing:.04em;padding:6px 16px;border-radius:8px;cursor:pointer;color:rgba(255,255,255,.4);transition:all .2s;border:none;background:transparent}
+    .tab.active{background:rgba(255,255,255,.08);color:#fff}
+
+    /* User card in member list */
+    .user-actions{display:flex;gap:6px;align-items:center}
+
+    /* Date preview */
+    .preview-box{background:rgba(11,171,221,.05);border:1px solid rgba(11,171,221,.15);border-radius:10px;padding:1rem 1.25rem;margin-top:1rem}
+    .preview-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(11,171,221,.6);margin-bottom:.5rem}
+    .preview-text{font-size:13px;color:rgba(255,255,255,.65);line-height:1.7}
+
+    /* Section hidden by default */
+    .section{display:none}
+    .section.active{display:block}
+
+    /* Input group */
+    .input-group{display:flex;gap:8px;align-items:flex-end}
+    .input-group .fg{flex:1;margin-bottom:0}
+
+    /* Alert */
+    .alert{border-radius:10px;padding:.85rem 1.1rem;font-size:13px;display:flex;align-items:flex-start;gap:8px;margin-bottom:1rem}
+    .alert-info{background:rgba(11,171,221,.07);border:1px solid rgba(11,171,221,.2);color:rgba(255,255,255,.7)}
+    .alert-warn{background:rgba(243,99,8,.07);border:1px solid rgba(243,99,8,.2);color:rgba(255,255,255,.7)}
+
+    /* Empty state */
+    .empty{text-align:center;padding:3rem 1rem;color:rgba(255,255,255,.3);font-size:13px}
+    .empty-icon{font-size:2.5rem;margin-bottom:.75rem;display:block}
+
+    /* Separator */
+    .sep{height:1px;background:rgba(255,255,255,.07);margin:1.25rem 0}
+
+    /* Modal overlay */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:none;align-items:center;justify-content:center}
+    .modal-backdrop.open{display:flex}
+    .modal{background:var(--black-2);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:1.75rem;width:100%;max-width:460px;max-height:90vh;overflow-y:auto}
+    .modal-h{font-family:'Barlow Condensed',sans-serif;font-size:1.25rem;font-weight:700;margin-bottom:1.25rem;display:flex;align-items:center;justify-content:space-between}
+    .modal-close{background:transparent;border:none;color:rgba(255,255,255,.4);font-size:1.25rem;cursor:pointer;padding:2px 6px;transition:color .2s}
+    .modal-close:hover{color:#fff}
+
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+    .section.active{animation:fadeIn .25s ease}
+
+    /* Estilos Adicionais Certificados */
+    .cert-tabs{display:flex;gap:8px;margin-bottom:1rem}
+    .cert-tb{flex:1;padding:8px;border-radius:9px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:.08em;cursor:pointer;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:rgba(255,255,255,.5);transition:all .2s;text-align:center}
+    .cert-tb-e.on{background:rgba(11,171,221,.15);color:var(--cyan);border-color:var(--cyan)}
+    .cert-tb-a.on{background:rgba(243,99,8,.15);color:var(--orange);border-color:var(--orange)}
+    
+    .cert-plist{display:flex;flex-direction:column;gap:8px;max-height:250px;overflow-y:auto;padding-right:4px}
+    .cert-prow{display:grid;grid-template-columns:1fr 1fr auto;gap:6px;align-items:center}
+    canvas#cc{width:100%;max-width:1000px;display:block;border-radius:6px;background:#fff;}
+    .cert-pinfo{flex:1;font-size:13px;font-weight:500;color:rgba(255,255,255,.7);background:rgba(255,255,255,.04);padding:10px 16px;border-radius:9px;display:flex;align-items:center;border:1px solid rgba(255,255,255,.1)}
+  </style>
+</head>
+<body>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="sb-logo">
+      <svg viewBox="118 135 265 220" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"><defs><linearGradient id="nlg1" gradientUnits="userSpaceOnUse" x1="203.76" y1="229.07" x2="357.75" y2="229.07"><stop offset="0" stop-color="#0BABDD"/><stop offset="1" stop-color="#1B6F92"/></linearGradient><linearGradient id="nlg2" gradientUnits="userSpaceOnUse" x1="249.99" y1="229.23" x2="142.5" y2="229.23"><stop offset="0" stop-color="#DB3832"/><stop offset=".5025" stop-color="#E46E3A"/><stop offset="1" stop-color="#EDA342"/></linearGradient><linearGradient id="nlg3" gradientUnits="userSpaceOnUse" x1="148.64" y1="306.52" x2="148.64" y2="274.31"><stop offset="0" stop-color="#DB3832"/><stop offset="1" stop-color="#EDA342"/></linearGradient><linearGradient id="nlg4" gradientUnits="userSpaceOnUse" x1="355.74" y1="306.52" x2="355.74" y2="274.31"><stop offset="0" stop-color="#1B6F92"/><stop offset="1" stop-color="#0BABDD"/></linearGradient></defs><circle fill="#0BABDD" cx="322" cy="193.8" r="4.7"/><circle fill="#0BABDD" cx="244.1" cy="168.1" r="4.7"/><circle fill="#0BABDD" cx="369.7" cy="217" r="4.7"/><circle fill="#0BABDD" cx="298.8" cy="157.4" r="5.1"/><circle fill="#F36308" cx="177.2" cy="168.1" r="6.4"/><circle fill="#F36308" cx="146.1" cy="196.7" r="6.4"/><circle fill="#0BABDD" cx="191.5" cy="200.6" r="5"/><circle fill="#F36308" cx="134.8" cy="217" r="5.8"/><path fill="none" stroke="#F36308" stroke-width="2.5" d="M142.4,230.2c0,0,5.1-33.9,53.4-58.7"/><path fill="none" stroke="#F36308" stroke-width="2.5" d="M130.7,264.8c0,0-11.7-44.8,27.7-81.6c0,0,34.6-37.2,100.9-34.6"/><path fill="none" stroke="#0BABDD" stroke-width="2.5" d="M300.9,158.6c0,0,34.1,10.9,56.8,39.9s19.1,45.2,17.6,65.4"/><path fill="none" stroke="#F36308" stroke-width="2.2" d="M182.3,200.8c0,0-10.9,7.2-19.1,22.9"/><path fill="none" stroke="#0BABDD" stroke-width="2.2" d="M221.8,186.3c0,0-16.5,3.7-29.7,14.3"/><path fill="none" stroke="#0BABDD" stroke-width="2.2" d="M244.1,168.1c0,0,29.8-3.1,61.5,13.8c0,0,20.3,10,33.1,31.9"/><path fill="none" stroke="#0BABDD" stroke-width="2.2" d="M303.9,190.8c0,0-22-18.1-64.5-15.4"/><circle fill="#0BABDD" cx="260.6" cy="148.6" r="6.4"/><path fill="url(#nlg1)" d="M351.1,242.2l6.7,3.3c-2.2-5.5-3.6-11-3.6-11c-2.4-5.8,0.8-9.9,0.8-9.9l2.7-3.5l-28.3,0.6C293.2,199.7,261.1,200,250,201h0c-25.4,9.5-46.2,26.9-46.2,26.9h14.5c0,0,1.9,0.1,0.7,2.3c0,0-5.3,6.8-8.5,18.8c29.1-7,79.9-12,79.9-12l-8,12l21.2,8.5h0.5c2-18.2,17.4-17.5,17.4-17.5c5,0.5,8.8,1.9,11.7,3.8l3.4-16.3C336.5,227.4,352.7,242.3,351.1,242.2z"/><path fill="url(#nlg2)" d="M250,201c-2.7,0.2-4.2,0.5-4.2,0.5c-23.7,2.5-51.7,22.3-51.7,22.3c-32.2,2.1-49.3,18.7-49.3,18.7c-3.9,3-1.8,8.1-1.8,8.1l2,6.9h22.6c1.9-20.1,16.9-20.6,16.9-20.6c10.3,0.3,11.3,8.4,11.3,8.4c-4-6.2-13.1-4-13.1-4c-11.6,4.2-11,16.2-11,16.2h31.1c0,0,0-0.1,0-0.1c0-0.1,0-0.1,0-0.2c0-0.1,0-0.2,0.1-0.3c3.6-18.3,11.7-27.8,12.6-28.9c0,0,0-0.1,0.1-0.1h-12C203.8,227.9,224.6,210.5,250,201z"/><path fill="url(#nlg3)" d="M156.6,306.5l-8.3-10.2h-9.2v10.2H130v-32.2h22c8,0,14.2,3.6,14.2,11c0,5.4-3.3,8.8-8.2,10.3l9.2,10.9H156.6z M151.3,289.5c3.3,0,5.6-0.9,5.6-4s-2.4-4-5.6-4h-12.3v8.1H151.3z"/><path fill="#FFF" d="M210,299.3v7.2h-33.6v-32.2h33.1v7.2h-24.1v5.3h19.9v6.9h-19.9v5.7H210z"/><path fill="#FFF" d="M279.4,274.3v32.2h-8.7V286l-11.9,15.7h-0.4L246.4,286v20.6H238v-32.2h9.5l11.2,15.5l11.3-15.5H279.4z"/><path fill="#FFF" d="M317,300.4h-18.1l-3.1,6.2h-10.1l17.1-32.2h10.5l17.1,32.2h-10.2L317,300.4z"/><path fill="url(#nlg4)" d="M374.3,285.6c0,7.5-5.8,11.3-14.6,11.3h-13v9.7h-9.4V290h21.6c3.5,0,5.9-1.1,5.9-4.3c0-3.3-2.4-4.3-5.9-4.3h-12.1l-9.5-7.1h22.4C368.4,274.3,374.3,278.2,374.3,285.6z"/><polygon fill="#FFF" points="217.3,295.7 230.3,295.7 223.8,307.5"/><polygon fill="#0BABDD" points="230.3,288.6 217.3,288.6 223.8,276.8"/></svg>
+    </div>
+
+    <div class="sb-label">Principal</div>
+    <div class="sb-link active" onclick="showSection('dashboard')"><span class="sb-icon">📊</span> Dashboard</div>
+    <div class="sb-link" onclick="showSection('membros')"><span class="sb-icon">👥</span> Membros</div>
+    <div class="sb-link" onclick="showSection('datas')"><span class="sb-icon">📅</span> Datas</div>
+    <div class="sb-link" onclick="showSection('conteudo')"><span class="sb-icon">🎬</span> Conteúdo</div>
+
+    <div class="sb-label">Ferramentas</div>
+    <div class="sb-link" onclick="showSection('certificados')"><span class="sb-icon">🎓</span> Certificados</div>
+
+    <div class="sb-label">Sistema</div>
+    <div class="sb-link" onclick="showSection('config')"><span class="sb-icon">⚙️</span> Configuração</div>
+
+    <div class="sb-bottom">
+      <div class="sync-status">
+        <div class="sync-dot" id="sync-dot"></div>
+        <span id="sync-text">A sincronizar…</span>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="topbar-title">Dashboard</div>
+      <div class="topbar-right">
+        <button class="btn btn-ghost btn-sm" onclick="syncFromCloud()">↻ Sincronizar</button>
+        <button class="btn btn-cyan btn-sm" onclick="saveToCloud()">☁ Guardar na Cloud</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <div class="section active" id="section-dashboard">
+        <div class="stat-grid" id="stats-grid">
+          <div class="stat-card"><div class="stat-val c-white" id="st-total">—</div><div class="stat-lbl">Membros Totais</div></div>
+          <div class="stat-card"><div class="stat-val c-cyan" id="st-ess">—</div><div class="stat-lbl">Essential</div></div>
+          <div class="stat-card"><div class="stat-val c-orange" id="st-adv">—</div><div class="stat-lbl">Advanced</div></div>
+          <div class="stat-card"><div class="stat-val c-green" id="st-active">—</div><div class="stat-lbl">Ativos</div></div>
+        </div>
+
+        <div class="card">
+          <div class="card-h"><span>📅</span> Próxima Formação</div>
+          <div id="dash-dates-preview" class="preview-text" style="color:rgba(255,255,255,.6);font-size:14px">A carregar…</div>
+          <div style="margin-top:1rem">
+            <button class="btn btn-ghost btn-sm" onclick="showSection('datas')">✏️ Editar datas</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-h"><span>👥</span> Membros Recentes</div>
+          <div class="table-wrap" id="recent-members-table">
+            <div class="empty"><span class="empty-icon">☁</span>A carregar dados da cloud…</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section" id="section-membros">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem">
+          <div class="tabs">
+            <button class="tab active" onclick="filterMembers('all',this)">Todos</button>
+            <button class="tab" onclick="filterMembers('essential',this)">Essential</button>
+            <button class="tab" onclick="filterMembers('advanced',this)">Advanced</button>
+          </div>
+          <button class="btn btn-cyan btn-sm" onclick="openAddMember()">+ Adicionar Membro</button>
+        </div>
+
+        <div class="card" style="padding:0">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Email</th>
+                  <th>Curso</th>
+                  <th>Formato</th>
+                  <th>Estado</th>
+                  <th>Acesso</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="members-tbody">
+                <tr><td colspan="7"><div class="empty"><span class="empty-icon">☁</span>A carregar…</div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="section" id="section-datas">
+        <div class="alert alert-info">
+          <span>ℹ️</span>
+          <span>Edita as datas aqui e clica <strong>Guardar na Cloud</strong> — o site (index.html, essential.html, advanced.html) actualiza automaticamente.</span>
+        </div>
+
+        <div class="card">
+          <div class="card-h"><span>🇵🇹</span> Português</div>
+          <div class="grid-2">
+            <div class="fg"><label>Data Principal (PT)</label><input type="text" id="d-date_pt" placeholder="14 a 17 de Maio 2026 · Porto"></div>
+            <div class="fg"><label>Essential (PT)</label><input type="text" id="d-essential_pt" placeholder="Essential: 14–15 Mai"></div>
+            <div class="fg"><label>Advanced (PT)</label><input type="text" id="d-advanced_pt" placeholder="Advanced: 14–17 Mai"></div>
+            <div class="fg"><label>Vagas Essential (PT)</label><input type="text" id="d-slots_essential_pt" placeholder="3 vagas Essential"></div>
+            <div class="fg"><label>Vagas Advanced (PT)</label><input type="text" id="d-slots_advanced_pt" placeholder="2 vagas Advanced"></div>
+          </div>
+          <div class="fg"><label>Barra de Anúncio (PT) — aceita HTML</label><textarea id="d-announce_pt" rows="2">📅 <strong>Próxima formação presencial — Essential:</strong> 14 e 15 Mai 2026 &nbsp;·&nbsp; <strong>Advanced:</strong> 14–17 Mai 2026</textarea></div>
+        </div>
+
+        <div class="card">
+          <div class="card-h"><span>🇬🇧</span> English</div>
+          <div class="grid-2">
+            <div class="fg"><label>Main Date (EN)</label><input type="text" id="d-date_en" placeholder="May 14–17, 2026 · Porto"></div>
+            <div class="fg"><label>Essential (EN)</label><input type="text" id="d-essential_en" placeholder="Essential: 14–15 May"></div>
+            <div class="fg"><label>Advanced (EN)</label><input type="text" id="d-advanced_en" placeholder="Advanced: 14–17 May"></div>
+            <div class="fg"><label>Spots Essential (EN)</label><input type="text" id="d-slots_essential_en" placeholder="3 spots Essential"></div>
+            <div class="fg"><label>Spots Advanced (EN)</label><input type="text" id="d-slots_advanced_en" placeholder="2 spots Advanced"></div>
+          </div>
+          <div class="fg"><label>Announcement Bar (EN) — HTML allowed</label><textarea id="d-announce_en" rows="2">📅 <strong>Next in-person training — Essential:</strong> 14–15 May 2026 &nbsp;·&nbsp; <strong>Advanced:</strong> 14–17 May 2026</textarea></div>
+        </div>
+
+        <div class="preview-box" id="dates-preview">
+          <div class="preview-label">Preview</div>
+          <div class="preview-text" id="dates-preview-text">A preencher automaticamente…</div>
+        </div>
+
+        <div style="margin-top:1.25rem;display:flex;gap:.75rem">
+          <button class="btn btn-cyan" onclick="saveDates()">💾 Guardar Datas</button>
+          <button class="btn btn-ghost" onclick="previewDates()">👁 Preview</button>
+        </div>
+      </div>
+
+      <div class="section" id="section-conteudo">
+        <div class="alert alert-info">
+          <span>ℹ️</span>
+          <span>Gere os módulos de vídeo disponíveis na área de membros. Os alunos veem apenas os módulos do seu curso.</span>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
+          <div class="tabs">
+            <button class="tab active" onclick="filterContent('all',this)">Todos</button>
+            <button class="tab" onclick="filterContent('essential',this)">Essential</button>
+            <button class="tab" onclick="filterContent('advanced',this)">Advanced</button>
+          </div>
+          <button class="btn btn-cyan btn-sm" onclick="openAddContent()">+ Adicionar Módulo</button>
+        </div>
+
+        <div class="card" style="padding:0">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Título</th>
+                  <th>Curso</th>
+                  <th>URL do Vídeo</th>
+                  <th>Visível</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="content-tbody">
+                <tr><td colspan="6"><div class="empty">A carregar…</div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="section" id="section-certificados">
+        <div class="grid-2" style="align-items:start;">
+            
+            <div style="display:flex; flex-direction:column; gap:1.25rem;">
+                
+                <div class="card" style="margin-bottom:0">
+                  <div class="card-h"><span>🖼️</span> Imagens do Certificado</div>
+                  <div class="alert alert-info" style="font-size: 12px; margin-bottom: 12px;">
+                    <span>ℹ️</span> Carrega as tuas imagens aqui. Elas vão ficar guardadas no teu navegador e <strong>não precisas de voltar a carregar da próxima vez!</strong>
+                  </div>
+                  <div class="grid-2">
+                      <div class="fg">
+                        <label>Ficheiro do Logótipo (SVG/PNG)</label>
+                        <input type="file" accept="image/*" onchange="certLoadLogo(this)" style="padding: 5px; font-size: 11px; cursor: pointer;">
+                        <div id="logo-status" style="font-size: 11px; color: var(--green); display: none; margin-top:4px;">✓ Logótipo guardado na memória!</div>
+                      </div>
+                      <div class="fg">
+                        <label>Ficheiro da Assinatura (PNG)</label>
+                        <input type="file" accept="image/*" onchange="certLoadSig(this)" style="padding: 5px; font-size: 11px; cursor: pointer;">
+                        <div id="sig-status" style="font-size: 11px; color: var(--green); display: none; margin-top:4px;">✓ Assinatura guardada na memória!</div>
+                      </div>
+                  </div>
+                </div>
+
+                <div class="card" style="margin-bottom:0">
+                    <div class="card-h"><span>🎓</span> Configuração do Curso</div>
+                    <div class="cert-tabs">
+                        <button class="cert-tb cert-tb-e on" id="cert-btn-e" onclick="certSetTier('e')">START</button>
+                        <button class="cert-tb cert-tb-a" id="cert-btn-a" onclick="certSetTier('a')">PRO</button>
+                    </div>
+                    <div class="fg"><label>Datas da formação</label><input type="text" id="cert-dates" value="14 e 15 de Maio de 2026" oninput="certUpdate()"></div>
+                    <div class="grid-2">
+                        <div class="fg"><label>Horas</label><input type="number" id="cert-hours" value="16" min="1" oninput="certUpdate()"></div>
+                        <div class="fg"><label>Nº certificado</label><input type="text" id="cert-num" value="RA-2026-001" oninput="certUpdate()"></div>
+                    </div>
+                    <div class="grid-2">
+                        <div class="fg"><label>Local</label><input type="text" id="cert-loc" value="Lisboa, Portugal" oninput="certUpdate()"></div>
+                        <div class="fg"><label>Formador</label><input type="text" id="cert-trainer" value="Sérgio" oninput="certUpdate()"></div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-bottom:0">
+                    <div class="card-h" style="justify-content:space-between;">
+                        <span>👥 Participantes</span>
+                        <button class="btn btn-ghost btn-sm" onclick="certImportFromDB()">📥 Importar do Backoffice</button>
+                    </div>
+                    <div class="fg"><label>Mensagem Base (WhatsApp)</label>
+                        <textarea id="cert-msg" rows="2" style="font-size:12px; min-height:50px;">Olá {nome}! Parabéns pela conclusão do curso REMAP Academy {curso}. Em anexo encontras o teu certificado. Bom trabalho!</textarea>
+                    </div>
+                    
+                    <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:6px;margin-bottom:8px;padding-right:4px;">
+                        <span style="font-size:11px;font-weight:700;color:rgba(255,255,255,.3)">NOME</span>
+                        <span style="font-size:11px;font-weight:700;color:rgba(255,255,255,.3)">WHATSAPP (Opcional)</span>
+                        <span></span>
+                    </div>
+                    
+                    <div class="cert-plist" id="cert-pl"></div>
+                    <button class="btn btn-ghost" style="width:100%; margin-top:10px; border-style:dashed;" onclick="certAddP()">+ Adicionar participante manual</button>
+                </div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:1.25rem;">
+                <div class="card" style="margin-bottom:0; display:flex; flex-direction:column; gap:1rem;">
+                    <canvas id="cc"></canvas>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <div class="cert-pinfo" id="cert-pi">Adicione participantes para pré-visualizar</div>
+                        <button class="btn btn-cyan" onclick="certDownloadPDF()">Baixar PDF Atual</button>
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn btn-ghost" style="flex:1" onclick="certPrevP()">Anterior</button>
+                        <button class="btn btn-ghost" style="flex:1" onclick="certNextP()">Próximo</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+      </div>
+
+      <div class="section" id="section-config">
+        <div class="card">
+          <div class="card-h"><span>🔑</span> Configuração JSONBin.io</div>
+          <div class="alert alert-warn">
+            <span>⚠️</span>
+            <span>A API Key está guardada apenas neste browser (localStorage). Nunca partilhes esta página sem alterar a key.</span>
+          </div>
+          <div class="fg"><label>Secret Key (X-Master-Key)</label>
+            <div class="input-group">
+              <div class="fg"><input type="password" id="cfg-apikey" placeholder="$2a$10$…"></div>
+              <button class="btn btn-ghost btn-sm" onclick="toggleKeyVis()">👁</button>
+            </div>
+          </div>
+          <div class="fg"><label>Bin ID (deixa em branco para criar um novo)</label><input type="text" id="cfg-binid" placeholder="68…"></div>
+          <div style="display:flex;gap:.75rem;margin-top:.5rem;flex-wrap:wrap">
+            <button class="btn btn-cyan" onclick="saveConfig()">💾 Guardar Configuração</button>
+            <button class="btn btn-ghost" onclick="createBin()">+ Criar Novo Bin</button>
+            <button class="btn btn-ghost" onclick="testConnection()">🔌 Testar Ligação</button>
+          </div>
+          <div class="sep"></div>
+          <div class="card-h" style="margin-bottom:.75rem"><span>⚠️</span> Zona de Perigo</div>
+          <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+            <button class="btn btn-red btn-sm" onclick="resetLocalData()">🗑 Limpar dados locais</button>
+          </div>
+        </div>
+
+        <div class="card" style="max-width:560px">
+          <div class="card-h"><span>📋</span> Instruções de Integração</div>
+          <p style="font-size:13px;color:rgba(255,255,255,.55);line-height:1.8">
+            Para que o <strong>index.html</strong>, <strong>essential.html</strong> e <strong>advanced.html</strong> leiam os dados da cloud automaticamente, adiciona este script <strong>antes do &lt;/head&gt;</strong> em cada ficheiro:
+          </p>
+          <pre id="integration-snippet" style="background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:1rem;font-size:11px;color:#86efac;white-space:pre-wrap;margin-top:.75rem;line-height:1.7">A carregar Bin ID…</pre>
+          <button class="btn btn-ghost btn-sm" style="margin-top:.75rem" onclick="copySnippet()">📋 Copiar Snippet</button>
+        </div>
+      </div>
+
+    </div></div></div><div class="modal-backdrop" id="modal-member">
+  <div class="modal">
+    <div class="modal-h">
+      <span id="modal-member-title">Adicionar Membro</span>
+      <button class="modal-close" onclick="closeModal('modal-member')">✕</button>
+    </div>
+    <div class="fg"><label>Nome Completo</label><input type="text" id="m-nome" placeholder="Ana Silva"></div>
+    <div class="fg"><label>Email</label><input type="email" id="m-email" placeholder="ana@email.com"></div>
+    <div class="fg"><label>Telefone</label><input type="tel" id="m-tel" placeholder="+351 9xx xxx xxx"></div>
+    <div class="grid-2">
+      <div class="fg"><label>Curso</label>
+        <select id="m-curso"><option value="essential">Essential</option><option value="advanced">Advanced</option></select>
+      </div>
+      <div class="fg"><label>Formato</label>
+        <select id="m-formato"><option value="presencial">Presencial</option><option value="online">Online</option></select>
+      </div>
+    </div>
+    <div class="fg"><label>Estado</label>
+      <select id="m-estado"><option value="active">Ativo</option><option value="pending">Pendente</option><option value="blocked">Bloqueado</option></select>
+    </div>
+    <div class="fg"><label>Password de Acesso (área de membros)</label><input type="text" id="m-pass" placeholder="Deixa em branco para gerar automaticamente"></div>
+    <div style="display:flex;gap:.75rem;margin-top:.75rem">
+      <button class="btn btn-cyan" style="flex:1" onclick="saveMember()">💾 Guardar</button>
+      <button class="btn btn-ghost" onclick="closeModal('modal-member')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="modal-content">
+  <div class="modal">
+    <div class="modal-h">
+      <span id="modal-content-title">Adicionar Módulo</span>
+      <button class="modal-close" onclick="closeModal('modal-content')">✕</button>
+    </div>
+    <div class="fg"><label>Título do Módulo</label><input type="text" id="c-titulo" placeholder="Módulo 1 — Introdução ao ECU"></div>
+    <div class="fg"><label>Curso</label>
+      <select id="c-curso"><option value="essential">Essential</option><option value="advanced">Advanced</option><option value="both">Ambos</option></select>
+    </div>
+    <div class="fg"><label>URL do Vídeo (Vimeo, YouTube, etc.)</label><input type="text" id="c-url" placeholder="https://vimeo.com/…"></div>
+    <div class="fg"><label>Descrição (opcional)</label><textarea id="c-desc" placeholder="Breve descrição do módulo…"></textarea></div>
+    <div class="fg"><label>Visível para alunos</label>
+      <select id="c-visivel"><option value="true">Sim — visível</option><option value="false">Não — oculto</option></select>
+    </div>
+    <div style="display:flex;gap:.75rem;margin-top:.75rem">
+      <button class="btn btn-cyan" style="flex:1" onclick="saveContent()">💾 Guardar</button>
+      <button class="btn btn-ghost" onclick="closeModal('modal-content')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script>
+// ── CONFIGURAÇÕES BACKOFFICE ───────────────────────────────────────────────────
+const JSONBIN_BASE = 'https://api.jsonbin.io/v3';
+let API_KEY = '';
+let BIN_ID = '';
+
+let DB = {
+  users: [],
+  dates: {
+    date_pt:'14 a 17 de Maio 2026 · Porto',
+    date_en:'May 14–17, 2026 · Porto',
+    essential_pt:'Essential: 14–15 Mai',
+    essential_en:'Essential: 14–15 May',
+    advanced_pt:'Advanced: 14–17 Mai',
+    advanced_en:'Advanced: 14–17 May',
+    slots_essential_pt:'3 vagas Essential',
+    slots_essential_en:'3 spots Essential',
+    slots_advanced_pt:'2 vagas Advanced',
+    slots_advanced_en:'2 spots Advanced',
+    announce_pt:'📅 <strong>Próxima formação presencial — Essential:</strong> 14 e 15 Mai 2026 &nbsp;·&nbsp; <strong>Advanced:</strong> 14–17 Mai 2026',
+    announce_en:'📅 <strong>Next in-person training — Essential:</strong> 14–15 May 2026 &nbsp;·&nbsp; <strong>Advanced:</strong> 14–17 May 2026'
+  },
+  content: []
+};
+
+let editingMemberId = null;
+let editingContentId = null;
+let memberFilter = 'all';
+let contentFilter = 'all';
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+function init() {
+  API_KEY = localStorage.getItem('ra_bo_apikey') || '$2a$10$yQ9D4anw2u9hSHfXI4BzOuzuw3jmi8Muit5Koov5rWMKzOQeEEhtO';
+  BIN_ID  = localStorage.getItem('ra_bo_binid') || '';
+  document.getElementById('cfg-apikey').value = API_KEY;
+  document.getElementById('cfg-binid').value  = BIN_ID;
+  updateSnippet();
+  if (BIN_ID) {
+    syncFromCloud();
+  } else {
+    setSyncStatus('error','Sem Bin ID — configura em ⚙️');
+    loadFromLocal();
+    renderAll();
+  }
+}
+
+// ── JSONBIN API ───────────────────────────────────────────────────────────────
+async function syncFromCloud() {
+  if (!BIN_ID) { toast('Sem Bin ID configurado. Cria um novo em ⚙️ Configuração.','error'); return; }
+  setSyncStatus('loading','A sincronizar…');
+  try {
+    const r = await fetch(`${JSONBIN_BASE}/b/${BIN_ID}/latest`, {
+      headers: { 'X-Master-Key': API_KEY }
+    });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const j = await r.json();
+    DB = Object.assign({ users:[], dates: DB.dates, content:[] }, j.record || {});
+    saveToLocal();
+    renderAll();
+    setSyncStatus('ok','Sincronizado');
+    toast('Dados carregados da cloud ✓','success');
+  } catch(e) {
+    setSyncStatus('error','Erro de ligação');
+    toast('Erro ao sincronizar: ' + e.message,'error');
+    loadFromLocal();
+    renderAll();
+  }
+}
+
+async function saveToCloud() {
+  if (!BIN_ID) {
+    toast('Sem Bin ID. Vai a ⚙️ e cria um Bin primeiro.','error');
+    return;
+  }
+  collectDates();
+  setSyncStatus('loading','A guardar…');
+  try {
+    const r = await fetch(`${JSONBIN_BASE}/b/${BIN_ID}`, {
+      method: 'PUT',
+      headers: { 'Content-Type':'application/json', 'X-Master-Key': API_KEY },
+      body: JSON.stringify(DB)
+    });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    saveToLocal();
+    setSyncStatus('ok','Guardado na cloud');
+    toast('Guardado na cloud ✓','success');
+    localStorage.setItem('ra_next_training', JSON.stringify(DB.dates));
+    localStorage.setItem('ra_users', JSON.stringify(DB.users || []));
+  } catch(e) {
+    setSyncStatus('error','Erro ao guardar');
+    toast('Erro: ' + e.message,'error');
+  }
+}
+
+async function createBin() {
+  const key = document.getElementById('cfg-apikey').value.trim();
+  if (!key) { toast('Introduz a API Key primeiro.','error'); return; }
+  setSyncStatus('loading','A criar Bin…');
+  try {
+    const r = await fetch(`${JSONBIN_BASE}/b`, {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', 'X-Master-Key': key, 'X-Bin-Name':'REMAP-Academy', 'X-Bin-Private':'false' },
+      body: JSON.stringify(DB)
+    });
+    if (!r.ok) throw new Error(`HTTP ${r.status} — verifica a API Key`);
+    const j = await r.json();
+    BIN_ID = j.metadata.id;
+    API_KEY = key;
+    localStorage.setItem('ra_bo_apikey', API_KEY);
+    localStorage.setItem('ra_bo_binid', BIN_ID);
+    document.getElementById('cfg-binid').value = BIN_ID;
+    updateSnippet();
+    setSyncStatus('ok','Bin criado!');
+    toast(`Bin criado com sucesso! ID: ${BIN_ID}`,'success');
+  } catch(e) {
+    setSyncStatus('error','Erro');
+    toast('Erro ao criar Bin: ' + e.message,'error');
+  }
+}
+
+async function testConnection() {
+  const key = document.getElementById('cfg-apikey').value.trim();
+  const bid = document.getElementById('cfg-binid').value.trim();
+  if (!key || !bid) { toast('Preenche a API Key e o Bin ID.','error'); return; }
+  setSyncStatus('loading','A testar…');
+  try {
+    const r = await fetch(`${JSONBIN_BASE}/b/${bid}/latest`, {
+      headers: { 'X-Master-Key': key }
+    });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    setSyncStatus('ok','Ligação OK');
+    toast('Ligação testada com sucesso ✓','success');
+  } catch(e) {
+    setSyncStatus('error','Falhou');
+    toast('Falhou: ' + e.message,'error');
+  }
+}
+
+// ── LOCAL STORAGE ─────────────────────────────────────────────────────────────
+function saveToLocal() { localStorage.setItem('ra_bo_db', JSON.stringify(DB)); }
+function loadFromLocal() {
+  try {
+    const s = localStorage.getItem('ra_bo_db');
+    if (s) DB = Object.assign({ users:[], dates:DB.dates, content:[] }, JSON.parse(s));
+  } catch(e) {}
+}
+
+// ── CONFIG ────────────────────────────────────────────────────────────────────
+function saveConfig() {
+  API_KEY = document.getElementById('cfg-apikey').value.trim();
+  BIN_ID  = document.getElementById('cfg-binid').value.trim();
+  localStorage.setItem('ra_bo_apikey', API_KEY);
+  localStorage.setItem('ra_bo_binid',  BIN_ID);
+  updateSnippet();
+  toast('Configuração guardada ✓','success');
+  if (BIN_ID) syncFromCloud();
+}
+
+function toggleKeyVis() {
+  const i = document.getElementById('cfg-apikey');
+  i.type = i.type === 'password' ? 'text' : 'password';
+}
+
+function resetLocalData() {
+  if (!confirm('Tens a certeza? Remove todos os dados locais (não afecta a cloud).')) return;
+  localStorage.removeItem('ra_bo_db');
+  DB = { users:[], dates:DB.dates, content:[] };
+  renderAll();
+  toast('Dados locais limpos.','info');
+}
+
+function updateSnippet() {
+  const bid = BIN_ID || 'SEU_BIN_ID_AQUI';
+  const snippet = `<script>
+/* REMAP Academy — JSONBin sync */
+(function(){
+  const BIN_ID='${bid}';
+  fetch('https://api.jsonbin.io/v3/b/'+BIN_ID+'/latest')
+    .then(r=>r.json()).then(j=>{
+      const d=j.record&&j.record.dates;
+      if(d){
+        localStorage.setItem('ra_next_training',JSON.stringify(d));
+        if(typeof renderTrainingDates==='function') renderTrainingDates();
+      }
+    }).catch(()=>{});
+})();
+<\/script>`;
+  const el = document.getElementById('integration-snippet');
+  if (el) el.textContent = snippet;
+}
+
+function copySnippet() {
+  const t = document.getElementById('integration-snippet').textContent;
+  navigator.clipboard.writeText(t).then(()=>toast('Snippet copiado! ✓','success'));
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function renderAll() {
+  renderStats();
+  renderDashDates();
+  renderMembersTable(memberFilter);
+  renderContentTable(contentFilter);
+  renderDatesForm();
+  renderRecentMembers();
+}
+
+function renderStats() {
+  const u = DB.users || [];
+  document.getElementById('st-total').textContent = u.length;
+  document.getElementById('st-ess').textContent = u.filter(x=>x.curso==='essential').length;
+  document.getElementById('st-adv').textContent = u.filter(x=>x.curso==='advanced').length;
+  document.getElementById('st-active').textContent = u.filter(x=>x.estado==='active').length;
+}
+
+function renderDashDates() {
+  const d = DB.dates || {};
+  const el = document.getElementById('dash-dates-preview');
+  if (el) el.innerHTML = `<strong>PT:</strong> ${d.date_pt||'—'}<br><strong>EN:</strong> ${d.date_en||'—'}`;
+}
+
+function renderDatesForm() {
+  const d = DB.dates || {};
+  const fields = ['date_pt','date_en','essential_pt','essential_en','advanced_pt','advanced_en',
+                  'slots_essential_pt','slots_essential_en','slots_advanced_pt','slots_advanced_en',
+                  'announce_pt','announce_en'];
+  fields.forEach(f=>{
+    const el = document.getElementById('d-'+f);
+    if (el) el.value = d[f] || '';
+  });
+}
+
+// ── AUTO-TRADUÇÃO PT → EN ─────────────────────────────────────────────────────
+// Converte uma data/texto PT para EN automaticamente quando o utilizador edita
+function autoTranslatePtToEn() {
+  // date_pt  →  date_en
+  // Estratégia: substituir meses PT por EN, "a" por "–", "·" mantém
+  const monthMapPtEn = {
+    'janeiro':'January','fevereiro':'February','março':'March','abril':'April',
+    'maio':'May','junho':'June','julho':'July','agosto':'August',
+    'setembro':'September','outubro':'October','novembro':'November','dezembro':'December',
+    'jan':'Jan','fev':'Feb','mar':'Mar','abr':'Apr',
+    'mai':'May','jun':'Jun','jul':'Jul','ago':'Aug',
+    'set':'Sep','out':'Oct','nov':'Nov','dez':'Dec'
+  };
+
+  function translateDateStr(pt) {
+    let en = pt;
+    // Replace full month names (case-insensitive)
+    Object.entries(monthMapPtEn).forEach(([p, e]) => {
+      en = en.replace(new RegExp('\\b' + p + '\\b', 'gi'), e);
+    });
+    // "14 a 17 de May" → "14–17 May"  (remove "de" before month)
+    en = en.replace(/\bde\s+([A-Za-z])/g, '$1');
+    // "14 a 17" → "14–17"
+    en = en.replace(/(\d+)\s+a\s+(\d+)/g, '$1–$2');
+    // "Vagas" → "spots"
+    en = en.replace(/\bvagas?\b/gi, 'spots');
+    // Announce bar: "Próxima formação presencial" → "Next in-person training"
+    en = en.replace(/Próxima formação presencial/gi, 'Next in-person training');
+    en = en.replace(/Próxima formação/gi, 'Next training');
+    // Essential/Advanced labels stay the same
+    return en.trim();
+  }
+
+  function translateAnnounce(pt) {
+    let en = pt;
+    en = en.replace(/Próxima formação presencial/gi, 'Next in-person training');
+    en = en.replace(/Próxima formação/gi, 'Next training');
+    // month names
+    Object.entries(monthMapPtEn).forEach(([p, e]) => {
+      en = en.replace(new RegExp('\\b' + p + '\\b', 'gi'), e);
+    });
+    en = en.replace(/\bde\s+([A-Za-z])/g, '$1');
+    en = en.replace(/(\d+)\s+a\s+(\d+)/g, '$1–$2');
+    en = en.replace(/\bvagas?\b/gi, 'spots');
+    return en;
+  }
+
+  const pairMap = {
+    'date_pt':             { en: 'date_en',             fn: translateDateStr },
+    'essential_pt':        { en: 'essential_en',        fn: translateDateStr },
+    'advanced_pt':         { en: 'advanced_en',         fn: translateDateStr },
+    'slots_essential_pt':  { en: 'slots_essential_en',  fn: translateDateStr },
+    'slots_advanced_pt':   { en: 'slots_advanced_en',   fn: translateDateStr },
+    'announce_pt':         { en: 'announce_en',         fn: translateAnnounce },
+  };
+
+  Object.entries(pairMap).forEach(([ptId, {en: enId, fn}]) => {
+    const ptEl = document.getElementById('d-' + ptId);
+    const enEl = document.getElementById('d-' + enId);
+    if (!ptEl || !enEl) return;
+    ptEl.addEventListener('input', () => {
+      enEl.value = fn(ptEl.value);
+    });
+  });
+}
+
+function collectDates() {
+  const fields = ['date_pt','date_en','essential_pt','essential_en','advanced_pt','advanced_en',
+                  'slots_essential_pt','slots_essential_en','slots_advanced_pt','slots_advanced_en',
+                  'announce_pt','announce_en'];
+  fields.forEach(f=>{
+    const el = document.getElementById('d-'+f);
+    if (el) DB.dates[f] = el.value;
+  });
+}
+
+function saveDates() {
+  collectDates();
+  saveToLocal();
+  localStorage.setItem('ra_next_training', JSON.stringify(DB.dates));
+  previewDates();
+  toast('Datas guardadas localmente. Clica "Guardar na Cloud" para publicar.','info');
+}
+
+function previewDates() {
+  collectDates();
+  const d = DB.dates;
+  document.getElementById('dates-preview-text').innerHTML =
+    `<strong>🇵🇹 Anúncio:</strong> ${d.announce_pt}<br>` +
+    `<strong>🇬🇧 Announce:</strong> ${d.announce_en}<br>` +
+    `<strong>Data PT:</strong> ${d.date_pt} &nbsp;|&nbsp; <strong>EN:</strong> ${d.date_en}`;
+}
+
+function renderRecentMembers() {
+  const u = (DB.users||[]).slice(-5).reverse();
+  const el = document.getElementById('recent-members-table');
+  if (!el) return;
+  if (!u.length) { el.innerHTML = '<div class="empty"><span class="empty-icon">👥</span>Nenhum membro ainda.</div>'; return; }
+  el.innerHTML = `<table><thead><tr><th>Nome</th><th>Email</th><th>Curso</th><th>Estado</th></tr></thead><tbody>
+    ${u.map(m=>`<tr>
+      <td>${esc(m.nome)}</td>
+      <td style="color:rgba(255,255,255,.5)">${esc(m.email)}</td>
+      <td><span class="badge badge-${m.curso}">${m.curso}</span></td>
+      <td><span class="badge badge-${m.estado}">${m.estado}</span></td>
+    </tr>`).join('')}
+  </tbody></table>`;
+}
+
+function renderMembersTable(filter) {
+  memberFilter = filter;
+  let u = DB.users || [];
+  if (filter !== 'all') u = u.filter(x=>x.curso===filter);
+  const el = document.getElementById('members-tbody');
+  if (!u.length) {
+    el.innerHTML = `<tr><td colspan="7"><div class="empty"><span class="empty-icon">👥</span>Nenhum membro encontrado.</div></td></tr>`;
+    return;
+  }
+  el.innerHTML = u.map(m=>`
+    <tr>
+      <td><strong style="color:#fff">${esc(m.nome)}</strong></td>
+      <td style="color:rgba(255,255,255,.55)">${esc(m.email)}</td>
+      <td><span class="badge badge-${m.curso}">${m.curso}</span></td>
+      <td><span class="badge badge-${m.formato==='online'?'online':'pres'}">${m.formato}</span></td>
+      <td><span class="badge badge-${m.estado}">${m.estado}</span></td>
+      <td style="font-family:monospace;font-size:12px;color:rgba(255,255,255,.4)">${esc(m.pass||'—')}</td>
+      <td>
+        <div class="user-actions">
+          <button class="btn btn-ghost btn-sm" onclick="editMember('${m.id}')">✏️</button>
+          <button class="btn btn-red btn-sm" onclick="deleteMember('${m.id}')">🗑</button>
+        </div>
+      </td>
+    </tr>`).join('');
+}
+
+function renderContentTable(filter) {
+  contentFilter = filter;
+  let c = DB.content || [];
+  if (filter !== 'all') c = c.filter(x=>x.curso===filter||x.curso==='both');
+  const el = document.getElementById('content-tbody');
+  if (!c.length) {
+    el.innerHTML = `<tr><td colspan="6"><div class="empty"><span class="empty-icon">🎬</span>Nenhum módulo ainda.</div></td></tr>`;
+    return;
+  }
+  el.innerHTML = c.map((m,i)=>`
+    <tr>
+      <td style="color:rgba(255,255,255,.35);font-size:12px">${i+1}</td>
+      <td><strong style="color:#fff">${esc(m.titulo)}</strong>${m.desc?`<br><span style="font-size:11px;color:rgba(255,255,255,.35)">${esc(m.desc)}</span>`:''}</td>
+      <td><span class="badge badge-${m.curso==='both'?'pres':m.curso}">${m.curso==='both'?'Ambos':m.curso}</span></td>
+      <td style="font-size:12px;color:rgba(255,255,255,.4);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(m.url||'—')}</td>
+      <td>${m.visivel!==false?'<span class="badge badge-active">Sim</span>':'<span class="badge badge-blocked">Não</span>'}</td>
+      <td>
+        <div class="user-actions">
+          <button class="btn btn-ghost btn-sm" onclick="editContent('${m.id}')">✏️</button>
+          <button class="btn btn-red btn-sm" onclick="deleteContent('${m.id}')">🗑</button>
+        </div>
+      </td>
+    </tr>`).join('');
+}
+
+// ── MEMBERS CRUD ──────────────────────────────────────────────────────────────
+function openAddMember() {
+  editingMemberId = null;
+  document.getElementById('modal-member-title').textContent = 'Adicionar Membro';
+  ['m-nome','m-email','m-tel','m-pass'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('m-curso').value='essential';
+  document.getElementById('m-formato').value='presencial';
+  document.getElementById('m-estado').value='active';
+  document.getElementById('modal-member').classList.add('open');
+}
+
+function editMember(id) {
+  const m = DB.users.find(x=>x.id===id);
+  if (!m) return;
+  editingMemberId = id;
+  document.getElementById('modal-member-title').textContent = 'Editar Membro';
+  document.getElementById('m-nome').value = m.nome||'';
+  document.getElementById('m-email').value = m.email||'';
+  document.getElementById('m-tel').value = m.tel||'';
+  document.getElementById('m-curso').value = m.curso||'essential';
+  document.getElementById('m-formato').value = m.formato||'presencial';
+  document.getElementById('m-estado').value = m.estado||'active';
+  document.getElementById('m-pass').value = m.pass||'';
+  document.getElementById('modal-member').classList.add('open');
+}
+
+function saveMember() {
+  const nome = document.getElementById('m-nome').value.trim();
+  const email = document.getElementById('m-email').value.trim();
+  if (!nome||!email) { toast('Nome e email são obrigatórios.','error'); return; }
+  const pass = document.getElementById('m-pass').value.trim() || genPass();
+  const m = {
+    id: editingMemberId || uid(),
+    nome, email,
+    tel: document.getElementById('m-tel').value.trim(),
+    curso: document.getElementById('m-curso').value,
+    formato: document.getElementById('m-formato').value,
+    estado: document.getElementById('m-estado').value,
+    pass,
+    created: editingMemberId ? (DB.users.find(x=>x.id===editingMemberId)||{}).created || now() : now()
+  };
+  if (editingMemberId) {
+    const i = DB.users.findIndex(x=>x.id===editingMemberId);
+    if (i>=0) DB.users[i]=m;
+  } else {
+    DB.users.push(m);
+  }
+  closeModal('modal-member');
+  renderAll();
+  toast(editingMemberId?'Membro actualizado ✓':'Membro adicionado ✓','success');
+  editingMemberId = null;
+}
+
+function deleteMember(id) {
+  if (!confirm('Apagar este membro?')) return;
+  DB.users = DB.users.filter(x=>x.id!==id);
+  renderAll();
+  toast('Membro removido.','info');
+}
+
+// ── CONTENT CRUD ──────────────────────────────────────────────────────────────
+function openAddContent() {
+  editingContentId = null;
+  document.getElementById('modal-content-title').textContent = 'Adicionar Módulo';
+  ['c-titulo','c-url','c-desc'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('c-curso').value='essential';
+  document.getElementById('c-visivel').value='true';
+  document.getElementById('modal-content').classList.add('open');
+}
+
+function editContent(id) {
+  const m = DB.content.find(x=>x.id===id);
+  if (!m) return;
+  editingContentId = id;
+  document.getElementById('modal-content-title').textContent = 'Editar Módulo';
+  document.getElementById('c-titulo').value = m.titulo||'';
+  document.getElementById('c-curso').value = m.curso||'essential';
+  document.getElementById('c-url').value = m.url||'';
+  document.getElementById('c-desc').value = m.desc||'';
+  document.getElementById('c-visivel').value = m.visivel===false?'false':'true';
+  document.getElementById('modal-content').classList.add('open');
+}
+
+function saveContent() {
+  const titulo = document.getElementById('c-titulo').value.trim();
+  if (!titulo) { toast('Título obrigatório.','error'); return; }
+  const m = {
+    id: editingContentId || uid(),
+    titulo,
+    curso: document.getElementById('c-curso').value,
+    url: document.getElementById('c-url').value.trim(),
+    desc: document.getElementById('c-desc').value.trim(),
+    visivel: document.getElementById('c-visivel').value !== 'false'
+  };
+  if (editingContentId) {
+    const i = DB.content.findIndex(x=>x.id===editingContentId);
+    if (i>=0) DB.content[i]=m;
+  } else {
+    if (!DB.content) DB.content=[];
+    DB.content.push(m);
+  }
+  closeModal('modal-content');
+  renderAll();
+  toast(editingContentId?'Módulo actualizado ✓':'Módulo adicionado ✓','success');
+  editingContentId = null;
+}
+
+function deleteContent(id) {
+  if (!confirm('Apagar este módulo?')) return;
+  DB.content = DB.content.filter(x=>x.id!==id);
+  renderAll();
+  toast('Módulo removido.','info');
+}
+
+// ── FILTERS ───────────────────────────────────────────────────────────────────
+function filterMembers(f,btn) {
+  document.querySelectorAll('#section-membros .tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  renderMembersTable(f);
+}
+
+function filterContent(f,btn) {
+  document.querySelectorAll('#section-conteudo .tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  renderContentTable(f);
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
+const SECTION_TITLES = { dashboard:'Dashboard', membros:'Membros', datas:'Datas da Formação', conteudo:'Conteúdo', config:'Configuração', certificados:'Gerador de Certificados' };
+function showSection(name) {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.sb-link').forEach(l=>l.classList.remove('active'));
+  document.getElementById('section-'+name).classList.add('active');
+  
+  document.querySelectorAll('.sb-link').forEach(l=>{ 
+      if(l.getAttribute('onclick')===`showSection('${name}')`) l.classList.add('active'); 
+  });
+  
+  document.getElementById('topbar-title').textContent = SECTION_TITLES[name]||name;
+  
+  if(name === 'certificados') certUpdate();
+}
+
+// ── MODALS ────────────────────────────────────────────────────────────────────
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-backdrop').forEach(m=>{
+  m.addEventListener('click', e=>{ if(e.target===m) m.classList.remove('open'); });
+});
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+function toast(msg,type='info') {
+  const icons = { success:'✅', error:'❌', info:'ℹ️' };
+  const wrap = document.getElementById('toast-wrap');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<span>${icons[type]||'ℹ️'}</span><span>${msg}</span>`;
+  wrap.appendChild(t);
+  setTimeout(()=>t.classList.add('show'),10);
+  setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),400); },3500);
+}
+
+// ── SYNC STATUS ───────────────────────────────────────────────────────────────
+function setSyncStatus(state, text) {
+  const dot = document.getElementById('sync-dot');
+  const txt = document.getElementById('sync-text');
+  dot.className = 'sync-dot' + (state==='error'?' error':state==='loading'?' loading':'');
+  txt.textContent = text;
+}
+
+// ── UTILS ─────────────────────────────────────────────────────────────────────
+function uid() { return Math.random().toString(36).slice(2,10)+Date.now().toString(36); }
+function now() { return new Date().toISOString().slice(0,10); }
+function genPass() { return Math.random().toString(36).slice(2,8).toUpperCase(); }
+function esc(s){ const d=document.createElement('div');d.textContent=s||'';return d.innerHTML; }
+
+
+// ── GERADOR DE CERTIFICADOS ───────────────────────────────────────────────────
+
+const CERT_CY='#0BABDD', CERT_OR='#F36308', CERT_BK='#1C1A1B', CERT_GY='#6B6B6B', CERT_LG='#E4E4E7';
+let certTier = 'e';
+let certIdx = 0;
+let certParts = [];
+let certLogoImg = new Image();
+let certSigImg = new Image();
+let certQrImg = null;
+
+// Lógica de Carregar Imagens da Memória
+certLogoImg.onload = () => certUpdate();
+certSigImg.onload = () => certUpdate();
+
+const savedLogo = localStorage.getItem('ra_cert_logo');
+if(savedLogo) {
+    certLogoImg.src = savedLogo;
+    document.getElementById('logo-status').style.display = 'block';
+}
+
+const savedSig = localStorage.getItem('ra_cert_sig');
+if(savedSig) {
+    certSigImg.src = savedSig;
+    document.getElementById('sig-status').style.display = 'block';
+}
+
+// Funções para processar o ficheiro escolhido pelo utilizador
+function certLoadLogo(input) {
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      certLogoImg.src = e.target.result;
+      localStorage.setItem('ra_cert_logo', e.target.result); // Guarda na memória
+      document.getElementById('logo-status').style.display = 'block';
+      certUpdate();
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+function certLoadSig(input) {
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      certSigImg.src = e.target.result;
+      localStorage.setItem('ra_cert_sig', e.target.result); // Guarda na memória
+      document.getElementById('sig-status').style.display = 'block';
+      certUpdate();
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+function certGenQR(certNum, cb){
+  const d = document.createElement('div');
+  d.style.cssText = 'position:absolute;left:-9999px;top:-9999px';
+  document.body.appendChild(d);
+  new QRCode(d, {text:'https://remapacademy.pt/verificar/'+certNum, width:128, height:128, colorDark:'#000', colorLight:'#fff', correctLevel:QRCode.CorrectLevel.M});
+  setTimeout(() => {
+    const el = d.querySelector('canvas') || d.querySelector('img');
+    if(el){ const i=new Image(); i.onload=()=>{certQrImg=i; document.body.removeChild(d); cb()}; i.src=el.tagName==='CANVAS'?el.toDataURL():el.src; }
+    else{ document.body.removeChild(d); cb(); }
+  }, 350);
+}
+
+function certCfg(){
+  return {
+    tier: certTier,
+    dates: document.getElementById('cert-dates').value || '—',
+    hours: document.getElementById('cert-hours').value || '—',
+    certNum: document.getElementById('cert-num').value || 'RA-2026-001',
+    loc: document.getElementById('cert-loc').value || '—',
+    trainer: document.getElementById('cert-trainer').value || 'Sérgio',
+    acc: certTier==='e' ? CERT_CY : CERT_OR,
+    badgeLabel: certTier==='e' ? 'START' : 'PRO',
+    courseName: certTier==='e' ? 'REMAP Start - Reprogramação Auto' : 'REMAP Pro - Reprogramação Auto'
+  };
+}
+
+function certDraw(name){
+  const canvas = document.getElementById('cc');
+  if(!canvas) return;
+  const W=1123, H=794; 
+  canvas.width=W; canvas.height=H;
+  const ctx = canvas.getContext('2d');
+  const c = certCfg();
+
+  // Fundo e Barras
+  ctx.fillStyle='#FFFFFF'; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle=c.acc; ctx.fillRect(0,0,12,H);
+
+  ctx.strokeStyle=c.acc; ctx.lineWidth=0.5; ctx.globalAlpha=0.03;
+  for(let i=-H; i<W+H; i+=45){ ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i+H,H);ctx.stroke(); }
+  ctx.globalAlpha=1;
+
+  ctx.fillStyle='#FAFAFA'; ctx.fillRect(12,0,W-12,150);
+  ctx.strokeStyle=CERT_LG; ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(12,150);ctx.lineTo(W,150);ctx.stroke();
+
+  // Desenhar Logo Respeitando Proporções (Para não ficar deformado)
+  if(certLogoImg.complete && certLogoImg.naturalWidth > 0){
+    const maxH = 130; // Altura máxima permitida no cabeçalho
+    const maxW = 480; // Largura máxima permitida
+    
+    let scale = maxH / certLogoImg.naturalHeight;
+    let targetW = certLogoImg.naturalWidth * scale;
+    let targetH = maxH;
+    
+    // Se, mesmo escalado pela altura, a largura ultrapassar o limite, escalamos pela largura
+    if(targetW > maxW) {
+        scale = maxW / certLogoImg.naturalWidth;
+        targetW = maxW;
+        targetH = certLogoImg.naturalHeight * scale;
+    }
+    
+    ctx.drawImage(certLogoImg, 30, 5 + ((maxH - targetH) / 2), targetW, targetH);
+  }
+
+  // Caixa de Curso Superior Direita
+  const bW=190;
+  ctx.fillStyle=c.acc;
+  certRR(ctx, W-bW-45, 40, bW, 40, 6); ctx.fill();
+  ctx.font='700 14px "Barlow Condensed",sans-serif';
+  ctx.fillStyle='#fff'; ctx.textAlign='center'; ctx.letterSpacing='0.15em';
+  ctx.fillText('CURSO '+c.badgeLabel, W-bW/2-45, 66); ctx.letterSpacing='0';
+
+  ctx.font='500 12px "Barlow",sans-serif';
+  ctx.fillStyle=CERT_GY; ctx.textAlign='right';
+  ctx.fillText('remapacademy.pt', W-45, 106);
+  ctx.fillText('Nº '+c.certNum, W-45, 124);
+
+  // Textos Principais
+  ctx.textAlign='left';
+  ctx.font='300 14px "Barlow",sans-serif';
+  ctx.fillStyle=CERT_GY; ctx.letterSpacing='0.2em';
+  ctx.fillText('CERTIFICADO TÉCNICO DE CONCLUSÃO', 45, 210); ctx.letterSpacing='0';
+
+  ctx.strokeStyle=c.acc; ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(45,220);ctx.lineTo(120,220);ctx.stroke();
+
+  ctx.font='300 italic 20px "Barlow",sans-serif';
+  ctx.fillStyle='#888';
+  ctx.fillText('Certifica-se que', 45, 265);
+
+  const nm = name || 'Nome do Participante';
+  ctx.font='700 64px "Barlow",sans-serif'; 
+  ctx.fillStyle=CERT_BK; ctx.letterSpacing='0px'; 
+  ctx.fillText(nm, 42, 345); ctx.letterSpacing='0';
+
+  ctx.font='400 18px "Barlow",sans-serif';
+  ctx.fillStyle=CERT_GY;
+  ctx.fillText('concluiu com aproveitamento a formação intensiva', 45, 400);
+
+  ctx.font='700 32px "Barlow Condensed",sans-serif';
+  ctx.fillStyle=CERT_BK;
+  ctx.fillText(c.courseName, 45, 440);
+
+  const metas=[ {l:'DATA',v:c.dates}, {l:'DURAÇÃO',v:c.hours+' horas'}, {l:'LOCAL',v:c.loc} ];
+  let mx=45;
+  metas.forEach(m=>{
+    ctx.font='700 10px "Barlow Condensed",sans-serif'; ctx.letterSpacing='0.15em';
+    ctx.fillStyle=c.acc; ctx.textAlign='left'; ctx.fillText(m.l, mx, 510); ctx.letterSpacing='0';
+    ctx.font='500 16px "Barlow",sans-serif'; ctx.fillStyle=CERT_BK; ctx.fillText(m.v, mx, 532);
+    mx += Math.max(ctx.measureText(m.v).width+60, 160);
+  });
+
+  // Área QR Code
+  ctx.fillStyle=c.acc; ctx.globalAlpha=0.08; ctx.fillRect(W-260, 150, 260, H-150); ctx.globalAlpha=1;
+  ctx.strokeStyle=c.acc; ctx.lineWidth=1; ctx.globalAlpha=0.2;
+  ctx.beginPath();ctx.moveTo(W-260,150);ctx.lineTo(W-260,H);ctx.stroke(); ctx.globalAlpha=1;
+
+  const rx = W-130;
+  ctx.textAlign='center'; ctx.font='700 10px "Barlow Condensed",sans-serif';
+  ctx.letterSpacing='0.15em'; ctx.fillStyle=CERT_GY;
+  ctx.fillText('VERIFICAR AUTENTICIDADE', rx, 210); ctx.letterSpacing='0';
+
+  if(certQrImg){
+    const qs=130; ctx.fillStyle='#fff';
+    certRR(ctx, rx-qs/2-8, 225, qs+16, qs+16, 8); ctx.fill();
+    ctx.drawImage(certQrImg, rx-qs/2, 233, qs, qs);
+  }
+
+  // Área da Assinatura
+  const sigY = 660, contentCenter = (W - 260) / 2, sigW = 260, sigStartX = contentCenter - (sigW / 2);
+  
+  if(certSigImg.complete && certSigImg.naturalWidth > 0) {
+    const targetH = 85; 
+    const sigScale = targetH / certSigImg.naturalHeight;
+    const targetW = certSigImg.naturalWidth * sigScale;
+    ctx.drawImage(certSigImg, contentCenter - (targetW / 2), sigY - targetH - 10, targetW, targetH);
+  }
+
+  ctx.strokeStyle='#C0C0C0'; ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(sigStartX,sigY);ctx.lineTo(sigStartX+sigW,sigY);ctx.stroke();
+
+  ctx.font='600 15px "Barlow",sans-serif'; ctx.fillStyle=CERT_BK; ctx.textAlign='center';
+  ctx.fillText(c.trainer, contentCenter, sigY + 22);
+  ctx.font='400 12px "Barlow",sans-serif'; ctx.fillStyle=CERT_GY;
+  ctx.fillText('Formador / Instrutor Certificado', contentCenter, sigY + 38);
+
+  ctx.fillStyle='#FAFAFA'; ctx.fillRect(12, H-50, W-272, 50);
+  ctx.strokeStyle=CERT_LG; ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(12,H-50);ctx.lineTo(W-260,H-50);ctx.stroke();
+
+  ctx.font='400 11px "Barlow",sans-serif'; ctx.fillStyle='#999'; ctx.textAlign='left';
+  ctx.fillText('Certificado oficial emitido pela REMAP Academy. Documento gerado digitalmente.', 45, H-28);
+}
+
+function certRR(ctx, x, y, w, h, r){
+  ctx.beginPath(); ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath();
+}
+
+function certSetTier(t){
+  certTier = t;
+  document.getElementById('cert-btn-e').classList.toggle('on', t==='e');
+  document.getElementById('cert-btn-a').classList.toggle('on', t==='a');
+  certUpdate();
+}
+
+let certSpT = null;
+function certUpdate(){
+  clearTimeout(certSpT);
+  certSpT = setTimeout(()=>{
+    const cn = document.getElementById('cert-num').value || 'RA-2026-001';
+    certGenQR(cn, ()=>{
+      if(certParts.length===0){ certDraw(''); document.getElementById('cert-pi').textContent='Sem alunos.'; }
+      else{ 
+          if(certIdx >= certParts.length) certIdx = Math.max(0, certParts.length-1);
+          certDraw(certParts[certIdx].name || 'Nome do Participante'); 
+          document.getElementById('cert-pi').textContent=`${certParts[certIdx].name||'(sem nome)'} · ${certIdx+1}/${certParts.length}`;
+      }
+    });
+  }, 200);
+}
+
+function certRenderList(){
+  const pl = document.getElementById('cert-pl');
+  pl.innerHTML = '';
+  
+  if (certParts.length === 0) {
+      pl.innerHTML = '<div style="font-size:12px; color:rgba(255,255,255,0.4); text-align:center; padding: 10px;">Sem alunos. Importe ou adicione manualmente.</div>';
+  }
+  
+  certParts.forEach((p,i)=>{
+    const r = document.createElement('div');
+    r.className = 'cert-prow';
+    r.innerHTML = `
+      <input type="text" value="${p.name}" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:8px;color:#fff;font-family:'Barlow';font-size:13px;width:100%" placeholder="Nome" oninput="certParts[${i}].name=this.value;certUpdate()">
+      <input type="text" value="${p.phone}" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:8px;color:#fff;font-family:'Barlow';font-size:13px;width:100%" placeholder="Ex: 351912..." oninput="certParts[${i}].phone=this.value">
+      <div style="display:flex;gap:4px">
+        <button class="btn btn-icon btn-green" onclick="certSendWa(${i})" title="Baixar PDF & Enviar WhatsApp">
+          <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.558 4.121 1.532 5.853L0 24l6.335-1.507A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.817 9.817 0 01-5.006-1.373l-.36-.213-3.731.888.941-3.638-.234-.374A9.768 9.768 0 012.182 12C2.182 6.579 6.579 2.182 12 2.182c5.421 0 9.818 4.397 9.818 9.818 0 5.421-4.397 9.818-9.818 9.818z"/></svg>
+        </button>
+        <button class="btn btn-icon btn-red" onclick="certRmP(${i})" title="Remover">✕</button>
+      </div>`;
+    pl.appendChild(r);
+  });
+  certUpdate();
+}
+
+function certAddP(){ certParts.push({name:'',phone:''}); certRenderList(); document.getElementById('cert-pl').scrollTop=9999; }
+function certRmP(i){ certParts.splice(i,1); certRenderList(); }
+function certPrevP(){ if(!certParts.length)return; certIdx=(certIdx-1+certParts.length)%certParts.length; certUpdate(); }
+function certNextP(){ if(!certParts.length)return; certIdx=(certIdx+1)%certParts.length; certUpdate(); }
+
+function certMakePDF(name){
+  const {jsPDF} = window.jspdf;
+  // Render a 2× high-res canvas off-screen for sharp PDF output
+  const hiCanvas = document.createElement('canvas');
+  const SCALE = 2;
+  const W = 1123 * SCALE, H = 794 * SCALE;
+  hiCanvas.width = W; hiCanvas.height = H;
+  const hiCtx = hiCanvas.getContext('2d');
+  hiCtx.scale(SCALE, SCALE);
+
+  // Temporarily swap canvas context so certDraw renders into hiCanvas
+  const realCanvas = document.getElementById('cc');
+  const origGetContext = realCanvas.getContext.bind(realCanvas);
+  // Monkey-patch: redirect certDraw to the hi-res canvas
+  const origW = realCanvas.width, origH = realCanvas.height;
+  realCanvas.width = W; realCanvas.height = H;
+  const origCtx = realCanvas.getContext('2d');
+  origCtx.scale(SCALE, SCALE);
+  certDraw(name);
+  const img = realCanvas.toDataURL('image/jpeg', 1.0);
+  // Restore canvas display size
+  realCanvas.width = 1123; realCanvas.height = 794;
+  certDraw(name); // redraw preview at normal size
+
+  const pdf = new jsPDF({orientation:'landscape', unit:'mm', format:'a4'});
+  pdf.addImage(img, 'JPEG', 0, 0, 297, 210);
+  return pdf;
+}
+
+function certDownloadPDF(){
+  if(!certParts.length) return;
+  const p = certParts[certIdx];
+  try {
+    const pdf = certMakePDF(p.name || 'Participante');
+    pdf.save(`Certificado_REMAP_${(p.name||'participante').replace(/\s+/g,'_')}.pdf`);
+  } catch (error) {
+    toast("ERRO: O PDF falhou. O navegador bloqueou as imagens.", "error");
+  }
+}
+
+function certSendWa(i) {
+  const p = certParts[i];
+  try {
+    const pdf = certMakePDF(p.name || 'Participante');
+    pdf.save(`Certificado_REMAP_${(p.name||'participante').replace(/\s+/g,'_')}.pdf`);
+  } catch (error) {
+    toast("ERRO: O PDF falhou. O navegador bloqueou as imagens.", "error");
+    return;
+  }
+  const tpl = document.getElementById('cert-msg').value;
+  const cursoLabel = certTier==='a' ? 'PRO' : 'START';
+  const phone = (p.phone||'').replace(/\D/g,'');
+  
+  if(!phone){ toast('Insira um número de telemóvel para este participante.', 'error'); return; }
+  const msg = tpl.replace(/\{nome\}/g, p.name).replace(/\{curso\}/g, cursoLabel);
+  window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(msg), '_blank');
+}
+
+function certImportFromDB() {
+    const currentCourseFilter = certTier === 'e' ? 'essential' : 'advanced';
+    const users = (DB.users || []).filter(u => u.curso === currentCourseFilter && u.estado === 'active');
+    
+    if(users.length === 0) {
+        toast(`Nenhum aluno Ativo encontrado no curso ${currentCourseFilter.toUpperCase()}.`, 'info');
+        return;
+    }
+    
+    if(!confirm(`Importar ${users.length} aluno(s) do curso ${currentCourseFilter}? (A lista atual será substituída)`)) return;
+
+    certParts = users.map(u => ({
+        name: u.nome || '',
+        phone: u.tel || ''
+    }));
+    
+    certIdx = 0;
+    certRenderList();
+    toast(`${users.length} alunos importados com sucesso!`, 'success');
+}
+
+// Inicializar e arrancar tudo quando a página carrega
+window.addEventListener('DOMContentLoaded', () => {
+    init();
+    autoTranslatePtToEn();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1a1718">
+  <title>REMAP Pro | REMAP Academy</title>
+  <meta name="description" content="Curso Advanced de reprogramação automóvel. Stage tuning, chaves, microssoldadura. 4 dias hands-on, máx. 6 alunos, Lisboa.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<style id="shared-styles"></style>
+  <style id="page-styles"></style>
+<!-- REMAP JSONBin sync -->
+<script>
+(function(){
+  var b=localStorage.getItem("ra_bo_binid")||"";
+  if(!b)return;
+  fetch("https://api.jsonbin.io/v3/b/"+b+"/latest")
+    .then(function(r){return r.json();})
+    .then(function(j){var d=j.record&&j.record.dates;if(d)localStorage.setItem("ra_next_training",JSON.stringify(d));})
+    .catch(function(){});
+})();
+</script>
+</head>
+<body>
+<div id="app"></div>
+<script>
+document.getElementById('shared-styles').textContent = `
+:root{--black:#231F20;--black-2:#1a1718;--black-3:#141213;--cyan:#0BABDD;--orange:#F36308;--white:#fff;--green:#22c55e}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--white);font-family:'Barlow',sans-serif;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3,h4{font-family:'Barlow Condensed',sans-serif;font-weight:700;line-height:1.15}
+a{text-decoration:none}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--black-3)}::-webkit-scrollbar-thumb{background:rgba(243,99,8,.3);border-radius:3px}
+.en{display:none}
+body.lang-en .pt{display:none}
+body.lang-en .en{display:revert}
+.nav{position:sticky;top:0;z-index:100;background:rgba(26,23,24,.97);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(243,99,8,.2);padding:0 clamp(1rem,4vw,3rem);height:72px;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.nav-logo{display:flex;align-items:center;flex-shrink:0}
+.nav-logo svg{height:64px;width:auto}
+.nav-links{display:flex;align-items:center;gap:1.75rem;list-style:none}
+.nav-links a{font-size:13px;font-weight:500;color:rgba(255,255,255,.55);transition:color .2s}
+.nav-links a:hover{color:#fff}
+.nav-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.lang-toggle{display:flex;align-items:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:20px;overflow:hidden}
+.lang-toggle button{font-size:11px;font-weight:700;letter-spacing:.05em;padding:6px 12px;background:transparent;border:none;color:rgba(255,255,255,.4);cursor:pointer;transition:all .2s;font-family:'Barlow Condensed',sans-serif}
+.lang-toggle button.active{background:var(--orange);color:#fff}
+.btn{display:inline-flex;align-items:center;gap:6px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:.04em;border-radius:9px;padding:10px 22px;cursor:pointer;border:none;transition:opacity .2s,transform .15s;-webkit-tap-highlight-color:transparent;min-height:44px}
+.btn:hover{opacity:.88;transform:translateY(-1px)}
+.btn:active{transform:scale(.97)}
+.btn-orange{background:var(--orange);color:#fff}
+.btn-ghost{background:transparent;color:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.18)}
+.btn-ghost:hover{border-color:rgba(255,255,255,.35);color:#fff}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:transparent;border:none;padding:6px;-webkit-tap-highlight-color:transparent}
+.hamburger span{display:block;width:22px;height:2px;background:rgba(255,255,255,.7);border-radius:2px;transition:all .3s}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.mobile-menu{display:none;flex-direction:column;background:var(--black-2);border-bottom:1px solid rgba(255,255,255,.06)}
+.mobile-menu a,.mobile-menu .mm-btn-wrap{padding:.9rem 1.5rem;font-size:15px;font-weight:500;color:rgba(255,255,255,.6);border-bottom:1px solid rgba(255,255,255,.05);transition:color .2s;display:block}
+.mobile-menu.open{display:flex}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+`;
+document.getElementById('page-styles').textContent = `
+.breadcrumb{padding:.75rem clamp(1rem,4vw,3rem);font-size:12px;color:rgba(255,255,255,.35);display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,.05);flex-wrap:wrap}
+.breadcrumb a{color:rgba(255,255,255,.4);transition:color .2s}.breadcrumb a:hover{color:var(--orange)}
+.bc-sep{color:rgba(255,255,255,.2)}.bc-cur{color:var(--orange)}
+.incl-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(243,99,8,.1);border:1px solid rgba(243,99,8,.25);border-radius:10px;padding:3px 10px;font-size:10px;font-weight:700;color:#f8a97a;margin-left:10px;vertical-align:middle}
+.hero-course{padding:clamp(2rem,5vh,4rem) clamp(1rem,4vw,3rem);display:grid;grid-template-columns:1fr 370px;gap:3rem;align-items:start;border-bottom:1px solid rgba(255,255,255,.06)}
+.hero-left{animation:fadeUp .6s .1s both}
+.tier-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(243,99,8,.12);border:1px solid rgba(243,99,8,.3);border-radius:20px;padding:5px 14px 5px 8px;margin-bottom:1.25rem}
+.tier-dot{width:7px;height:7px;border-radius:50%;background:var(--orange);animation:pulse 2s infinite;flex-shrink:0}
+.tier-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--orange)}
+.hero-course h1{font-size:clamp(2rem,4vw,3.2rem);margin-bottom:.75rem;color:#fff}
+.hero-course h1 em{font-style:normal;color:var(--orange)}
+.hero-lead{font-size:15px;color:rgba(255,255,255,.55);line-height:1.78;max-width:540px;margin-bottom:1.75rem}
+.meta-row{display:flex;gap:1.25rem;flex-wrap:wrap;margin-bottom:2rem}
+.meta-item{display:flex;align-items:center;gap:7px;font-size:13px;color:rgba(255,255,255,.5)}
+.outcome-list{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:2rem}
+.outcome-list li{font-size:14px;color:rgba(255,255,255,.65);display:flex;align-items:flex-start;gap:10px;line-height:1.45}
+.outcome-chk{font-weight:700;flex-shrink:0;margin-top:1px;color:var(--orange)}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap}
+.csc{background:var(--black-2);border:1px solid rgba(243,99,8,.25);border-radius:16px;overflow:hidden;position:sticky;top:88px;animation:fadeUp .6s .25s both}
+.csc-thumb{height:160px;background:linear-gradient(135deg,rgba(243,99,8,.12),rgba(243,99,8,.03));display:flex;align-items:center;justify-content:center;border-bottom:1px solid rgba(255,255,255,.06);font-size:3rem}
+.csc-body{padding:1.4rem}
+.price-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1.25rem}
+.p-opt{border-radius:10px;padding:11px 12px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02)}
+.p-opt.feat{border-color:rgba(243,99,8,.25);background:rgba(243,99,8,.06)}
+.p-lbl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:4px}
+.feat .p-lbl{color:var(--orange)}
+.p-val{font-family:'Barlow Condensed',sans-serif;font-size:1.7rem;font-weight:700;color:#fff}
+.p-note{font-size:10px;color:rgba(255,255,255,.28);margin-top:2px}
+.csc-btn{width:100%;text-align:center;padding:13px;border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:700;letter-spacing:.04em;cursor:pointer;border:none;min-height:48px;margin-bottom:9px;transition:opacity .2s;background:var(--orange);color:#fff}
+.csc-btn:hover{opacity:.88}
+.csc-ghost{display:block;width:100%;text-align:center;padding:10px;border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:rgba(255,255,255,.45);border:1px solid rgba(255,255,255,.1);background:transparent;cursor:pointer;min-height:44px;transition:all .2s}
+.csc-ghost:hover{border-color:rgba(255,255,255,.25);color:rgba(255,255,255,.7)}
+.csc-incl{margin-top:1.2rem;padding-top:1.2rem;border-top:1px solid rgba(255,255,255,.07)}
+.csc-incl-title{font-size:10px;font-weight:700;color:rgba(255,255,255,.32);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.7rem}
+.csc-incl ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+.csc-incl li{font-size:12px;color:rgba(255,255,255,.48);display:flex;align-items:center;gap:8px}
+.csc-incl li::before{content:'✓';color:var(--green);font-size:10px;font-weight:700;flex-shrink:0}
+.section{padding:clamp(2rem,4vh,3.5rem) clamp(1rem,4vw,3rem)}
+.sec-label{font-size:11px;font-weight:700;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.13em;margin-bottom:1rem;display:flex;align-items:center;gap:12px}
+.sec-label::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.08)}
+.sec-h{font-size:clamp(1.6rem,3vw,2.4rem);margin-bottom:.5rem}
+.sec-sub{font-size:15px;color:rgba(255,255,255,.5);max-width:540px;line-height:1.75;margin-bottom:2rem}
+.module-block{margin-bottom:10px;border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden}
+.module-block.ess-mod{border-color:rgba(11,171,221,.15)}
+.module-block.adv-mod{border-color:rgba(243,99,8,.18)}
+.mod-head{padding:.9rem 1.2rem;background:var(--black-2);display:flex;align-items:center;justify-content:space-between;cursor:pointer;gap:1rem;user-select:none;-webkit-tap-highlight-color:transparent;min-height:56px}
+.mod-head:hover{background:rgba(255,255,255,.035)}
+.mh-l{display:flex;align-items:center;gap:11px}
+.mh-num{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;border-radius:6px;padding:2px 8px;flex-shrink:0}
+.ess-num{color:var(--cyan);background:rgba(11,171,221,.1);border:1px solid rgba(11,171,221,.2)}
+.adv-num{color:var(--orange);background:rgba(243,99,8,.1);border:1px solid rgba(243,99,8,.2)}
+.mh-title{font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:700;color:#fff}
+.mh-meta{font-size:11px;color:rgba(255,255,255,.3);margin-top:1px}
+.mh-chevron{font-size:.8rem;color:rgba(255,255,255,.3);transition:transform .25s;flex-shrink:0}
+.module-block.open .mh-chevron{transform:rotate(180deg)}
+.mod-lessons{display:none;border-top:1px solid rgba(255,255,255,.05)}
+.module-block.open .mod-lessons{display:block}
+.l-row{display:flex;align-items:center;gap:11px;padding:.8rem 1.2rem;border-bottom:1px solid rgba(255,255,255,.04);transition:background .2s}
+.l-row:last-child{border-bottom:none}
+.l-row:hover{background:rgba(255,255,255,.02)}
+.l-icon{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0}
+.l-icon.ess-icon{background:rgba(11,171,221,.08);border:1px solid rgba(11,171,221,.15);color:var(--cyan)}
+.l-icon.adv-icon{background:rgba(243,99,8,.08);border:1px solid rgba(243,99,8,.15);color:var(--orange)}
+.l-title{font-size:13px;color:rgba(255,255,255,.58);flex:1;line-height:1.4}
+.l-dur{font-size:11px;color:rgba(255,255,255,.28);white-space:nowrap}
+.who-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.who-card{padding:1.4rem;background:var(--black-2);border-radius:14px;border:1px solid rgba(255,255,255,.07)}
+.who-icon{font-size:1.75rem;margin-bottom:.7rem}
+.who-h{font-size:1rem;color:#fff;margin-bottom:.35rem}
+.who-p{font-size:13px;color:rgba(255,255,255,.42);line-height:1.65}
+.t-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.tcard{background:var(--black-2);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:1.4rem}
+.t-stars{color:#f59e0b;font-size:.85rem;margin-bottom:.7rem;letter-spacing:2px}
+.t-text{font-size:13px;color:rgba(255,255,255,.52);line-height:1.7;margin-bottom:1rem;font-style:italic}
+.t-author{display:flex;align-items:center;gap:9px}
+.t-avatar{width:34px;height:34px;border-radius:50%;background:rgba(243,99,8,.15);border:1px solid rgba(243,99,8,.25);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:.85rem;font-weight:700;color:var(--orange);flex-shrink:0}
+.t-name{font-size:13px;font-weight:600;color:rgba(255,255,255,.7)}
+.t-meta{font-size:11px;color:rgba(255,255,255,.3)}
+.faq-list{max-width:720px}
+.faq-item{border-bottom:1px solid rgba(255,255,255,.07)}
+.faq-q{padding:1rem 0;display:flex;align-items:center;justify-content:space-between;cursor:pointer;gap:1rem;user-select:none;min-height:52px}
+.faq-q-t{font-size:15px;font-weight:600;color:rgba(255,255,255,.8)}
+.faq-icon{font-size:.8rem;color:rgba(255,255,255,.3);transition:transform .25s;flex-shrink:0}
+.faq-item.open .faq-icon{transform:rotate(45deg)}
+.faq-a{display:none;padding-bottom:1rem;font-size:14px;color:rgba(255,255,255,.45);line-height:1.75}
+.faq-item.open .faq-a{display:block}
+.footer-cta{background:var(--black-2);border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);padding:3rem clamp(1rem,4vw,3rem);text-align:center}
+.fcta-h{font-size:clamp(1.6rem,3vw,2.2rem);margin-bottom:.7rem}
+.fcta-sub{font-size:15px;color:rgba(255,255,255,.48);margin-bottom:2rem;max-width:480px;margin-left:auto;margin-right:auto}
+.fcta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.footer{background:var(--black-3);border-top:1px solid rgba(255,255,255,.06);padding:2rem clamp(1rem,4vw,3rem) 1.5rem}
+.foot-bot{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.foot-copy{font-size:11px;color:rgba(255,255,255,.25)}.foot-copy span{color:var(--orange)}
+.foot-legal{display:flex;gap:1.5rem;flex-wrap:wrap}
+.foot-legal a{font-size:11px;color:rgba(255,255,255,.25);transition:color .2s}.foot-legal a:hover{color:rgba(255,255,255,.6)}
+@media(max-width:900px){.nav-links{display:none}.hamburger{display:flex}.hero-course{grid-template-columns:1fr}.csc{position:static}.who-grid{grid-template-columns:1fr 1fr}.t-grid{grid-template-columns:1fr}}
+@media(max-width:560px){.nav{height:64px;padding:0 1rem}.nav-logo svg{height:52px}.hero-course{padding:1.75rem 1rem}.hero-course h1{font-size:1.9rem}.hero-btns{flex-direction:column}.hero-btns .btn{width:100%;justify-content:center}.who-grid{grid-template-columns:1fr}.section{padding:1.75rem 1rem}}
+@supports(padding-bottom:env(safe-area-inset-bottom)){.footer{padding-bottom:calc(1.5rem + env(safe-area-inset-bottom))}.nav{padding-left:max(1rem,env(safe-area-inset-left));padding-right:max(1rem,env(safe-area-inset-right))}}
+`;
+
+const LOGO = `<svg viewBox="118 135 265 220" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"><defs><linearGradient id="lg1" gradientUnits="userSpaceOnUse" x1="203.76" y1="229.07" x2="357.75" y2="229.07"><stop offset="0" stop-color="#0BABDD"/><stop offset="1" stop-color="#1B6F92"/></linearGradient><linearGradient id="lg2" gradientUnits="userSpaceOnUse" x1="249.99" y1="229.23" x2="142.5" y2="229.23"><stop offset="0" stop-color="#DB3832"/><stop offset=".5025" stop-color="#E46E3A"/><stop offset="1" stop-color="#EDA342"/></linearGradient><linearGradient id="lg3" gradientUnits="userSpaceOnUse" x1="148.64" y1="306.52" x2="148.64" y2="274.31"><stop offset="0" stop-color="#DB3832"/><stop offset="1" stop-color="#EDA342"/></linearGradient><linearGradient id="lg4" gradientUnits="userSpaceOnUse" x1="355.74" y1="306.52" x2="355.74" y2="274.31"><stop offset="0" stop-color="#1B6F92"/><stop offset="1" stop-color="#0BABDD"/></linearGradient></defs><circle fill="#0BABDD" cx="322" cy="193.8" r="4.7"/><circle fill="#0BABDD" cx="244.1" cy="168.1" r="4.7"/><circle fill="#0BABDD" cx="369.7" cy="217" r="4.7"/><circle fill="#0BABDD" cx="298.8" cy="157.4" r="5.1"/><circle fill="#F36308" cx="177.2" cy="168.1" r="6.4"/><circle fill="#F36308" cx="146.1" cy="196.7" r="6.4"/><circle fill="#0BABDD" cx="191.5" cy="200.6" r="5"/><circle fill="#F36308" cx="134.8" cy="217" r="5.8"/><path fill="none" stroke="#F36308" stroke-width="2.5" d="M142.4,230.2c0,0,5.1-33.9,53.4-58.7"/><path fill="none" stroke="#F36308" stroke-width="2.5" d="M130.7,264.8c0,0-11.7-44.8,27.7-81.6c0,0,34.6-37.2,100.9-34.6"/><path fill="none" stroke="#0BABDD" stroke-width="2.5" d="M300.9,158.6c0,0,34.1,10.9,56.8,39.9s19.1,45.2,17.6,65.4"/><path fill="none" stroke="#F36308" stroke-width="2.2" d="M182.3,200.8c0,0-10.9,7.2-19.1,22.9"/><path fill="none" stroke="#0BABDD" stroke-width="2.2" d="M221.8,186.3c0,0-16.5,3.7-29.7,14.3"/><path fill="none" stroke="#0BABDD" stroke-width="2.2" d="M244.1,168.1c0,0,29.8-3.1,61.5,13.8c0,0,20.3,10,33.1,31.9"/><path fill="none" stroke="#0BABDD" stroke-width="2.2" d="M303.9,190.8c0,0-22-18.1-64.5-15.4"/><circle fill="#0BABDD" cx="260.6" cy="148.6" r="6.4"/><path fill="url(#lg1)" d="M351.1,242.2l6.7,3.3c-2.2-5.5-3.6-11-3.6-11c-2.4-5.8,0.8-9.9,0.8-9.9l2.7-3.5l-28.3,0.6C293.2,199.7,261.1,200,250,201h0c-25.4,9.5-46.2,26.9-46.2,26.9h14.5c0,0,1.9,0.1,0.7,2.3c0,0-5.3,6.8-8.5,18.8c29.1-7,79.9-12,79.9-12l-8,12l21.2,8.5h0.5c2-18.2,17.4-17.5,17.4-17.5c5,0.5,8.8,1.9,11.7,3.8l3.4-16.3C336.5,227.4,352.7,242.3,351.1,242.2z"/><path fill="url(#lg2)" d="M250,201c-2.7,0.2-4.2,0.5-4.2,0.5c-23.7,2.5-51.7,22.3-51.7,22.3c-32.2,2.1-49.3,18.7-49.3,18.7c-3.9,3-1.8,8.1-1.8,8.1l2,6.9h22.6c1.9-20.1,16.9-20.6,16.9-20.6c10.3,0.3,11.3,8.4,11.3,8.4c-4-6.2-13.1-4-13.1-4c-11.6,4.2-11,16.2-11,16.2h31.1c0,0,0-0.3,0.1-0.3c3.6-18.3,11.7-27.8,12.6-28.9h-12C203.8,227.9,224.6,210.5,250,201z"/><path fill="#1B6F92" d="M303.3,257.5h-94.8c0.5-3,1.1-5.8,1.8-8.4c29.1-7,79.9-12,79.9-12l-8,12L303.3,257.5z"/><path fill="url(#lg3)" d="M156.6,306.5l-8.3-10.2h-9.2v10.2H130v-32.2h22c8,0,14.2,3.6,14.2,11c0,5.4-3.3,8.8-8.2,10.3l9.2,10.9H156.6z M151.3,289.5c3.3,0,5.6-0.9,5.6-4s-2.4-4-5.6-4h-12.3v8.1H151.3z"/><path fill="#FFF" d="M210,299.3v7.2h-33.6v-32.2h33.1v7.2h-24.1v5.3h19.9v6.9h-19.9v5.7H210z"/><path fill="#FFF" d="M279.4,274.3v32.2h-8.7V286l-11.9,15.7h-0.4L246.4,286v20.6H238v-32.2h9.5l11.2,15.5l11.3-15.5H279.4z"/><path fill="#FFF" d="M317,300.4h-18.1l-3.1,6.2h-10.1l17.1-32.2h10.5l17.1,32.2h-10.2L317,300.4z"/><path fill="url(#lg4)" d="M374.3,285.6c0,7.5-5.8,11.3-14.6,11.3h-13v9.7h-9.4V290h21.6c3.5,0,5.9-1.1,5.9-4.3c0-3.3-2.4-4.3-5.9-4.3h-12.1l-9.5-7.1h22.4C368.4,274.3,374.3,278.2,374.3,285.6z"/><polygon fill="#FFF" points="217.3,295.7 230.3,295.7 223.8,307.5"/><polygon fill="#0BABDD" points="230.3,288.6 217.3,288.6 223.8,276.8"/></svg>`;
+
+const ESS_MODULES = [
+  // ESSENTIAL modules (shown greyed out / preview)
+  {num:'M1',tier:'ess',title_pt:'O Ecossistema do Chiptuning',title_en:'The Chiptuning Ecosystem',meta_pt:'5 aulas · 4h15',meta_en:'5 lessons · 4h15',lessons:[
+    {pt:'A Profissão de Tuner: Mercado, Ética e Potencial',en:'The Tuner Profession: Market, Ethics & Potential',dur:'45min'},
+    {pt:'Ferramentas de Leitura e Escrita',en:'Reading & Writing Tools',dur:'50min'},
+    {pt:'Arquitetura das Centralinas — Flash, EEPROM e Microprocessador',en:'ECU Architecture — Flash, EEPROM and Microprocessor',dur:'55min'},
+    {pt:'Protocolos de Comunicação — OBD, Bench, BDM e JTAG',en:'Communication Protocols — OBD, Bench, BDM and JTAG',dur:'60min'},
+    {pt:'O Seguro de Vida da ECU: Energia e Voltagem',en:'ECU Power Safety: Voltage Management',dur:'45min'}
+  ]},
+  {num:'M2',tier:'ess',title_pt:'Diagnóstico e Comunicação de Dados',title_en:'Diagnostics & Data Communication',meta_pt:'4 aulas · 3h20',meta_en:'4 lessons · 3h20',lessons:[
+    {pt:'Máquinas de Diagnóstico Profissional',en:'Professional Diagnostic Scanners',dur:'50min'},
+    {pt:'Interpretação de Erros (DTCs) Pré-Leitura',en:'Pre-Read DTC Interpretation',dur:'50min'},
+    {pt:'Protocolos Físicos: CAN-Bus vs K-Line',en:'Physical Protocols: CAN-Bus vs K-Line',dur:'45min'},
+    {pt:'Diagnóstico em Bancada',en:'Bench Diagnostics',dur:'55min'}
+  ]},
+  {num:'M3',tier:'ess',title_pt:'Sistemas Anti-Poluição: DPF, EGR & AdBlue',title_en:'Emission Systems: DPF, EGR & AdBlue',meta_pt:'4 aulas · 3h00',meta_en:'4 lessons · 3h00',lessons:[
+    {pt:'Sistemas e Nomenclaturas — DPF/FAP/GPF, EGR, SCR e AdBlue',en:'Systems & Terminology — DPF/FAP/GPF, EGR, SCR and AdBlue',dur:'50min'},
+    {pt:'Software para Edição de Emissões',en:'Emissions Editing Software',dur:'45min'},
+    {pt:'Verificação Prática de Dados DPF',en:'Practical DPF Data Verification',dur:'40min'},
+    {pt:'Casos Práticos com ECUs Reais',en:'Practical Cases with Real ECUs',dur:'45min'}
+  ]},
+  {num:'M4',tier:'ess',title_pt:'Gestão de Odómetros e Calibração de Quadrantes',title_en:'Odometer Management & Cluster Calibration',meta_pt:'3 aulas · 2h40',meta_en:'3 lessons · 2h40',lessons:[
+    {pt:'Equipamentos e Software Dedicados',en:'Dedicated Tools & Software',dur:'50min'},
+    {pt:'Tipos de Odómetros e Acesso EEPROM',en:'Odometer Types & EEPROM Access',dur:'50min'},
+    {pt:'Calibração via OBD e BDM',en:'Calibration via OBD and BDM',dur:'60min'}
+  ]},
+  {num:'M5',tier:'ess',title_pt:'Reset de Módulos SRS Airbag e Crash Data',title_en:'SRS Airbag Reset & Crash Data Removal',meta_pt:'3 aulas · 2h40',meta_en:'3 lessons · 2h40',lessons:[
+    {pt:'Módulos SRS — Estrutura e Protocolos',en:'SRS Modules — Structure & Protocols',dur:'45min'},
+    {pt:'Leitura e Limpeza de Crash Data via EEPROM',en:'Reading & Clearing Crash Data via EEPROM',dur:'55min'},
+    {pt:'Reset com Ferramentas Dedicadas — Casos Práticos',en:'Reset with Dedicated Tools — Practical Cases',dur:'60min'}
+  ]},
+  // ADVANCED modules
+  {num:'M6',tier:'adv',title_pt:'Remapeamento de Potência e Stage Tuning',title_en:'Performance Remapping & Stage Tuning',meta_pt:'5 aulas · 5h00',meta_en:'5 lessons · 5h00',lessons:[
+    {pt:'Fundamentos de Calibração — maps de pressão turbo, combustível e ignição, margens de fábrica',en:'Calibration Fundamentals — boost, fuel and ignition maps, factory margins',dur:'55min'},
+    {pt:'Workflow de Projeto: Do Cliente ao Ficheiro Final — diagnóstico, expectativas, protocolo de leitura e entrega',en:'Project Workflow: From Client to Final File — diagnostics, expectations, read protocol and delivery',dur:'60min'},
+    {pt:'Software Automático de Stage 1/2 — geração automática de ficheiros, seleção de opções e validação',en:'Automatic Stage 1/2 Software — automatic file generation, option selection and validation',dur:'60min'},
+    {pt:'Software de Gestão de Projetos de Potência — abrir ficheiro, navegar drivers, visualizar maps alterados e documentar',en:'Performance Project Management Software — open file, navigate drivers, view altered maps and document',dur:'60min'},
+    {pt:'Software de Verificação e Controlo de Qualidade — comparar original vs modificado, identificar alterações',en:'Verification & Quality Control Software — compare original vs modified, identify changes',dur:'60min'}
+  ]},
+  {num:'M7',tier:'adv',title_pt:'Clonagem de ECU e Transferência de Dados',title_en:'ECU Cloning & Data Transfer',meta_pt:'3 aulas · 3h00',meta_en:'3 lessons · 3h00',lessons:[
+    {pt:'Clonagem OBD e BDM — procedimentos e riscos de cada abordagem',en:'OBD and BDM Cloning — procedures and risks of each approach',dur:'60min'},
+    {pt:'Transferência entre ECUs da Mesma Família — compatibilidade, identificação e imobilizador',en:'Transfer Between ECUs of the Same Family — compatibility, identification and immobiliser',dur:'55min'},
+    {pt:'Casos Práticos — Substituição de ECU Defeituosa — diagnóstico, sourcing e procedimento completo',en:'Practical Cases — Faulty ECU Replacement — diagnosis, sourcing and complete procedure',dur:'65min'}
+  ]},
+  {num:'M8',tier:'adv',title_pt:'Anulação de Imobilizador e Programação de Chaves',title_en:'Immobiliser Bypass & Key Programming',meta_pt:'6 aulas · 5h05',meta_en:'6 lessons · 5h05',lessons:[
+    {pt:'Sistemas de Imobilização — tipos, protocolos e como cada sistema protege o veículo',en:'Immobiliser Systems — types, protocols and how each system protects the vehicle',dur:'50min'},
+    {pt:'Bypass via EEPROM e Emuladores — técnica de anulação directa e uso de emuladores',en:'Bypass via EEPROM and Emulators — direct bypass technique and emulator usage',dur:'55min'},
+    {pt:'Programação de Chaves Transponder — tipos, adição de chave nova e recuperação de chave perdida',en:'Transponder Key Programming — types, adding new key and lost key recovery',dur:'50min'},
+    {pt:'Casos Práticos — Marcas e Protocolos Específicos — especificidades de protocolo e acesso por fabricante',en:'Practical Cases — Specific Makes & Protocols — protocol and access specifics by manufacturer',dur:'55min'},
+    {pt:'Sistemas de Coluna Elétrica (EPS/EPAS) — funcionamento, causas de bloqueio e diagnóstico',en:'Electric Steering Column Systems (EPS/EPAS) — operation, lock causes and diagnosis',dur:'50min'},
+    {pt:'Anulação de Coluna via EEPROM e OBD — procedimentos de anulação, edição de dados e verificação',en:'Steering Column Bypass via EEPROM and OBD — bypass procedures, data editing and verification',dur:'45min'}
+  ]},
+  {num:'M9',tier:'adv',title_pt:'Microssoldadura em PCB — SMD e Ar Quente',title_en:'PCB Microsoldering — SMD & Hot Air Rework',meta_pt:'4 aulas · 4h00',meta_en:'4 lessons · 4h00',lessons:[
+    {pt:'Fundamentos de Eletrónica — componentes SMD, leitura de marcações e uso de multímetro',en:'Electronics Fundamentals — SMD components, marking identification and multimeter usage',dur:'50min'},
+    {pt:'Técnicas de Soldadura com Ferro de Ponta Fina — temperatura, estanho, fluxo e componentes 0402/0603/SOIC',en:'Fine Tip Soldering Techniques — temperature, solder, flux and 0402/0603/SOIC components',dur:'65min'},
+    {pt:'Rework com Ar Quente — remoção de CIs grandes e BGA, reballing e recolocação',en:'Hot Air Rework — large IC and BGA removal, reballing and replacement',dur:'65min'},
+    {pt:'Prática — Reparação de PCB Real com Defeito — diagnóstico, localização de falha e substituição de componente',en:'Practice — Real Faulty PCB Repair — diagnosis, fault location and component replacement',dur:'60min'}
+  ]},
+  {num:'M10',tier:'adv',title_pt:'Gestão de Negócio e Precificação de Serviços',title_en:'Business Management & Service Pricing',meta_pt:'3 aulas · 2h30',meta_en:'3 lessons · 2h30',lessons:[
+    {pt:'Precificação de Serviços — custo real por serviço, margem ideal e tabela de preços de mercado PT/EU',en:'Service Pricing — real cost per service, ideal margin and PT/EU market price reference',dur:'55min'},
+    {pt:'Apresentação de Orçamentos e Comunicação com o Cliente — estrutura, garantias, gestão de objeções e confiança',en:'Presenting Quotes & Client Communication — structure, guarantees, objection handling and trust-building',dur:'45min'},
+    {pt:'Gestão de Ficheiros de Clientes e Operação Diária — fichas, backup, rastreabilidade e ferramentas de gestão',en:'Client File Management & Daily Operations — records, backup, traceability and management tools',dur:'50min'}
+  ]},
+  {num:'M11',tier:'adv',title_pt:'Do Curso ao Negócio — Encerramento',title_en:'From Course to Business — Closing Module',meta_pt:'1 aula · 35min',meta_en:'1 lesson · 35min',lessons:[
+    {pt:'Simulação do 1.º Cliente, Primeiros Passos no Mercado e Entrega de Certificado',en:'First Client Simulation, First Steps in the Market and Certificate Ceremony',dur:'35min'}
+  ]}
+];const ADV_MODULES = [
+  {num:'M6',tier:'adv',title_pt:'Remapeamento de Potência e Stage Tuning',title_en:'Performance Remapping & Stage Tuning',meta_pt:'5 aulas · 5h00',meta_en:'5 lessons · 5h00',lessons:[
+    {pt:'Fundamentos de Calibração — maps de pressão turbo, combustível e ignição, margens de fábrica',en:'Calibration Fundamentals — boost, fuel and ignition maps, factory margins',dur:'55min'},
+    {pt:'Workflow de Projeto: Do Cliente ao Ficheiro Final — diagnóstico, expectativas, protocolo de leitura e entrega',en:'Project Workflow: From Client to Final File — diagnostics, expectations, read protocol and delivery',dur:'60min'},
+    {pt:'Software Automático de Stage 1/2 — geração automática de ficheiros, seleção de opções e validação',en:'Automatic Stage 1/2 Software — automatic file generation, option selection and validation',dur:'60min'},
+    {pt:'Software de Gestão de Projetos de Potência — abrir ficheiro, navegar drivers, visualizar maps e documentar',en:'Performance Project Management Software — open file, navigate drivers, view maps and document',dur:'60min'},
+    {pt:'Software de Verificação e Controlo de Qualidade — comparar original vs modificado, identificar alterações',en:'Verification & Quality Control Software — compare original vs modified, identify changes',dur:'60min'}
+  ]},
+  {num:'M7',tier:'adv',title_pt:'Clonagem de ECU e Transferência de Dados',title_en:'ECU Cloning & Data Transfer',meta_pt:'3 aulas · 3h00',meta_en:'3 lessons · 3h00',lessons:[
+    {pt:'Clonagem OBD e BDM — procedimentos e riscos de cada abordagem',en:'OBD and BDM Cloning — procedures and risks of each approach',dur:'60min'},
+    {pt:'Transferência entre ECUs da Mesma Família — compatibilidade, identificação e imobilizador',en:'Transfer Between ECUs of the Same Family — compatibility, identification and immobiliser',dur:'55min'},
+    {pt:'Casos Práticos — Substituição de ECU Defeituosa — diagnóstico, sourcing e procedimento completo',en:'Practical Cases — Faulty ECU Replacement — diagnosis, sourcing and complete procedure',dur:'65min'}
+  ]},
+  {num:'M8',tier:'adv',title_pt:'Anulação de Imobilizador e Programação de Chaves',title_en:'Immobiliser Bypass & Key Programming',meta_pt:'6 aulas · 5h05',meta_en:'6 lessons · 5h05',lessons:[
+    {pt:'Sistemas de Imobilização — tipos, protocolos e como cada sistema protege o veículo',en:'Immobiliser Systems — types, protocols and how each system protects the vehicle',dur:'50min'},
+    {pt:'Bypass via EEPROM e Emuladores — técnica de anulação directa e uso de emuladores',en:'Bypass via EEPROM and Emulators — direct bypass technique and emulator usage',dur:'55min'},
+    {pt:'Programação de Chaves Transponder — tipos, adição de chave nova e recuperação de chave perdida',en:'Transponder Key Programming — types, adding new key and lost key recovery',dur:'50min'},
+    {pt:'Casos Práticos — Marcas e Protocolos Específicos',en:'Practical Cases — Specific Makes & Protocols',dur:'55min'},
+    {pt:'Sistemas de Coluna Elétrica (EPS/EPAS) — funcionamento, causas de bloqueio e diagnóstico',en:'Electric Steering Column Systems (EPS/EPAS) — operation, lock causes and diagnosis',dur:'50min'},
+    {pt:'Anulação de Coluna via EEPROM e OBD — procedimentos, edição de dados e verificação',en:'Steering Column Bypass via EEPROM and OBD — procedures, data editing and verification',dur:'45min'}
+  ]},
+  {num:'M9',tier:'adv',title_pt:'Microssoldadura em PCB — SMD e Ar Quente',title_en:'PCB Microsoldering — SMD & Hot Air Rework',meta_pt:'4 aulas · 4h00',meta_en:'4 lessons · 4h00',lessons:[
+    {pt:'Fundamentos de Eletrónica — componentes SMD, leitura de marcações e uso de multímetro',en:'Electronics Fundamentals — SMD components, marking identification and multimeter usage',dur:'50min'},
+    {pt:'Técnicas de Soldadura com Ferro de Ponta Fina — temperatura, estanho, fluxo e componentes SMD',en:'Fine Tip Soldering Techniques — temperature, solder, flux and SMD components',dur:'65min'},
+    {pt:'Rework com Ar Quente — remoção de CIs grandes e BGA, reballing e recolocação',en:'Hot Air Rework — large IC and BGA removal, reballing and replacement',dur:'65min'},
+    {pt:'Prática — Reparação de PCB Real com Defeito — diagnóstico, localização de falha e substituição',en:'Practice — Real Faulty PCB Repair — diagnosis, fault location and component replacement',dur:'60min'}
+  ]},
+  {num:'M10',tier:'adv',title_pt:'Gestão de Negócio e Precificação de Serviços',title_en:'Business Management & Service Pricing',meta_pt:'3 aulas · 2h30',meta_en:'3 lessons · 2h30',lessons:[
+    {pt:'Precificação de Serviços — custo real por serviço, margem ideal e tabela de preços PT/EU',en:'Service Pricing — real cost per service, ideal margin and PT/EU market price reference',dur:'55min'},
+    {pt:'Apresentação de Orçamentos e Comunicação com o Cliente — estrutura, objeções e confiança',en:'Presenting Quotes & Client Communication — structure, objection handling and trust-building',dur:'45min'},
+    {pt:'Gestão de Ficheiros de Clientes e Operação Diária — fichas, backup e rastreabilidade',en:'Client File Management & Daily Operations — records, backup and traceability',dur:'50min'}
+  ]},
+  {num:'M11',tier:'adv',title_pt:'Do Curso ao Negócio — Encerramento',title_en:'From Course to Business — Closing Module',meta_pt:'1 aula · 35min',meta_en:'1 lesson · 35min',lessons:[
+    {pt:'Simulação do 1.º Cliente, Primeiros Passos no Mercado e Entrega de Certificado',en:'First Client Simulation, First Steps in the Market and Certificate Ceremony',dur:'35min'}
+  ]}
+];
+
+function renderNav() {
+  return `<header><nav class="nav"><a href="../index.html" class="nav-logo">${LOGO}</a><ul class="nav-links"><li><a href="../index.html#cursos"><span class="pt">Cursos</span><span class="en">Courses</span></a></li><li><a href="../index.html#como-funciona"><span class="pt">Como Funciona</span><span class="en">How It Works</span></a></li><li><a href="../membros/index.html"><span class="pt">Área de Membros</span><span class="en">Member Area</span></a></li><li><a href="../index.html#contacto"><span class="pt">Contacto</span><span class="en">Contact</span></a></li></ul><div class="nav-right"><div class="lang-toggle"><button id="btn-pt" class="active" onclick="setLang('pt')">PT</button><button id="btn-en" onclick="setLang('en')">EN</button></div><a href="../checkout.html?curso=advanced" class="btn btn-orange"><span class="pt">Inscrever-me</span><span class="en">Enrol Now</span></a><button class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button></div></nav><nav class="mobile-menu" id="mobile-menu"><a href="../index.html#cursos" onclick="toggleMenu()"><span class="pt">Cursos</span><span class="en">Courses</span></a><a href="../index.html#como-funciona" onclick="toggleMenu()"><span class="pt">Como Funciona</span><span class="en">How It Works</span></a><a href="../membros/index.html"><span class="pt">Área de Membros</span><span class="en">Member Area</span></a><a href="../index.html#contacto" onclick="toggleMenu()"><span class="pt">Contacto</span><span class="en">Contact</span></a><div class="mm-btn-wrap"><a href="../checkout.html?curso=advanced" class="btn btn-orange" style="width:100%;justify-content:center"><span class="pt">Inscrever-me</span><span class="en">Enrol Now</span></a></div></nav></header>`;
+}
+
+function renderModules(mods) {
+  return mods.map((m,i) => {
+    const lessons = m.lessons.map(l=>`<div class="l-row"><div class="l-icon ${m.tier}-icon">▶</div><div class="l-title"><span class="pt">${l.pt}</span><span class="en">${l.en}</span></div><div class="l-dur">${l.dur}</div></div>`).join('');
+    return `<div class="module-block ${m.tier}-mod${i===0?' open':''}"><div class="mod-head" onclick="toggleMod(this)"><div class="mh-l"><span class="mh-num ${m.tier}-num">${m.num}</span><div><div class="mh-title"><span class="pt">${m.title_pt}</span><span class="en">${m.title_en}</span></div><div class="mh-meta"><span class="pt">${m.meta_pt}</span><span class="en">${m.meta_en}</span></div></div></div><span class="mh-chevron">▼</span></div><div class="mod-lessons">${lessons}</div></div>`;
+  }).join('');
+}
+
+const HTML = `
+${renderNav()}
+<div class="breadcrumb"><a href="../index.html"><span class="pt">Início</span><span class="en">Home</span></a><span class="bc-sep">›</span><a href="../index.html#cursos"><span class="pt">Cursos</span><span class="en">Courses</span></a><span class="bc-sep">›</span><span class="bc-cur">Advanced</span></div>
+<main>
+<section class="hero-course">
+  <div class="hero-left" style="animation:fadeUp .6s .1s both">
+    <div class="tier-badge"><div class="tier-dot"></div><span class="tier-label">Advanced</span></div>
+    <h1>REMAP <em>Pro</em> <span class="incl-badge pt">Inclui REMAP Start</span><span class="incl-badge en">Includes REMAP Start</span></h1>
+    <p class="hero-lead"><span class="pt">Quatro dias de formação intensiva que cobrem todo o espectro da reprogramação profissional — do Essential ao Stage Tuning, chaves e microssoldadura. O programa mais completo do mercado português.</span><span class="en">Four days of intensive training covering the full spectrum of professional remapping — from Essential to Stage Tuning, key programming and microsoldering. The most complete programme in the Portuguese market.</span></p>
+    <div class="meta-row"><div class="meta-item"><span>📅</span><span><span class="pt">4 dias · 32 horas</span><span class="en">4 days · 32 hours</span></span></div><div class="meta-item"><span>👥</span><span><span class="pt">Máx. 6 formandos</span><span class="en">Max. 6 students</span></span></div><div class="meta-item"><span>🎯</span><span><span class="pt">60 dias consultoria privada</span><span class="en">60 days private consulting</span></span></div><div class="meta-item"><span>📍</span><span>Lisboa, Portugal</span></div><div class="meta-item"><span>🎓</span><span><span class="pt">Certificado incluído</span><span class="en">Certificate included</span></span></div></div>
+    <ul class="outcome-list">
+      <li><span class="outcome-chk">✓</span><span class="pt">Realizar Stage Tuning (Stage 1/2/3) em motores gasolina e diesel</span><span class="en">Perform Stage Tuning (Stage 1/2/3) on petrol and diesel engines</span></li>
+      <li><span class="outcome-chk">✓</span><span class="pt">Clonar e transferir dados entre ECUs da mesma família</span><span class="en">Clone and transfer data between ECUs of the same family</span></li>
+      <li><span class="outcome-chk">✓</span><span class="pt">Anular sistemas de imobilização e programar chaves transponder</span><span class="en">Bypass immobilizer systems and program transponder keys</span></li>
+      <li><span class="outcome-chk">✓</span><span class="pt">Executar microssoldadura SMD e rework de BGA com ar quente</span><span class="en">Perform SMD microsoldering and BGA hot air rework</span></li>
+      <li><span class="outcome-chk">✓</span><span class="pt">Todos os conteúdos do Essential incluídos</span><span class="en">All Essential content included</span></li>
+    </ul>
+    <div class="hero-btns"><a href="../checkout.html?curso=advanced" class="btn btn-orange"><span class="pt">Inscrever-me agora</span><span class="en">Enrol Now</span></a><a href="../index.html#contacto" class="btn btn-ghost"><span class="pt">Tenho dúvidas</span><span class="en">I have questions</span></a></div>
+  </div>
+  <div class="csc" style="animation:fadeUp .6s .25s both">
+    <div class="csc-thumb">⚡</div>
+    <div class="csc-body">
+      <div class="price-grid"><div class="p-opt"><div class="p-lbl"><span class="pt">Presencial</span><span class="en">In-person</span></div><div class="p-val">€1.799</div><div class="p-note"><span class="pt">IVA calculado no checkout</span><span class="en">VAT at checkout</span></div></div><div class="p-opt feat"><div class="p-lbl">Online</div><div class="p-val">€799</div><div class="p-note"><span class="pt">IVA calculado no checkout</span><span class="en">VAT at checkout</span></div></div></div>
+      <a href="../checkout.html?curso=advanced" class="csc-btn"><span class="pt">Inscrever-me no Advanced</span><span class="en">Enrol in Advanced</span></a>
+      <a href="../index.html#contacto" class="csc-ghost"><span class="pt">Falar connosco</span><span class="en">Contact us</span></a>
+      <div class="csc-incl"><div class="csc-incl-title"><span class="pt">O que inclui</span><span class="en">What's included</span></div><ul>
+        <li><span class="pt">4 dias de formação (inclui Essential)</span><span class="en">4 days training (includes Essential)</span></li>
+        <li><span class="pt">Materiais e consumíveis incluídos</span><span class="en">Materials & consumables included</span></li>
+        <li><span class="pt">Vídeo-aulas online incluídas na presencial</span><span class="en">Online video lessons included with in-person</span></li>
+        <li><span class="pt">60 dias de consultoria privada gratuita</span><span class="en">60 days free private consulting</span></li>
+        <li><span class="pt">Certificado REMAP Academy Advanced</span><span class="en">REMAP Academy Advanced certificate</span></li>
+        <li><span class="pt">Suporte pós-curso prioritário</span><span class="en">Priority post-course support</span></li>
+        
+        <li><span class="pt">Acesso vitalício às vídeo-aulas online</span><span class="en">Lifetime online video lesson access</span></li>
+      </ul></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="border-top:1px solid rgba(255,255,255,.06)">
+  <div class="sec-label"><span class="pt">Conteúdo programático</span><span class="en">Course curriculum</span></div>
+  <h2 class="sec-h"><span class="pt">10 módulos — do Essential ao Advanced</span><span class="en">10 modules — from Essential to Advanced</span></h2>
+  <p class="sec-sub"><span class="pt">O Advanced inclui os 5 módulos do Essential mais 5 módulos avançados exclusivos. Conteúdo técnico integral de reprogramação profissional.</span><span class="en">The Advanced includes all 5 Essential modules plus 5 exclusive advanced modules. Full technical content for professional remapping.</span></p>
+  <div style="background:rgba(11,171,221,.05);border:1px solid rgba(11,171,221,.15);border-radius:10px;padding:.75rem 1rem;margin-bottom:1.25rem;font-size:13px;color:rgba(255,255,255,.55)"><span class="pt">📘 Módulos M1–M5: conteúdo Essential incluído</span><span class="en">📘 Modules M1–M5: Essential content included</span></div>
+  ${renderModules(ESS_MODULES)}
+  <div style="background:rgba(243,99,8,.05);border:1px solid rgba(243,99,8,.15);border-radius:10px;padding:.75rem 1rem;margin:1.25rem 0;font-size:13px;color:rgba(255,255,255,.55)"><span class="pt">🔥 Módulos M6–M10: conteúdo Advanced exclusivo</span><span class="en">🔥 Modules M6–M10: exclusive Advanced content</span></div>
+  ${renderModules(ADV_MODULES)}
+</section>
+
+<section class="section" style="border-top:1px solid rgba(255,255,255,.06)">
+  <div class="sec-label"><span class="pt">A quem se destina</span><span class="en">Who it's for</span></div>
+  <h2 class="sec-h"><span class="pt">Este curso é para ti se...</span><span class="en">This course is for you if...</span></h2>
+  <div class="who-grid">
+    <div class="who-card"><div class="who-icon">🔥</div><h4 class="who-h"><span class="pt">Já fizeste o Essential</span><span class="en">You've done the Essential</span></h4><p class="who-p"><span class="pt">Queres aprofundar e dominar todo o ecossistema de reprogramação — do tuning à microssoldadura.</span><span class="en">You want to deepen your skills and master the full remapping ecosystem — from tuning to microsoldering.</span></p></div>
+    <div class="who-card"><div class="who-icon">💼</div><h4 class="who-h"><span class="pt">Técnico a tempo inteiro</span><span class="en">Full-time technician</span></h4><p class="who-p"><span class="pt">Trabalhas em reprogramação e queres diferenciar-te com serviços de alto valor como Stage Tuning e chaves.</span><span class="en">You work in remapping and want to differentiate yourself with high-value services like Stage Tuning and key programming.</span></p></div>
+    <div class="who-card"><div class="who-icon">🏆</div><h4 class="who-h"><span class="pt">Ambição máxima</span><span class="en">Maximum ambition</span></h4><p class="who-p"><span class="pt">Queres a formação mais completa disponível em Portugal. Sem comprometer, sem atalhos.</span><span class="en">You want the most complete training available in Portugal. No compromises, no shortcuts.</span></p></div>
+  </div>
+</section>
+
+<section class="section" style="border-top:1px solid rgba(255,255,255,.06)">
+  <div class="sec-label"><span class="pt">O que dizem os formandos</span><span class="en">What students say</span></div>
+  <h2 class="sec-h"><span class="pt">Resultados reais</span><span class="en">Real results</span></h2>
+  <div class="t-grid">
+    <div class="tcard"><div class="t-stars">★★★★★</div><p class="t-text"><span class="pt">"O módulo de Stage Tuning sozinho valeu o preço do curso. Aprendi em 4 dias o que não aprenderia em 2 anos a ver tutoriais. Totalmente recomendado."</span><span class="en">"The Stage Tuning module alone was worth the course price. I learned in 4 days what I wouldn't have in 2 years of tutorials. Totally recommended."</span></p><div class="t-author"><div class="t-avatar">JS</div><div><div class="t-name">João Santos</div><div class="t-meta"><span class="pt">Remapper, Aveiro</span><span class="en">Remapper, Aveiro</span></div></div></div></div>
+    <div class="tcard"><div class="t-stars">★★★★★</div><p class="t-text"><span class="pt">"A parte de microssoldadura foi reveladora. Nunca pensei que conseguiria reparar uma PCB danificada, mas no final do Advanced estava a fazê-lo com confiança."</span><span class="en">"The microsoldering part was eye-opening. I never thought I could repair a damaged PCB, but by the end of the Advanced I was doing it confidently."</span></p><div class="t-author"><div class="t-avatar">CR</div><div><div class="t-name">Carlos Rocha</div><div class="t-meta"><span class="pt">Técnico Eletrónico, Leiria</span><span class="en">Electronics Technician, Leiria</span></div></div></div></div>
+    <div class="tcard"><div class="t-stars">★★★★★</div><p class="t-text"><span class="pt">"Fiz o Essential e Advanced em semanas consecutivas. A progressão é perfeita. Hoje tenho um negócio próprio de remapping. O investimento pagou-se no primeiro mês."</span><span class="en">"I did Essential and Advanced in consecutive weeks. The progression is perfect. Today I have my own remapping business. The investment paid off in the first month."</span></p><div class="t-author"><div class="t-avatar">PT</div><div><div class="t-name">Pedro Teixeira</div><div class="t-meta"><span class="pt">Proprietário, Tuning Shop, Coimbra</span><span class="en">Owner, Tuning Shop, Coimbra</span></div></div></div></div>
+  </div>
+</section>
+
+<section class="section" style="border-top:1px solid rgba(255,255,255,.06)">
+  <div class="sec-label">FAQ</div>
+  <h2 class="sec-h"><span class="pt">Perguntas frequentes</span><span class="en">Frequently asked questions</span></h2>
+  <div class="faq-list">
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-t"><span class="pt">Preciso de ter feito o Essential primeiro?</span><span class="en">Do I need to have done the Essential first?</span></span><span class="faq-icon">✕</span></div><p class="faq-a"><span class="pt">Não. O Advanced inclui os 5 módulos do Essential. É a forma mais eficiente de cobrir tudo de uma vez. Se já fizeste o Essential, fala connosco para eventual desconto de upgrade.</span><span class="en">No. The Advanced includes all 5 Essential modules. It's the most efficient way to cover everything at once. If you've already done the Essential, contact us for a potential upgrade discount.</span></p></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-t"><span class="pt">Preciso de conhecimentos de eletrônica para a parte de microssoldadura?</span><span class="en">Do I need electronics knowledge for the microsoldering part?</span></span><span class="faq-icon">✕</span></div><p class="faq-a"><span class="pt">Não é necessário conhecimento prévio. O módulo começa pelos fundamentos de eletrônica SMD e avança progressivamente. Fornecemos todo o equipamento necessário para a prática.</span><span class="en">No prior knowledge is necessary. The module starts with SMD electronics fundamentals and progresses gradually. We provide all necessary equipment for practice.</span></p></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-t"><span class="pt">O que está incluído no preço?</span><span class="en">What's included in the price?</span></span><span class="faq-icon">✕</span></div><p class="faq-a"><span class="pt">4 dias de formação intensiva (32h), materiais e consumíveis, certificado REMAP Academy Advanced e acesso ao canal de suporte técnico pós-formação prioritário. Inclui também acesso vitalício às vídeo-aulas na área de membros.</span><span class="en">4 days intensive training (32h), materials and consumables, REMAP Academy Advanced certificate and priority post-training technical support. Also includes lifetime access to video lessons in the member area.</span></p></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-t"><span class="pt">Há turmas disponíveis para o Advanced?</span><span class="en">Are there classes available for the Advanced?</span></span><span class="faq-icon">✕</span></div><p class="faq-a"><span class="pt">Sim. As turmas têm máximo de 6 formandos para garantir acompanhamento individual. As datas estão disponíveis no banner da página inicial. Recomendamos inscrição antecipada devido à procura.</span><span class="en">Yes. Classes are limited to 6 students for individual support. Dates are available in the homepage banner. We recommend early enrolment due to demand.</span></p></div>
+  </div>
+</section>
+
+
+</main>
+<div class="footer-cta"><h2 class="fcta-h"><span class="pt">O máximo da formação em ECU</span><span class="en">The ultimate ECU training</span></h2><p class="fcta-sub"><span class="pt">Inscreve-te agora e garante o teu lugar. Máximo 6 formandos por turma.</span><span class="en">Enrol now and secure your place. Maximum 6 students per class.</span></p><div class="fcta-btns"><a href="../checkout.html?curso=advanced" class="btn btn-orange"><span class="pt">Inscrever-me no Advanced</span><span class="en">Enrol in Advanced</span></a><a href="essential.html" class="btn btn-ghost"><span class="pt">Ver curso Essential</span><span class="en">See Essential course</span></a></div></div>
+<footer class="footer"><div class="foot-bot"><p class="foot-copy">© 2026 <span>REMAP Academy</span>. <span class="pt">Todos os direitos reservados.</span><span class="en">All rights reserved.</span></p><div class="foot-legal"><a href="#"><span class="pt">Política de Privacidade</span><span class="en">Privacy Policy</span></a><a href="#"><span class="pt">Termos e Condições</span><span class="en">Terms & Conditions</span></a></div></div></footer>
+`;
+document.getElementById('app').innerHTML = HTML;
+function setLang(l){document.body.classList.toggle('lang-en',l==='en');document.getElementById('btn-pt').classList.toggle('active',l==='pt');document.getElementById('btn-en').classList.toggle('active',l==='en');document.documentElement.lang=l;localStorage.setItem('ra-lang',l)}
+(function(){if(localStorage.getItem('ra-lang')==='en')setLang('en')})();
+function toggleMenu(){const m=document.getElementById('mobile-menu'),h=document.getElementById('hamburger');m.classList.toggle('open');h.classList.toggle('open')}
+document.addEventListener('click',e=>{const n=document.querySelector('.nav'),m=document.getElementById('mobile-menu'),h=document.getElementById('hamburger');if(m&&h&&!n.contains(e.target)&&!m.contains(e.target)){m.classList.remove('open');h.classList.remove('open')}})
+function toggleMod(head){head.closest('.module-block').classList.toggle('open')}
+function toggleFaq(q){q.closest('.faq-item').classList.toggle('open')}
+</script>
+</body>
+</html>

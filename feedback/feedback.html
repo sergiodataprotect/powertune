@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1a1718">
+  <title>Feedback — REMAP Academy</title>
+  <meta name="description" content="Partilha a tua opinião sobre o curso REMAP Academy. Leva menos de 2 minutos.">
+  <meta property="og:title" content="Feedback — REMAP Academy">
+  <meta property="og:description" content="A tua opinião importa. Preenche o formulário de feedback do teu curso.">
+  <meta property="og:image" content="https://www.remapacademy.pt/og-feedback.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --black: #1a1718;
+      --black2: #231f20;
+      --cyan: #0BABDD;
+      --orange: #F36308;
+      --green: #22c55e;
+      --white: #fff;
+      --muted: rgba(255,255,255,.45);
+      --border: rgba(255,255,255,.1);
+      --surface: rgba(255,255,255,.04);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Barlow', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    /* ── LANG TOGGLE ── */
+    .lang-bar {
+      background: var(--black2);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      padding: .5rem 1.25rem;
+      gap: 4px;
+    }
+    .lang-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--muted);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      padding: 4px 10px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .lang-btn.active { background: var(--orange); border-color: var(--orange); color: var(--white); }
+
+    /* ── HEADER ── */
+    .header {
+      background: var(--black2);
+      border-bottom: 1px solid var(--border);
+      padding: 1.25rem 1.25rem 1rem;
+      text-align: center;
+    }
+    .header svg { width: 150px; height: auto; display: block; margin: 0 auto .75rem; }
+    .course-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: 'Barlow Condensed', sans-serif;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .badge-ess { background: rgba(11,171,221,.12); border: 1px solid rgba(11,171,221,.3); color: var(--cyan); }
+    .badge-adv { background: rgba(243,99,8,.12); border: 1px solid rgba(243,99,8,.3); color: var(--orange); }
+    .dot { width: 6px; height: 6px; border-radius: 50%; animation: pulse 2s infinite; }
+    .dot-ess { background: var(--cyan); }
+    .dot-adv { background: var(--orange); }
+    @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.3} }
+
+    /* ── PROGRESS ── */
+    .progress-wrap { padding: 1rem 1.25rem 0; }
+    .progress-bar-bg { height: 3px; background: var(--border); border-radius: 3px; overflow: hidden; }
+    .progress-bar { height: 100%; background: var(--orange); border-radius: 3px; transition: width .4s ease; }
+    .progress-label { font-size: 11px; color: var(--muted); margin-top: 6px; text-align: right; }
+
+    /* ── FORM BODY ── */
+    .form-body { padding: 1.25rem; max-width: 480px; margin: 0 auto; }
+
+    /* ── STEP ── */
+    .step { display: none; animation: fadeUp .35s ease; }
+    .step.active { display: block; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+    .step-title { font-family: 'Barlow Condensed', sans-serif; font-size: 1.4rem; font-weight: 700; margin-bottom: .25rem; color: var(--white); }
+    .step-sub { font-size: 13px; color: var(--muted); margin-bottom: 1.5rem; line-height: 1.5; }
+
+    /* ── FIELDS ── */
+    .field { margin-bottom: 1.1rem; }
+    .field label { display: block; font-size: 12px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 6px; }
+    input[type=text], input[type=email], select, textarea {
+      width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+      color: var(--white); font-family: 'Barlow', sans-serif; font-size: 15px; padding: 12px 14px;
+      outline: none; transition: border-color .2s; -webkit-appearance: none;
+    }
+    input[type=text]:focus, input[type=email]:focus, select:focus, textarea:focus { border-color: var(--orange); }
+    select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(255,255,255,.4)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 38px; }
+    option { background: #231f20; }
+    textarea { resize: none; min-height: 100px; }
+    ::placeholder { color: rgba(255,255,255,.22); }
+
+    /* ── STARS ── */
+    .star-group { display: flex; gap: 10px; padding: 4px 0; }
+    .star { font-size: 32px; cursor: pointer; color: rgba(255,255,255,.15); transition: color .15s, transform .1s; user-select: none; -webkit-tap-highlight-color: transparent; }
+    .star.on { color: var(--orange); }
+    .star:active { transform: scale(.88); }
+    .star-label { font-size: 12px; color: var(--muted); margin-top: 6px; min-height: 16px; }
+
+    /* ── NPS ── */
+    .nps-grid { display: grid; grid-template-columns: repeat(11, 1fr); gap: 4px; }
+    .nps-btn {
+      aspect-ratio: 1; border: 1px solid var(--border); border-radius: 8px; background: var(--surface);
+      color: var(--muted); font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 600;
+      cursor: pointer; transition: all .15s; display: flex; align-items: center; justify-content: center;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .nps-btn.sel { background: var(--orange); color: var(--white); border-color: var(--orange); }
+    .nps-btn:active { transform: scale(.9); }
+    .nps-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); margin-top: 8px; }
+
+    /* ── MODULE CARDS ── */
+    .mod-list { display: flex; flex-direction: column; gap: 10px; }
+    .mod-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .mod-name { font-size: 13px; font-weight: 500; color: rgba(255,255,255,.75); flex: 1; }
+    .mod-num { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700; color: var(--orange); letter-spacing: .08em; margin-bottom: 2px; }
+    .mod-stars { display: flex; gap: 6px; }
+    .mod-star { font-size: 22px; cursor: pointer; color: rgba(255,255,255,.15); transition: color .15s; user-select: none; -webkit-tap-highlight-color: transparent; }
+    .mod-star.on { color: var(--orange); }
+
+    /* ── CHECKBOXES ── */
+    .check-list { display: flex; flex-direction: column; gap: 10px; }
+    .check-item { display: flex; align-items: flex-start; gap: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; cursor: pointer; transition: border-color .2s; -webkit-tap-highlight-color: transparent; }
+    .check-item:has(input:checked) { border-color: var(--orange); background: rgba(243,99,8,.06); }
+    .check-item input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--orange); flex-shrink: 0; margin-top: 1px; cursor: pointer; border: none; background: none; padding: 0; }
+    .check-item span { font-size: 14px; color: rgba(255,255,255,.7); line-height: 1.4; }
+    .consent-row { display: flex; align-items: flex-start; gap: 10px; margin-top: 10px; }
+    .consent-row input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--cyan); flex-shrink: 0; margin-top: 2px; cursor: pointer; border: none; background: none; padding: 0; }
+    .consent-row span { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+    /* ── BUTTONS ── */
+    .btn-next, .btn-submit { width: 100%; padding: 15px; border: none; border-radius: 12px; font-family: 'Barlow Condensed', sans-serif; font-size: 1.05rem; font-weight: 700; letter-spacing: .05em; cursor: pointer; margin-top: 1.5rem; transition: opacity .2s, transform .15s; -webkit-tap-highlight-color: transparent; min-height: 52px; }
+    .btn-next { background: var(--orange); color: var(--white); }
+    .btn-submit { background: var(--green); color: var(--white); }
+    .btn-next:active, .btn-submit:active { transform: scale(.97); }
+    .btn-next:disabled { opacity: .4; cursor: not-allowed; }
+    .btn-back { display: flex; align-items: center; gap: 6px; background: none; border: none; color: var(--muted); font-family: 'Barlow', sans-serif; font-size: 13px; cursor: pointer; padding: 0; margin-bottom: 1.25rem; -webkit-tap-highlight-color: transparent; }
+    .btn-back:active { opacity: .6; }
+
+    /* ── FORMSPREE STATE ── */
+    .submitting-msg { text-align: center; padding: 1rem; font-size: 14px; color: var(--muted); display: none; }
+    .error-msg { background: rgba(220,50,50,.1); border: 1px solid rgba(220,50,50,.3); border-radius: 10px; padding: 12px 14px; font-size: 13px; color: #f88; margin-top: 1rem; display: none; }
+
+    /* ── SUCCESS ── */
+    .success-screen { display: none; text-align: center; padding: 3rem 1.5rem 2rem; max-width: 380px; margin: 0 auto; }
+    .success-screen.show { display: block; animation: fadeUp .4s ease; }
+    .s-checkmark { width: 72px; height: 72px; background: rgba(34,197,94,.12); border: 2px solid var(--green); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 32px; }
+    .s-title { font-family: 'Barlow Condensed', sans-serif; font-size: 1.8rem; font-weight: 700; margin-bottom: .5rem; }
+    .s-sub { font-size: 14px; color: var(--muted); line-height: 1.65; margin-bottom: 2rem; }
+    .s-divider { height: 1px; background: var(--border); margin: 1.5rem 0; }
+    .s-social { font-size: 13px; color: var(--muted); margin-bottom: 1rem; }
+    .s-link { display: inline-flex; align-items: center; gap: 8px; background: rgba(11,171,221,.1); border: 1px solid rgba(11,171,221,.25); border-radius: 10px; padding: 12px 20px; color: var(--cyan); font-family: 'Barlow Condensed', sans-serif; font-size: .95rem; font-weight: 700; text-decoration: none; transition: opacity .2s; }
+    .s-link:active { opacity: .7; }
+
+    /* ── FOOTER ── */
+    .page-footer { text-align: center; padding: 2rem 1.25rem 1rem; font-size: 11px; color: rgba(255,255,255,.2); }
+    .page-footer a { color: rgba(255,255,255,.3); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<!-- LANG BAR -->
+<div class="lang-bar">
+  <button class="lang-btn active" id="btn-pt" onclick="setLang('pt')">PT</button>
+  <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <!-- WHITE LOGO -->
+  <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+      <linearGradient id="wg1" gradientUnits="userSpaceOnUse" x1="157.319" y1="216.325" x2="457.619" y2="216.325">
+        <stop offset="0" stop-color="#0BABDD"/><stop offset="1" stop-color="#1B6F92"/>
+      </linearGradient>
+      <linearGradient id="wg2" gradientUnits="userSpaceOnUse" x1="247.409" y1="216.663" x2="37.658" y2="216.663">
+        <stop offset="0" stop-color="#DB3832"/><stop offset=".5025" stop-color="#E46E3A"/><stop offset="1" stop-color="#EDA342"/>
+      </linearGradient>
+      <linearGradient id="wg3" gradientUnits="userSpaceOnUse" x1="49.679" y1="367.3" x2="49.679" y2="304.51">
+        <stop offset="0" stop-color="#DB3832"/><stop offset="1" stop-color="#EDA342"/>
+      </linearGradient>
+      <linearGradient id="wg4" gradientUnits="userSpaceOnUse" x1="453.719" y1="367.339" x2="453.719" y2="304.53">
+        <stop offset="0" stop-color="#1B6F92"/><stop offset="1" stop-color="#0BABDD"/>
+      </linearGradient>
+    </defs>
+    <circle fill="#0BABDD" cx="387.8" cy="147.5" r="9.2"/>
+    <circle fill="#0BABDD" cx="235.9" cy="97.4" r="9.2"/>
+    <circle fill="#0BABDD" cx="480.8" cy="192.8" r="9.2"/>
+    <circle fill="#0BABDD" cx="342.6" cy="76.6" r="9.9"/>
+    <circle fill="#F36308" cx="105.4" cy="97.4" r="12.5"/>
+    <circle fill="#F36308" cx="44.8" cy="153.2" r="12.5"/>
+    <circle fill="#0BABDD" cx="133.3" cy="160.8" r="9.8"/>
+    <circle fill="#F36308" cx="22.8" cy="192.8" r="11.3"/>
+    <path fill="none" stroke="#F36308" stroke-width="4.875" d="M37.6,218.5c0,0,9.9-66.1,104.1-114.5"/>
+    <path fill="none" stroke="#F36308" stroke-width="4.875" d="M14.8,286c0,0-22.8-87.4,54-159.1c0,0,67.5-72.5,196.8-67.5"/>
+    <path fill="none" stroke="#0BABDD" stroke-width="4.875" d="M346.7,78.9c0,0,66.5,21.3,110.8,77.8s37.2,88.1,34.3,127.5"/>
+    <path fill="none" stroke="#F36308" stroke-width="4.29" d="M115.4,161.2c0,0-21.3,14-37.2,44.7"/>
+    <path fill="none" stroke="#0BABDD" stroke-width="4.29" d="M192.4,132.9c0,0-32.2,7.2-57.9,27.9"/>
+    <path fill="none" stroke="#0BABDD" stroke-width="4.29" d="M235.9,97.4c0,0,58.1-6,119.9,26.9c0,0,39.6,19.5,64.5,62.2"/>
+    <path fill="none" stroke="#0BABDD" stroke-width="4.29" d="M352.5,141.7c0,0-42.9-35.3-125.8-30"/>
+    <path fill="none" stroke="#F36308" stroke-width="4.875" stroke-dasharray="5.7605,5.7605" d="M148.3,101.3c0,0,1-0.4,2.5-1.2 M156.1,97.8c13.3-5.3,42.7-14.6,87.4-16.2 M246.4,81.6c1,0,2,0,2.9,0"/>
+    <line fill="none" stroke="#0BABDD" stroke-width="4.29" x1="194.2" y1="116.5" x2="198.9" y2="132.9"/>
+    <line fill="none" stroke="#0BABDD" stroke-width="4.29" x1="203.1" y1="114.2" x2="207" y2="130.8"/>
+    <line fill="none" stroke="#0BABDD" stroke-width="4.29" x1="212.3" y1="111.8" x2="215.6" y2="128.6"/>
+    <line fill="none" stroke="#0BABDD" stroke-width="4.29" x1="221.5" y1="109.9" x2="224" y2="126.9"/>
+    <circle fill="#0BABDD" cx="268.1" cy="59.4" r="12.5"/>
+    <path fill="url(#wg1)" d="M444.6,241.9l13.1,6.4c-4.3-10.7-7-21.5-7-21.5c-4.7-11.3,1.6-19.3,1.6-19.3l5.3-6.8l-55.2,1.2c-70.6-42.9-133.2-42.3-154.8-40.4c-49.5,18.5-90.1,52.5-90.1,52.5h28.3c0,0,3.7,0.2,1.4,4.5c0,0-10.3,13.3-16.6,36.7c56.7-13.7,155.8-23.4,155.8-23.4l-15.6,23.4l41.3,16.6h1c3.9-35.5,33.9-34.1,33.9-34.1c9.8,1,17.2,3.7,22.8,7.4l6.6-31.8C416.1,213.1,447.7,242.1,444.6,241.9z M352.5,209h-156c0,0-2-15.2-6-15.4c0,0,28.5-21.5,79.4-21.1c0,0,66.3,3.7,104.9,29.2L352.5,209z"/>
+    <path fill="url(#wg2)" d="M247.4,161.6c-5.3,0.4-8.2,1-8.2,1C193,167.4,138.4,206,138.4,206c-62.8,4.1-96.1,36.5-96.1,36.5c-7.6,5.9-3.5,15.8-3.5,15.8l3.9,13.5h44.1c3.7-39.2,33-40.2,33-40.2c20.1,0.6,22,16.4,22,16.4c-7.8-12.1-25.5-7.8-25.5-7.8c-22.6,8.2-21.4,31.6-21.4,31.6h60.6v-0.6c7-35.7,22.8-54.2,24.6-56.4l0.2-0.2h-23.4C157.3,214,197.9,180.1,247.4,161.6z M79.9,244.4c0,0-8,3.9-24.2,5.3c0,0,4.3-6.2,12.7-10.1l19.7-11.9C87.9,228.1,84.8,236.1,79.9,244.4z"/>
+    <path fill="url(#wg3)" d="M65.3,367.3l-16.2-19.9H31.2v19.9H13.4v-62.8h42.9c15.6,0,27.7,7,27.7,21.4c0,10.5-6.4,17.2-16,20.1l17.9,21.3H65.3z M54.9,334.1c6.4,0,10.9-1.8,10.9-7.8s-4.7-7.8-10.9-7.8H31v15.8h24V334.1z"/>
+    <path fill="#FFFFFF" d="M169.4,353.3v14h-65.5v-62.8h64.5v14h-47v10.3h38.8v13.5h-38.8v11.1h48V353.3z"/>
+    <path fill="#FFFFFF" d="M304.7,304.5v62.8h-17v-40l-23.2,30.6h-0.8l-23.4-30.6v40.2H224v-62.8h18.5l21.8,30.2l22-30.2h18.3V304.5z"/>
+    <path fill="#FFFFFF" d="M378.1,355.4h-35.3l-6,12.1H317l33.3-62.8h20.5l33.3,62.8h-19.9L378.1,355.4z M371.6,342.3l-11.1-22.2l-11.3,22.2H371.6z"/>
+    <path fill="url(#wg4)" d="M489.8,326.5c0,14.6-11.3,22-28.5,22H436v18.9h-18.3v-32.4h42.1c6.8,0,11.5-2.1,11.5-8.4c0-6.4-4.7-8.4-11.5-8.4h-23.6l-18.5-13.8h43.7C478.3,304.5,489.8,312.1,489.8,326.5z"/>
+    <polygon fill="#FFFFFF" points="183.6,346.2 209,346.2 196.3,369.2"/>
+    <polygon fill="#0BABDD" points="209,332.4 183.6,332.4 196.3,309.4"/>
+    <path fill="#FFFFFF" d="M80.5,437.3h-9.4l-4.9-11.5H47.3l-4.9,11.5h-8.8l19.1-43.5h8.4L80.5,437.3z M63.5,418.8l-6.4-15.6l-6.6,15.6H63.5z"/>
+    <path fill="#FFFFFF" d="M121.8,438.1c-4.5,0-8.6-1-12.1-2.9c-3.5-2-6.2-4.7-8-8c-1.9-3.3-2.7-7.2-2.7-11.5c0-4.3,1-8.2,2.7-11.5c1.9-3.3,4.5-6,8-8c3.5-2,7.4-2.9,11.9-2.9c8,0,14.4,3.1,19.1,9.6l-6.6,4.3c-1.6-2.1-3.3-3.9-5.5-4.9c-1.9-1-4.3-1.6-7-1.6c-4.3,0-7.8,1.4-10.5,4.1c-2.5,2.7-3.9,6.4-3.9,11.1c0,4.7,1.4,8.4,3.9,11.1c2.5,2.7,6,4.1,10.3,4.1c5.1,0,9.4-2.3,12.5-6.8l6.8,4.1C136.5,434.8,129.8,438.1,121.8,438.1z"/>
+    <path fill="#FFFFFF" d="M204.9,437.3h-9.4l-4.9-11.5h-18.9l-4.9,11.5h-8.8l19.1-43.5h8.4L204.9,437.3z M187.9,418.8l-6.4-15.6l-6.6,15.6H187.9z"/>
+    <path fill="#FFFFFF" d="M244.5,437.3H226v-43.5h18.5c4.7,0,8.8,1,12.3,2.9c3.5,1.9,6,4.5,7.8,7.8c1.8,3.3,2.5,7,2.5,11.1s-0.8,7.8-2.5,11.1c-1.8,3.3-4.3,5.9-7.8,7.8C253.5,436.3,249.2,437.3,244.5,437.3z M244.5,401.2h-9.9v28.9h9.9c4.5,0,8-1.4,10.5-3.9c2.5-2.5,3.7-6,3.7-10.7c0-4.5-1.2-8-3.7-10.7C252.5,402,249.2,401.2,244.5,401.2z"/>
+    <path fill="#FFFFFF" d="M326.4,437.3h-34.7v-43.5h33.9v7.2h-25.5v9.8h22.2v7h-22.2v12.1h26.3V437.3z"/>
+    <path fill="#FFFFFF" d="M399.9,437.3h-8.2v-31.4l-13.1,31.4h-6.8l-13.1-31.4v31.4h-8.2v-43.5h11.1l13.6,32.6l13.6-32.6h10.9L399.9,437.3z"/>
+    <path fill="#FFFFFF" d="M465.2,393.8l-18.1,25.7v17.7h-8.6v-17.6L420.6,394h9.8l12.5,18.5l12.7-18.5h9.8L465.2,393.8z"/>
+    <path fill="#1B6F92" d="M351.3,271.8H166.5c1-5.9,2.1-11.3,3.5-16.4c56.7-13.6,155.8-23.4,155.8-23.4l-15.6,23.4L351.3,271.8z"/>
+    <path fill="#1B6F92" d="M444.6,241.9c-3.3-0.4-8.8,0.4-8.8,0.4c-10.9,0.4-17.7,2.9-22,6c-1.4-1.2-2.7-2.3-4.3-3.3l6.6-31.8C416.1,213.1,447.7,242.1,444.6,241.9z"/>
+    <path fill="#343F52" d="M451.2,270.8h-24.6c0,0-1.6-12.9-12.7-22.6c4.3-3.1,11.1-5.7,22-6c0,0,5.5-0.6,8.8-0.4l13.1,6.4c1.2,2.9,2.5,6,3.9,8.8C461.5,257.1,469.3,271.6,451.2,270.8z"/>
+  </svg>
+  <div id="course-badge" class="course-badge badge-ess">
+    <span class="dot dot-ess" id="badge-dot"></span>
+    <span id="badge-text">Curso Essential</span>
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-wrap" id="progress-wrap">
+  <div class="progress-bar-bg"><div class="progress-bar" id="progress-bar" style="width:20%"></div></div>
+  <div class="progress-label" id="progress-label">Passo 1 de 5</div>
+</div>
+
+<!-- FORM (Formspree) -->
+<div class="form-body" id="form-container">
+
+  <!-- STEP 1: Identificação -->
+  <div class="step active" id="step-1">
+    <p class="step-title" data-pt="Olá! 👋" data-en="Hello! 👋">Olá! 👋</p>
+    <p class="step-sub" data-pt="Leva menos de 2 minutos. A tua opinião ajuda-nos a melhorar cada turma." data-en="Takes less than 2 minutes. Your feedback helps us improve every class.">Leva menos de 2 minutos. A tua opinião ajuda-nos a melhorar cada turma.</p>
+    <div class="field">
+      <label data-pt="Nome (opcional)" data-en="Name (optional)">Nome (opcional)</label>
+      <input type="text" id="f-nome" data-pt-ph="O teu nome" data-en-ph="Your name">
+    </div>
+    <div class="field">
+      <label data-pt="Email (opcional)" data-en="Email (optional)">Email (opcional)</label>
+      <input type="email" id="f-email" data-pt-ph="para envio do certificado" data-en-ph="for certificate delivery">
+    </div>
+    <div class="field">
+      <label data-pt="Curso frequentado *" data-en="Course attended *">Curso frequentado *</label>
+      <select id="f-curso" onchange="updateBadge()">
+        <option value="" data-pt="Selecionar…" data-en="Select…">Selecionar…</option>
+        <option value="essential">Essential</option>
+        <option value="advanced">Advanced</option>
+      </select>
+    </div>
+    <div class="field">
+      <label data-pt="Modalidade *" data-en="Format *">Modalidade *</label>
+      <select id="f-modalidade">
+        <option value="" data-pt="Selecionar…" data-en="Select…">Selecionar…</option>
+        <option value="presencial" data-pt="Presencial — Porto" data-en="In-person — Porto">Presencial — Porto</option>
+        <option value="online" data-pt="Online" data-en="Online">Online</option>
+      </select>
+    </div>
+    <button class="btn-next" onclick="goTo(2)" id="btn1" data-pt="Continuar →" data-en="Continue →">Continuar →</button>
+  </div>
+
+  <!-- STEP 2: Avaliação Geral -->
+  <div class="step" id="step-2">
+    <button class="btn-back" onclick="goTo(1)">← <span data-pt="Voltar" data-en="Back">Voltar</span></button>
+    <p class="step-title" data-pt="Avaliação geral" data-en="Overall rating">Avaliação geral</p>
+    <p class="step-sub" data-pt="Como correu o curso no geral?" data-en="How did the course go overall?">Como correu o curso no geral?</p>
+    <div class="field">
+      <label data-pt="Classificação global" data-en="Overall score">Classificação global</label>
+      <div class="star-group" id="sg-global"></div>
+      <div class="star-label" id="sl-global"></div>
+    </div>
+    <div class="field">
+      <label data-pt="Conteúdo técnico" data-en="Technical content">Conteúdo técnico</label>
+      <div class="star-group" id="sg-content"></div>
+      <div class="star-label" id="sl-content"></div>
+    </div>
+    <div class="field">
+      <label data-pt="Qualidade do formador" data-en="Trainer quality">Qualidade do formador</label>
+      <div class="star-group" id="sg-trainer"></div>
+      <div class="star-label" id="sl-trainer"></div>
+    </div>
+    <div class="field">
+      <label data-pt="Relação qualidade / preço" data-en="Value for money">Relação qualidade / preço</label>
+      <div class="star-group" id="sg-value"></div>
+      <div class="star-label" id="sl-value"></div>
+    </div>
+    <button class="btn-next" onclick="goTo(3)" data-pt="Continuar →" data-en="Continue →">Continuar →</button>
+  </div>
+
+  <!-- STEP 3: Módulos -->
+  <div class="step" id="step-3">
+    <button class="btn-back" onclick="goTo(2)">← <span data-pt="Voltar" data-en="Back">Voltar</span></button>
+    <p class="step-title" data-pt="Avaliação por módulo" data-en="Rating by module">Avaliação por módulo</p>
+    <p class="step-sub" data-pt="Classifica cada módulo de 1 a 5 estrelas." data-en="Rate each module from 1 to 5 stars.">Classifica cada módulo de 1 a 5 estrelas.</p>
+    <div class="mod-list" id="mod-list"></div>
+    <button class="btn-next" onclick="goTo(4)" style="margin-top:1.5rem" data-pt="Continuar →" data-en="Continue →">Continuar →</button>
+  </div>
+
+  <!-- STEP 4: NPS + Perguntas abertas -->
+  <div class="step" id="step-4">
+    <button class="btn-back" onclick="goTo(3)">← <span data-pt="Voltar" data-en="Back">Voltar</span></button>
+    <p class="step-title" data-pt="Mais algumas questões" data-en="A few more questions">Mais algumas questões</p>
+    <p class="step-sub" data-pt="Quase a terminar!" data-en="Almost done!">Quase a terminar!</p>
+    <div class="field">
+      <label data-pt="Probabilidade de recomendar a REMAP Academy (0–10)" data-en="Likelihood of recommending REMAP Academy (0–10)">Probabilidade de recomendar a REMAP Academy (0–10)</label>
+      <div class="nps-grid" id="nps-grid"></div>
+      <div class="nps-labels">
+        <span data-pt="Muito improvável" data-en="Very unlikely">Muito improvável</span>
+        <span data-pt="Muito provável" data-en="Very likely">Muito provável</span>
+      </div>
+    </div>
+    <div class="field">
+      <label data-pt="O que mais gostaste?" data-en="What did you like most?">O que mais gostaste?</label>
+      <textarea id="f-positivo" data-pt-ph="O que mais te marcou no curso…" data-en-ph="What stood out most for you…"></textarea>
+    </div>
+    <div class="field">
+      <label data-pt="O que melhorarias?" data-en="What would you improve?">O que melhorarias?</label>
+      <textarea id="f-melhoria" data-pt-ph="Feedback construtivo é sempre bem-vindo…" data-en-ph="Constructive feedback is always welcome…"></textarea>
+    </div>
+    <div class="field">
+      <label data-pt="Já aplicaste o conteúdo no trabalho?" data-en="Have you applied the content at work?">Já aplicaste o conteúdo no trabalho?</label>
+      <div class="check-list">
+        <label class="check-item"><input type="checkbox" id="ch1"><span data-pt="Sim, já apliquei em clientes reais" data-en="Yes, I've already applied it with real clients">Sim, já apliquei em clientes reais</span></label>
+        <label class="check-item"><input type="checkbox" id="ch2"><span data-pt="Estou a praticar / consolidar" data-en="I'm still practising / consolidating">Estou a praticar / consolidar</span></label>
+        <label class="check-item"><input type="checkbox" id="ch3"><span data-pt="Ainda não tive oportunidade" data-en="I haven't had the opportunity yet">Ainda não tive oportunidade</span></label>
+      </div>
+    </div>
+    <button class="btn-next" onclick="goTo(5)" data-pt="Continuar →" data-en="Continue →">Continuar →</button>
+  </div>
+
+  <!-- STEP 5: Testemunho + Submit -->
+  <div class="step" id="step-5">
+    <button class="btn-back" onclick="goTo(4)">← <span data-pt="Voltar" data-en="Back">Voltar</span></button>
+    <p class="step-title" data-pt="Testemunho" data-en="Testimonial">Testemunho</p>
+    <p class="step-sub" data-pt="Opcional — mas muito valioso para outros formandos que estão a decidir inscrever-se." data-en="Optional — but very valuable for other students deciding whether to enrol.">Opcional — mas muito valioso para outros formandos que estão a decidir inscrever-se.</p>
+    <div class="field">
+      <label data-pt="O teu testemunho (opcional)" data-en="Your testimonial (optional)">O teu testemunho (opcional)</label>
+      <textarea id="f-testemunho" style="min-height:120px" data-pt-ph="Escreve com as tuas palavras o que o curso representou para ti…" data-en-ph="In your own words, what did the course mean to you…"></textarea>
+      <div class="consent-row">
+        <input type="checkbox" id="f-consent">
+        <span data-pt="Autorizo a REMAP Academy a publicar o meu testemunho no site e redes sociais" data-en="I authorise REMAP Academy to publish my testimonial on the website and social media">Autorizo a REMAP Academy a publicar o meu testemunho no site e redes sociais</span>
+      </div>
+    </div>
+    <div class="error-msg" id="error-msg">Ocorreu um erro ao enviar. Tenta novamente.</div>
+    <div class="submitting-msg" id="submitting-msg">A enviar… ⏳</div>
+    <button class="btn-submit" onclick="submitForm()" id="btn-submit" data-pt="✓ Submeter feedback" data-en="✓ Submit feedback">✓ Submeter feedback</button>
+  </div>
+
+</div>
+
+<!-- SUCCESS -->
+<div class="success-screen" id="success-screen">
+  <div class="s-checkmark">✓</div>
+  <h2 class="s-title" data-pt="Obrigado!" data-en="Thank you!">Obrigado!</h2>
+  <p class="s-sub"
+     data-pt="O teu feedback foi recebido com sucesso.<br>A tua opinião ajuda-nos a melhorar cada turma e a formar melhores profissionais.<br><br>Boa sorte com os teus projetos — a equipa está sempre disponível no suporte pós-curso."
+     data-en="Your feedback was successfully received.<br>Your opinion helps us improve every class and train better professionals.<br><br>Good luck with your projects — the team is always available in post-course support.">
+    O teu feedback foi recebido com sucesso.<br>A tua opinião ajuda-nos a melhorar cada turma e a formar melhores profissionais.<br><br>Boa sorte com os teus projetos — a equipa está sempre disponível no suporte pós-curso.
+  </p>
+  <div class="s-divider"></div>
+  <p class="s-social" data-pt="Segue-nos para dicas e novidades:" data-en="Follow us for tips and news:">Segue-nos para dicas e novidades:</p>
+  <a href="https://www.instagram.com/remapacademy" class="s-link" target="_blank">📸 @remapacademy</a>
+</div>
+
+<div class="page-footer">
+  © 2026 REMAP Academy ·
+  <a href="https://www.remapacademy.pt/privacidade" data-pt="Política de Privacidade" data-en="Privacy Policy">Política de Privacidade</a>
+</div>
+
+<script>
+// ── TRANSLATIONS ──────────────────────────────────────────────────────────────
+const STAR_LABELS = {
+  pt: ['','Muito mau','Mau','Razoável','Bom','Excelente'],
+  en: ['','Very poor','Poor','Average','Good','Excellent']
+};
+const MODULES_ESS = [
+  {num:'M1', pt:'O Ecossistema do Chiptuning',  en:'The Chiptuning Ecosystem'},
+  {num:'M2', pt:'Diagnóstico e Comunicação',    en:'Diagnostics & Communication'},
+  {num:'M3', pt:'DPF, EGR & AdBlue',            en:'DPF, EGR & AdBlue'},
+  {num:'M4', pt:'Odómetros e Quadrantes',       en:'Odometers & Clusters'},
+  {num:'M5', pt:'Reset Airbag SRS',             en:'Airbag SRS Reset'},
+];
+const MODULES_ADV = [
+  ...MODULES_ESS,
+  {num:'M6',  pt:'Stage Tuning',                en:'Stage Tuning'},
+  {num:'M7',  pt:'Clonagem de ECU',             en:'ECU Cloning'},
+  {num:'M8',  pt:'Imobilizador & Chaves',       en:'Immobilizer & Keys'},
+  {num:'M9',  pt:'Microssoldadura PCB',         en:'PCB Microsoldering'},
+  {num:'M10', pt:'Gestão de Negócio',           en:'Business Management'},
+];
+
+let lang = 'pt';
+let currentStep = 1;
+const totalSteps = 5;
+const starValues = {};
+let npsVal = null;
+
+// ── LANG ──────────────────────────────────────────────────────────────────────
+function setLang(l) {
+  lang = l;
+  document.getElementById('btn-pt').classList.toggle('active', l === 'pt');
+  document.getElementById('btn-en').classList.toggle('active', l === 'en');
+  document.documentElement.lang = l;
+
+  // Update all data-pt / data-en text nodes
+  document.querySelectorAll('[data-pt]').forEach(el => {
+    if (el.tagName === 'OPTION') { el.textContent = el.getAttribute('data-' + l) || el.getAttribute('data-pt'); return; }
+    el.textContent = el.getAttribute('data-' + l) || el.getAttribute('data-pt');
+  });
+  // innerHTML elements (s-sub has <br>)
+  document.querySelectorAll('[data-pt] br, .s-sub').forEach(el => {
+    const raw = el.getAttribute ? (el.getAttribute('data-' + l) || el.getAttribute('data-pt')) : null;
+    if (raw) el.innerHTML = raw;
+  });
+  // placeholders
+  document.querySelectorAll('[data-pt-ph]').forEach(el => {
+    el.placeholder = el.getAttribute('data-' + l + '-ph') || el.getAttribute('data-pt-ph');
+  });
+
+  // Re-render star labels
+  ['global','content','trainer','value'].forEach(k => {
+    const sl = document.getElementById('sl-' + k);
+    if (sl && starValues['sg-' + k]) sl.textContent = STAR_LABELS[lang][starValues['sg-' + k]] || '';
+  });
+  // Re-render modules with correct lang
+  buildModules(document.getElementById('f-curso').value === 'advanced' ? MODULES_ADV : MODULES_ESS);
+  // Update badge text
+  updateBadge();
+  // Update progress label
+  updateProgressLabel();
+  // Footer link
+  document.querySelector('.page-footer a').textContent = l === 'en' ? 'Privacy Policy' : 'Política de Privacidade';
+}
+
+// ── PROGRESS ──────────────────────────────────────────────────────────────────
+function updateProgressLabel() {
+  const lbl = { pt: `Passo ${currentStep} de ${totalSteps}`, en: `Step ${currentStep} of ${totalSteps}` };
+  document.getElementById('progress-label').textContent = lbl[lang];
+}
+
+// ── STARS ─────────────────────────────────────────────────────────────────────
+function makeStars(groupId, labelId) {
+  const g = document.getElementById(groupId);
+  const l = document.getElementById(labelId);
+  starValues[groupId] = 0;
+  for (let i = 1; i <= 5; i++) {
+    const s = document.createElement('span');
+    s.className = 'star';
+    s.textContent = '★';
+    s.addEventListener('click', () => {
+      starValues[groupId] = i;
+      g.querySelectorAll('.star').forEach((x,xi) => x.classList.toggle('on', xi < i));
+      l.textContent = STAR_LABELS[lang][i];
+    });
+    s.addEventListener('touchstart', () => {}, {passive:true});
+    g.appendChild(s);
+  }
+}
+makeStars('sg-global','sl-global');
+makeStars('sg-content','sl-content');
+makeStars('sg-trainer','sl-trainer');
+makeStars('sg-value','sl-value');
+
+// ── NPS ───────────────────────────────────────────────────────────────────────
+(function buildNPS() {
+  const g = document.getElementById('nps-grid');
+  for (let i = 0; i <= 10; i++) {
+    const b = document.createElement('button');
+    b.className = 'nps-btn';
+    b.textContent = i;
+    b.type = 'button';
+    b.addEventListener('click', () => {
+      npsVal = i;
+      g.querySelectorAll('.nps-btn').forEach(x => x.classList.remove('sel'));
+      b.classList.add('sel');
+    });
+    g.appendChild(b);
+  }
+})();
+
+// ── MODULES ───────────────────────────────────────────────────────────────────
+function buildModules(mods) {
+  const list = document.getElementById('mod-list');
+  list.innerHTML = '';
+  mods.forEach((m, i) => {
+    const card = document.createElement('div');
+    card.className = 'mod-card';
+    card.innerHTML = `<div><div class="mod-num">${m.num}</div><div class="mod-name">${m[lang] || m.pt}</div></div><div class="mod-stars" id="ms-${i}"></div>`;
+    list.appendChild(card);
+    const row = card.querySelector('.mod-stars');
+    let v = 0;
+    for (let j = 1; j <= 5; j++) {
+      const s = document.createElement('span');
+      s.className = 'mod-star';
+      s.textContent = '★';
+      s.addEventListener('click', () => {
+        v = j;
+        row.querySelectorAll('.mod-star').forEach((x,xi) => x.classList.toggle('on', xi < j));
+      });
+      row.appendChild(s);
+    }
+  });
+}
+buildModules(MODULES_ESS);
+
+// ── BADGE ─────────────────────────────────────────────────────────────────────
+function updateBadge() {
+  const v = document.getElementById('f-curso').value;
+  const badge = document.getElementById('course-badge');
+  const dot = document.getElementById('badge-dot');
+  const text = document.getElementById('badge-text');
+  const labels = { pt: { essential: 'Curso Essential', advanced: 'Curso Advanced', '': 'Curso' }, en: { essential: 'Essential Course', advanced: 'Advanced Course', '': 'Course' } };
+  if (v === 'advanced') {
+    badge.className = 'course-badge badge-adv';
+    dot.className = 'dot dot-adv';
+    buildModules(MODULES_ADV);
+  } else {
+    badge.className = 'course-badge badge-ess';
+    dot.className = 'dot dot-ess';
+    buildModules(MODULES_ESS);
+  }
+  text.textContent = labels[lang][v] || labels[lang][''];
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
+function goTo(n) {
+  if (n === 2) {
+    const curso = document.getElementById('f-curso').value;
+    const mod = document.getElementById('f-modalidade').value;
+    if (!curso || !mod) {
+      document.getElementById('f-curso').style.borderColor = !curso ? 'var(--orange)' : 'var(--border)';
+      document.getElementById('f-modalidade').style.borderColor = !mod ? 'var(--orange)' : 'var(--border)';
+      return;
+    }
+  }
+  document.getElementById('step-' + currentStep).classList.remove('active');
+  currentStep = n;
+  document.getElementById('step-' + currentStep).classList.add('active');
+  const pct = Math.round((n / totalSteps) * 100);
+  document.getElementById('progress-bar').style.width = pct + '%';
+  updateProgressLabel();
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+// ── FORMSPREE SUBMIT ──────────────────────────────────────────────────────────
+async function submitForm() {
+  const btn = document.getElementById('btn-submit');
+  const errMsg = document.getElementById('error-msg');
+  const sendingMsg = document.getElementById('submitting-msg');
+  errMsg.style.display = 'none';
+
+  // Gather all data
+  const modRatings = {};
+  document.querySelectorAll('.mod-card').forEach((card, i) => {
+    const name = card.querySelector('.mod-name').textContent;
+    const stars = card.querySelectorAll('.mod-star.on').length;
+    modRatings[name] = stars + ' ★';
+  });
+  const applied = [];
+  if (document.getElementById('ch1').checked) applied.push(lang === 'pt' ? 'Já aplicou em clientes' : 'Applied with clients');
+  if (document.getElementById('ch2').checked) applied.push(lang === 'pt' ? 'A praticar' : 'Still practising');
+  if (document.getElementById('ch3').checked) applied.push(lang === 'pt' ? 'Ainda não' : 'Not yet');
+
+  const payload = {
+    nome:           document.getElementById('f-nome').value || '—',
+    email:          document.getElementById('f-email').value || '—',
+    curso:          document.getElementById('f-curso').value,
+    modalidade:     document.getElementById('f-modalidade').value,
+    lingua:         lang.toUpperCase(),
+    estrelas_global:  starValues['sg-global'] + '/5',
+    estrelas_conteudo: starValues['sg-content'] + '/5',
+    estrelas_formador: starValues['sg-trainer'] + '/5',
+    estrelas_valor:   starValues['sg-value'] + '/5',
+    nps:            npsVal !== null ? npsVal + '/10' : '—',
+    modulos:        JSON.stringify(modRatings),
+    positivo:       document.getElementById('f-positivo').value || '—',
+    melhoria:       document.getElementById('f-melhoria').value || '—',
+    aplicacao:      applied.join(', ') || '—',
+    testemunho:     document.getElementById('f-testemunho').value || '—',
+    consent_pub:    document.getElementById('f-consent').checked ? 'Sim / Yes' : 'Não / No',
+    _subject:       `Feedback REMAP Academy — ${document.getElementById('f-curso').value} (${lang.toUpperCase()})`
+  };
+
+  btn.disabled = true;
+  sendingMsg.style.display = 'block';
+
+  try {
+    // ⚠️  SUBSTITUI xxxx pelo teu ID Formspree: https://formspree.io/f/XXXXXXXX
+    const FORMSPREE_ID = 'meenrzjj';
+    const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (res.ok) {
+      document.getElementById('form-container').style.display = 'none';
+      document.getElementById('progress-wrap').style.display = 'none';
+      document.getElementById('success-screen').classList.add('show');
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    } else {
+      throw new Error(data.error || 'Erro desconhecido');
+    }
+  } catch (e) {
+    errMsg.textContent = lang === 'pt' ? 'Ocorreu um erro ao enviar. Tenta novamente.' : 'An error occurred. Please try again.';
+    errMsg.style.display = 'block';
+    btn.disabled = false;
+  } finally {
+    sendingMsg.style.display = 'none';
+  }
+}
+</script>
+</body>
+</html>

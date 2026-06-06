@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1a1718">
+  <title>REMAP Start | REMAP Academy</title>
+  <meta name="description" content="Curso Essential de reprogramação automóvel. 2 dias hands-on, máx. 8 alunos, Porto.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+  <style id="shared-styles"></style>
+  <style id="page-styles"></style>
+<!-- REMAP JSONBin sync -->
+<script>
+(function(){
+  var b=localStorage.getItem("ra_bo_binid")||"";
+  if(!b)return;
+  fetch("https://api.jsonbin.io/v3/b/"+b+"/latest")
+    .then(function(r){return r.json();})
+    .then(function(j){var d=j.record&&j.record.dates;if(d)localStorage.setItem("ra_next_training",JSON.stringify(d));})
+    .catch(function(){});
+})();
+</script>
+</head>
+<body>
+<div id="app"></div>
+<script>
+// ── SHARED STYLES ─────────────────────────────────────────────────────────────
+document.getElementById('shared-styles').textContent = `
+:root{--black:#231F20;--black-2:#1a1718;--black-3:#141213;--cyan:#0BABDD;--orange:#F36308;--white:#fff;--green:#22c55e}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--white);font-family:'Barlow',sans-serif;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3,h4{font-family:'Barlow Condensed',sans-serif;font-weight:700;line-height:1.15}
+a{text-decoration:none}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--black-3)}::-webkit-scrollbar-thumb{background:rgba(11,171,221,.35);border-radius:3px}
+.en{display:none}
+body.lang-en .pt{display:none}
+body.lang-en .en{display:revert}
+.nav{position:sticky;top:0;z-index:100;background:rgba(26,23,24,.97);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(11,171,221,.15);padding:0 clamp(1rem,4vw,3rem);height:72px;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.nav-logo{display:flex;align-items:center;flex-shrink:0}
+.nav-logo svg{height:64px;width:auto}
+.nav-links{display:flex;align-items:center;gap:1.75rem;list-style:none}
+.nav-links a{font-size:13px;font-weight:500;color:rgba(255,255,255,.55);transition:color .2s}
+.nav-links a:hover{color:#fff}
+.nav-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.lang-toggle{display:flex;align-items:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:20px;overflow:hidden}
+.lang-toggle button{font-size:11px;font-weight:700;letter-spacing:.05em;padding:6px 12px;background:transparent;border:none;color:rgba(255,255,255,.4);cursor:pointer;transition:all .2s;font-family:'Barlow Condensed',sans-serif}
+.lang-toggle button.active{background:var(--cyan);color:#fff}
+.btn{display:inline-flex;align-items:center;gap:6px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:.04em;border-radius:9px;padding:10px 22px;cursor:pointer;border:none;transition:opacity .2s,transform .15s;-webkit-tap-highlight-color:transparent;min-height:44px}
+.btn:hover{opacity:.88;transform:translateY(-1px)}
+.btn:active{transform:scale(.97)}
+.btn-cyan{background:var(--cyan);color:#fff}
+.btn-orange{background:var(--orange);color:#fff}
+.btn-ghost{background:transparent;color:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.18)}
+.btn-ghost:hover{border-color:rgba(255,255,255,.35);color:#fff}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:transparent;border:none;padding:6px;-webkit-tap-highlight-color:transparent}
+.hamburger span{display:block;width:22px;height:2px;background:rgba(255,255,255,.7);border-radius:2px;transition:all .3s}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.mobile-menu{display:none;flex-direction:column;background:var(--black-2);border-bottom:1px solid rgba(255,255,255,.06)}
+.mobile-menu a,.mobile-menu .mm-btn-wrap{padding:.9rem 1.5rem;font-size:15px;font-weight:500;color:rgba(255,255,255,.6);border-bottom:1px solid rgba(255,255,255,.05);transition:color .2s;display:block}
+.mobile-menu.open{display:flex}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+`;
+
+// ── PAGE STYLES ───────────────────────────────────────────────────────────────
+document.getElementById('page-styles').textContent = `
+.breadcrumb{padding:.75rem clamp(1rem,4vw,3rem);font-size:12px;color:rgba(255,255,255,.35);display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,.05);flex-wrap:wrap}
+.breadcrumb a{color:rgba(255,255,255,.4);transition:color .2s}
+.breadcrumb a:hover{color:var(--cyan)}
+.bc-sep{color:rgba(255,255,255,.2)}
+.bc-cur{color:var(--cyan)}
+.hero-course{padding:clamp(2rem,5vh,4rem) clamp(1rem,4vw,3rem);display:grid;grid-template-columns:1fr 370px;gap:3rem;align-items:start;border-bottom:1px solid rgba(255,255,255,.06)}
+.hero-left{animation:fadeUp .6s .1s both}
+.tier-badge{display:inline-flex;align-items:center;gap:7px;border-radius:20px;padding:5px 14px 5px 8px;margin-bottom:1.25rem}
+.tier-badge.ess{background:rgba(11,171,221,.12);border:1px solid rgba(11,171,221,.3)}
+.tier-badge.adv{background:rgba(243,99,8,.12);border:1px solid rgba(243,99,8,.3)}
+.tier-dot{width:7px;height:7px;border-radius:50%;animation:pulse 2s infinite;flex-shrink:0}
+.ess .tier-dot{background:var(--cyan)}
+.adv .tier-dot{background:var(--orange)}
+.tier-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.ess .tier-label{color:var(--cyan)}
+.adv .tier-label{color:var(--orange)}
+.hero-course h1{font-size:clamp(2rem,4vw,3.2rem);margin-bottom:.75rem;color:#fff}
+.hero-course h1 em{font-style:normal}
+.h1-ess em{color:var(--cyan)}
+.h1-adv em{color:var(--orange)}
+.hero-lead{font-size:15px;color:rgba(255,255,255,.55);line-height:1.78;max-width:540px;margin-bottom:1.75rem}
+.meta-row{display:flex;gap:1.25rem;flex-wrap:wrap;margin-bottom:2rem}
+.meta-item{display:flex;align-items:center;gap:7px;font-size:13px;color:rgba(255,255,255,.5)}
+.meta-icon{font-size:1rem}
+.outcome-list{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:2rem}
+.outcome-list li{font-size:14px;color:rgba(255,255,255,.65);display:flex;align-items:flex-start;gap:10px;line-height:1.45}
+.outcome-chk{font-weight:700;flex-shrink:0;margin-top:1px}
+.chk-ess{color:var(--cyan)}
+.chk-adv{color:var(--orange)}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap}
+.csc{background:var(--black-2);border-radius:16px;overflow:hidden;position:sticky;top:88px;animation:fadeUp .6s .25s both}
+.csc.ess-card{border:1px solid rgba(11,171,221,.2)}
+.csc.adv-card{border:1px solid rgba(243,99,8,.25)}
+.csc-thumb{height:160px;display:flex;align-items:center;justify-content:center;border-bottom:1px solid rgba(255,255,255,.06);font-size:3rem}
+.ess-card .csc-thumb{background:linear-gradient(135deg,rgba(11,171,221,.12),rgba(11,171,221,.03))}
+.adv-card .csc-thumb{background:linear-gradient(135deg,rgba(243,99,8,.12),rgba(243,99,8,.03))}
+.csc-body{padding:1.4rem}
+.price-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1.25rem}
+.p-opt{border-radius:10px;padding:11px 12px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02)}
+.p-opt.feat-ess{border-color:rgba(11,171,221,.25);background:rgba(11,171,221,.06)}
+.p-opt.feat-adv{border-color:rgba(243,99,8,.25);background:rgba(243,99,8,.06)}
+.p-lbl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:4px}
+.feat-ess .p-lbl{color:var(--cyan)}
+.feat-adv .p-lbl{color:var(--orange)}
+.p-val{font-family:'Barlow Condensed',sans-serif;font-size:1.7rem;font-weight:700;color:#fff}
+.p-note{font-size:10px;color:rgba(255,255,255,.28);margin-top:2px}
+.csc-btn{width:100%;text-align:center;padding:13px;border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:700;letter-spacing:.04em;cursor:pointer;border:none;min-height:48px;margin-bottom:9px;transition:opacity .2s}
+.csc-btn:hover{opacity:.88}
+.csc-btn.ess-btn{background:var(--cyan);color:#fff}
+.csc-btn.adv-btn{background:var(--orange);color:#fff}
+.csc-ghost{display:block;width:100%;text-align:center;padding:10px;border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:rgba(255,255,255,.45);border:1px solid rgba(255,255,255,.1);background:transparent;cursor:pointer;min-height:44px;transition:all .2s}
+.csc-ghost:hover{border-color:rgba(255,255,255,.25);color:rgba(255,255,255,.7)}
+.csc-incl{margin-top:1.2rem;padding-top:1.2rem;border-top:1px solid rgba(255,255,255,.07)}
+.csc-incl-title{font-size:10px;font-weight:700;color:rgba(255,255,255,.32);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.7rem}
+.csc-incl ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+.csc-incl li{font-size:12px;color:rgba(255,255,255,.48);display:flex;align-items:center;gap:8px}
+.csc-incl li::before{content:'✓';color:var(--green);font-size:10px;font-weight:700;flex-shrink:0}
+.section{padding:clamp(2rem,4vh,3.5rem) clamp(1rem,4vw,3rem)}
+.sec-label{font-size:11px;font-weight:700;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.13em;margin-bottom:1rem;display:flex;align-items:center;gap:12px}
+.sec-label::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.08)}
+.sec-h{font-size:clamp(1.6rem,3vw,2.4rem);margin-bottom:.5rem}
+.sec-sub{font-size:15px;color:rgba(255,255,255,.5);max-width:540px;line-height:1.75;margin-bottom:2rem}
+.module-block{margin-bottom:10px;border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden}
+.mod-head{padding:.9rem 1.2rem;background:var(--black-2);display:flex;align-items:center;justify-content:space-between;cursor:pointer;gap:1rem;user-select:none;-webkit-tap-highlight-color:transparent;min-height:56px}
+.mod-head:hover{background:rgba(255,255,255,.035)}
+.mh-l{display:flex;align-items:center;gap:11px}
+.mh-num{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;border-radius:6px;padding:2px 8px;flex-shrink:0}
+.ess-num{color:var(--cyan);background:rgba(11,171,221,.1);border:1px solid rgba(11,171,221,.2)}
+.adv-num{color:var(--orange);background:rgba(243,99,8,.1);border:1px solid rgba(243,99,8,.2)}
+.mh-title{font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:700;color:#fff}
+.mh-meta{font-size:11px;color:rgba(255,255,255,.3);margin-top:1px}
+.mh-chevron{font-size:.8rem;color:rgba(255,255,255,.3);transition:transform .25s;flex-shrink:0}
+.module-block.open .mh-chevron{transform:rotate(180deg)}
+.mod-lessons{display:none;border-top:1px solid rgba(255,255,255,.05)}
+.module-block.open .mod-lessons{display:block}
+.l-row{display:flex;align-items:center;gap:11px;padding:.8rem 1.2rem;border-bottom:1px solid rgba(255,255,255,.04);transition:background .2s}
+.l-row:last-child{border-bottom:none}
+.l-row:hover{background:rgba(255,255,255,.02)}
+.l-icon{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0}
+.l-icon.ess-icon{background:rgba(11,171,221,.08);border:1px solid rgba(11,171,221,.15);color:var(--cyan)}
+.l-icon.adv-icon{background:rgba(243,99,8,.08);border:1px solid rgba(243,99,8,.15);color:var(--orange)}
+.l-title{font-size:13px;color:rgba(255,255,255,.58);flex:1;line-height:1.4}
+.l-dur{font-size:11px;color:rgba(255,255,255,.28);white-space:nowrap}
+.who-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.who-card{padding:1.4rem;background:var(--black-2);border-radius:14px;border:1px solid rgba(255,255,255,.07)}
+.who-icon{font-size:1.75rem;margin-bottom:.7rem}
+.who-h{font-size:1rem;color:#fff;margin-bottom:.35rem}
+.who-p{font-size:13px;color:rgba(255,255,255,.42);line-height:1.65}
+.t-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.tcard{background:var(--black-2);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:1.4rem}
+.t-stars{color:#f59e0b;font-size:.85rem;margin-bottom:.7rem;letter-spacing:2px}
+.t-text{font-size:13px;color:rgba(255,255,255,.52);line-height:1.7;margin-bottom:1rem;font-style:italic}
+.t-author{display:flex;align-items:center;gap:9px}
+.t-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:.85rem;font-weight:700;flex-shrink:0}
+.ess-avatar{background:rgba(11,171,221,.15);border:1px solid rgba(11,171,221,.25);color:var(--cyan)}
+.adv-avatar{background:rgba(243,99,8,.15);border:1px solid rgba(243,99,8,.25);color:var(--orange)}
+.t-name{font-size:13px;font-weight:600;color:rgba(255,255,255,.7)}
+.t-meta{font-size:11px;color:rgba(255,255,255,.3)}
+.faq-list{max-width:720px}
+.faq-item{border-bottom:1px solid rgba(255,255,255,.07)}
+.faq-q{padding:1rem 0;display:flex;align-items:center;justify-content:space-between;cursor:pointer;gap:1rem;user-select:none;min-height:52px}
+.faq-q-t{font-size:15px;font-weight:600;color:rgba(255,255,255,.8)}
+.faq-icon{font-size:.8rem;color:rgba(255,255,255,.3);transition:transform .25s;flex-shrink:0}
+.faq-item.open .faq-icon{transform:rotate(45deg)}
+.faq-a{display:none;padding-bottom:1rem;font-size:14px;color:rgba(255,255,255,.45);line-height:1.75}
+.faq-item.open .faq-a{display:block}
+.footer-cta{background:var(--black-2);border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);padding:3rem clamp(1rem,4vw,3rem);text-align:center}
+.fcta-h{font-size:clamp(1.6rem,3vw,2.2rem);margin-bottom:.7rem}
+.fcta-sub{font-size:15px;color:rgba(255,255,255,.48);margin-bottom:2rem;max-width:480px;margin-left:auto;margin-right:auto}
+.fcta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.footer{background:var(--black-3);border-top:1px solid rgba(255,255,255,.06);padding:2rem clamp(1rem,4vw,3rem) 1.5rem}
+.foot-bot{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.foot-copy{font-size:11px;color:rgba(255,255,255,.25)}
+.foot-copy span{color:var(--cyan)}
+.foot-legal{display:flex;gap:1.5rem;flex-wrap:wrap}
+.foot-legal a{font-size:11px;color:rgba(255,255,255,.25);transition:color .2s}
+.foot-legal a:hover{color:rgba(255,255,255,.6)}
+@media(max-width:900px){
+  .nav-links{display:none}.hamburger{display:flex}
+  .hero-course{grid-template-columns:1fr}
+  .csc{position:static}
+  .who-grid{grid-template-columns:1fr 1fr}
+  .t-grid{grid-template-columns:1fr}
+}
+@media(max-width:560px){
+  .nav{height:64px;padding:0 1rem}.nav-logo svg{height:52px}
+  .hero-course{padding:1.75rem 1rem}
+  .hero-course h1{font-size:1.9rem}
+  .hero-btns{flex-direction:column}
+  .hero-btns .btn{width:100%;justify-content:center}
+  .who-grid{grid-template-columns:1fr}
+  .section{padding:1.75rem 1rem}
+  .t-grid{grid-template-columns:1fr}
+}
+@supports(padding-bottom:env(safe-area-inset-bottom)){
+  .footer{padding-bottom:calc(1.5rem + env(safe-area-inset-bottom))}
+  .nav{padding-left:max(1rem,env(safe-area-inset-left));padding-right:max(1rem,env(safe-area-inset-right))}
+}
+`;
+
+// ── LOGO SVG ──────────────────────────────────────────────────────────────────
+const LOGO = `<svg viewBox="118 135 265 220" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"><defs><linearGradient id="lg1" gradientUnits="userSpaceOnUse" x1="203.76" y1="229.07" x2="357.75" y2="229.07"><stop offset="0" stop-color="#0BABDD"/><stop offset="1" stop-color="#1B6F92"/></linearGradient><linearGradient id="lg2" gradientUnits="userSpaceOnUse" x1="249.99" y1="229.23" x2="142.5" y2="229.23"><stop offset="0" stop-color="#DB3832"/><stop offset=".5025" stop-color="#E46E3A"/><stop offset="1" stop-color="#EDA342"/></linearGradient><linearGradient id="lg3" gradientUnits="userSpaceOnUse" x1="148.64" y1="306.52" x2="148.64" y2="274.31"><stop offset="0" stop-color="#DB3832"/><stop offset="1" stop-color="#EDA342"/></linearGradient><linearGradient id="lg4" gradientUnits="userSpaceOnUse" x1="355.74" y1="306.52" x2="355.74" y2="274.31"><stop offset="0" stop-color="#1B6F92"/><stop offset="1" stop-color="#0BABDD"/></linearGradient></defs><circle fill="#0BABDD" cx="322" cy="193.8" r="4.7"/><circle fill="#0BABDD" cx="244.1" cy="168.1" r="4.7"/><circle fill="#0BABDD" cx="369.7" cy="217" r="4.7"/><circle fill="#0BABDD" cx="298.8" cy="157.4" r="5.1"/><circle fill="#F36308" cx="177.2" cy="168.1" r="6.4"/><circle fill="#F36308" cx="146.1" cy="196.7" r="6.4"/><circle fill="#0BABDD" cx="191.5" cy="200.6" r="5"/><circle fill="#F36308" cx="134.8" cy="217" r="5.8"/><path fill="none" stroke="#F36308" stroke-width="2.5" d="M142.4,230.2c0,0,5.1-33.9,53.4-58.7"/><path fill="none" stroke="#F36308" stroke-width="2.5" d="M130.7,264.8c0,0-11.7-44.8,27.7-81.6c0,0,34.6-37.2,100.9-34.6"/><path fill="none" stroke="#0BABDD" stroke-width="2.5" d="M300.9,158.6c0,0,34.1,10.9,56.8,39.9s19.1,45.2,17.6,65.4"/><path fill="none" stroke="#F36308" stroke-width="2.2" d="M182.3,200.8c0,0-10.9,7.2-19.1,22.9"/><path fill="none" stroke="#0BABDD" stroke-width="2.2" d="M221.8,186.3c0,0-16.5,3.7-29.7,14.3"/><path fill="none" stroke="#0BABDD" stroke-width="2.2" d="M244.1,168.1c0,0,29.8-3.1,61.5,13.8c0,0,20.3,10,33.1,31.9"/><path fill="none" stroke="#0BABDD" stroke-width="2.2" d="M303.9,190.8c0,0-22-18.1-64.5-15.4"/><circle fill="#0BABDD" cx="260.6" cy="148.6" r="6.4"/><path fill="url(#lg1)" d="M351.1,242.2l6.7,3.3c-2.2-5.5-3.6-11-3.6-11c-2.4-5.8,0.8-9.9,0.8-9.9l2.7-3.5l-28.3,0.6C293.2,199.7,261.1,200,250,201h0c-25.4,9.5-46.2,26.9-46.2,26.9h14.5c0,0,1.9,0.1,0.7,2.3c0,0-5.3,6.8-8.5,18.8c29.1-7,79.9-12,79.9-12l-8,12l21.2,8.5h0.5c2-18.2,17.4-17.5,17.4-17.5c5,0.5,8.8,1.9,11.7,3.8l3.4-16.3C336.5,227.4,352.7,242.3,351.1,242.2z M303.9,225.3h-80c0,0-1-7.8-3.1-7.9c0,0,14.6-11,40.7-10.8c0,0,34,1.9,53.8,15L303.9,225.3z"/><path fill="url(#lg2)" d="M250,201c-2.7,0.2-4.2,0.5-4.2,0.5c-23.7,2.5-51.7,22.3-51.7,22.3c-32.2,2.1-49.3,18.7-49.3,18.7c-3.9,3-1.8,8.1-1.8,8.1l2,6.9h22.6c1.9-20.1,16.9-20.6,16.9-20.6c10.3,0.3,11.3,8.4,11.3,8.4c-4-6.2-13.1-4-13.1-4c-11.6,4.2-11,16.2-11,16.2h31.1c0,0,0-0.1,0-0.1c0-0.1,0-0.1,0-0.2c0-0.1,0-0.2,0.1-0.3c3.6-18.3,11.7-27.8,12.6-28.9c0,0,0-0.1,0.1-0.1h-12C203.8,227.9,224.6,210.5,250,201z M164.1,243.5c0,0-4.1,2-12.4,2.7c0,0,2.2-3.2,6.5-5.2l10.1-6.1C168.2,235.1,166.6,239.2,164.1,243.5z"/><path fill="#1B6F92" d="M303.3,257.5h-94.8c0.5-3,1.1-5.8,1.8-8.4c29.1-7,79.9-12,79.9-12l-8,12L303.3,257.5z"/><path fill="#1B6F92" d="M351.1,242.2c-1.7-0.2-4.5,0.2-4.5,0.2c-5.6,0.2-9.1,1.5-11.3,3.1c-0.7-0.6-1.4-1.2-2.2-1.7l3.4-16.3C336.5,227.4,352.7,242.3,351.1,242.2z"/><path fill="#343F52" d="M354.5,257h-12.6c0,0-0.8-6.6-6.5-11.6c2.2-1.6,5.7-2.9,11.3-3.1c0,0,2.8-0.3,4.5-0.2l6.7,3.3c0.6,1.5,1.3,3.1,2,4.5C359.8,250,363.8,257.4,354.5,257z"/><path fill="url(#lg3)" d="M156.6,306.5l-8.3-10.2h-9.2v10.2H130v-32.2h22c8,0,14.2,3.6,14.2,11c0,5.4-3.3,8.8-8.2,10.3l9.2,10.9H156.6z M151.3,289.5c3.3,0,5.6-0.9,5.6-4s-2.4-4-5.6-4h-12.3v8.1H151.3z"/><path fill="#FFF" d="M210,299.3v7.2h-33.6v-32.2h33.1v7.2h-24.1v5.3h19.9v6.9h-19.9v5.7H210z"/><path fill="#FFF" d="M279.4,274.3v32.2h-8.7V286l-11.9,15.7h-0.4L246.4,286v20.6H238v-32.2h9.5l11.2,15.5l11.3-15.5H279.4z"/><path fill="#FFF" d="M317,300.4h-18.1l-3.1,6.2h-10.1l17.1-32.2h10.5l17.1,32.2h-10.2L317,300.4z M313.7,293.7l-5.7-11.4l-5.8,11.4H313.7z"/><path fill="url(#lg4)" d="M374.3,285.6c0,7.5-5.8,11.3-14.6,11.3h-13v9.7h-9.4V290h21.6c3.5,0,5.9-1.1,5.9-4.3c0-3.3-2.4-4.3-5.9-4.3h-12.1l-9.5-7.1h22.4C368.4,274.3,374.3,278.2,374.3,285.6z"/><polygon fill="#FFF" points="217.3,295.7 230.3,295.7 223.8,307.5"/><polygon fill="#0BABDD" points="230.3,288.6 217.3,288.6 223.8,276.8"/></svg>`;
+
+// ── DATA ──────────────────────────────────────────────────────────────────────
+const COURSE = {
+  id: 'essential',
+  accent: 'ess',
+  color: '#0BABDD',
+  checkout: '../remapacademy_checkout.html?curso=essential',
+  other: { url: 'advanced.html', label_pt: 'Ver curso Advanced', label_en: 'See Advanced course' },
+  badge_pt: 'Essential', badge_en: 'Essential',
+  h1_pt: 'REMAP <em>Start</em>',
+  h1_en: 'REMAP <em>Start</em>',
+  lead_pt: 'Dois dias de formação intensiva e hands-on em reprogramação automóvel. Do diagnóstico ao reset de módulos — domina as ferramentas e técnicas essenciais que os profissionais usam todos os dias.',
+  lead_en: 'Two days of intensive hands-on automotive remapping training. From diagnostics to module resets — master the tools and techniques that professionals use every day.',
+  meta: [
+    {icon:'📅', pt:'2 dias · 16 horas', en:'2 days · 16 hours'},
+    {icon:'👥', pt:'Máx. 8 formandos', en:'Max. 8 students'},
+    {icon:'🎯', pt:'30 dias consultoria privada', en:'30 days private consulting'},
+    {icon:'📍', pt:'Lisboa, Portugal', en:'Lisboa, Portugal'},
+    {icon:'🎓', pt:'Certificado incluído', en:'Certificate included'},
+  ],
+  outcomes_pt: [
+    'Identificar e trabalhar com arquitetura de ECUs de diferentes fabricantes',
+    'Utilizar ferramentas profissionais de diagnóstico e programação (OBD, BDM, JTAG)',
+    'Realizar soluções de pós-tratamento: DPF, EGR, AdBlue',
+    'Corrigir odómetros e calibrar quadrantes de instrumentação',
+    'Fazer reset de módulos SRS Airbag e remover crash data',
+  ],
+  outcomes_en: [
+    'Identify and work with ECU architecture from different manufacturers',
+    'Use professional diagnostic and programming tools (OBD, BDM, JTAG)',
+    'Perform aftertreatment solutions: DPF, EGR, AdBlue',
+    'Correct odometers and calibrate instrument clusters',
+    'Reset SRS Airbag modules and remove crash data',
+  ],
+  price_pres: '€1.299', price_online: '€499',
+  includes_pt: ['2 dias de formação intensiva','Materiais e consumíveis incluídos','Certificado REMAP Academy','Suporte pós-curso incluído','Almoço e coffee-breaks incluídos','Acesso às vídeo-aulas online'],
+  includes_en: ['2 days intensive training','Materials & consumables included','REMAP Academy certificate','Post-course support included','Lunch & coffee breaks included','Online video lesson access'],
+  modules: [
+    { num:'M1', title_pt:'O Ecossistema do Chiptuning', title_en:'The Chiptuning Ecosystem', meta_pt:'5 aulas · 4h15', meta_en:'5 lessons · 4h15',
+      lessons:[
+        {pt:'A Profissão de Tuner: Mercado, Ética e Potencial',en:'The Tuner Profession: Market, Ethics & Potential',dur:'45min'},
+        {pt:'Ferramentas de Leitura e Escrita — tipos, Master vs Slave, custos',en:'Reading & Writing Tools — types, Master vs Slave, costs',dur:'50min'},
+        {pt:'Arquitetura das Centralinas — Flash, EEPROM e Microprocessador',en:'ECU Architecture — Flash, EEPROM and Microprocessor',dur:'55min'},
+        {pt:'Protocolos de Comunicação — OBD, Bench, BDM e JTAG',en:'Communication Protocols — OBD, Bench, BDM and JTAG',dur:'60min'},
+        {pt:'O Seguro de Vida da ECU: Energia e Voltagem',en:'ECU Power Safety: Voltage Management',dur:'45min'}
+      ]
+    },
+    { num:'M2', title_pt:'Diagnóstico e Comunicação de Dados', title_en:'Diagnostics & Data Communication', meta_pt:'4 aulas · 3h20', meta_en:'4 lessons · 3h20',
+      lessons:[
+        {pt:'Máquinas de Diagnóstico Profissional — menus, DTCs e adaptações',en:'Professional Diagnostic Scanners — menus, DTCs and adaptations',dur:'50min'},
+        {pt:'Interpretação de Erros (DTCs) Pré-Leitura',en:'Pre-Read DTC Interpretation',dur:'50min'},
+        {pt:'Protocolos Físicos: CAN-Bus vs K-Line',en:'Physical Protocols: CAN-Bus vs K-Line',dur:'45min'},
+        {pt:'Diagnóstico em Bancada',en:'Bench Diagnostics',dur:'55min'}
+      ]
+    },
+    { num:'M3', title_pt:'Sistemas Anti-Poluição: DPF, EGR & AdBlue', title_en:'Emission Systems: DPF, EGR & AdBlue', meta_pt:'4 aulas · 3h00', meta_en:'4 lessons · 3h00',
+      lessons:[
+        {pt:'Sistemas e Nomenclaturas — DPF/FAP/GPF, EGR, SCR e AdBlue',en:'Systems & Terminology — DPF/FAP/GPF, EGR, SCR and AdBlue',dur:'50min'},
+        {pt:'Software para Edição de Emissões — switch off vs tabelas, verificação',en:'Emissions Editing Software — switch off vs tables, verification',dur:'45min'},
+        {pt:'Verificação Prática de Dados DPF — fuligem, cinzas, regeneração',en:'Practical DPF Data Verification — soot, ash, regeneration',dur:'40min'},
+        {pt:'Casos Práticos com ECUs Reais',en:'Practical Cases with Real ECUs',dur:'45min'}
+      ]
+    },
+    { num:'M4', title_pt:'Gestão de Odómetros e Calibração de Quadrantes', title_en:'Odometer Management & Cluster Calibration', meta_pt:'3 aulas · 2h40', meta_en:'3 lessons · 2h40',
+      lessons:[
+        {pt:'Equipamentos e Software Dedicados — riscos legais e técnicos',en:'Dedicated Tools & Software — legal and technical risks',dur:'50min'},
+        {pt:'Tipos de Odómetros e Acesso EEPROM',en:'Odometer Types & EEPROM Access',dur:'50min'},
+        {pt:'Calibração via OBD e BDM',en:'Calibration via OBD and BDM',dur:'60min'}
+      ]
+    },
+    { num:'M5', title_pt:'Reset de Módulos SRS Airbag e Crash Data', title_en:'SRS Airbag Reset & Crash Data Removal', meta_pt:'3 aulas · 2h40', meta_en:'3 lessons · 2h40',
+      lessons:[
+        {pt:'Módulos SRS — Estrutura e Protocolos',en:'SRS Modules — Structure & Protocols',dur:'45min'},
+        {pt:'Leitura e Limpeza de Crash Data via EEPROM',en:'Reading & Clearing Crash Data via EEPROM',dur:'55min'},
+        {pt:'Reset com Ferramentas Dedicadas — Casos Práticos',en:'Reset with Dedicated Tools — Practical Cases',dur:'60min'}
+      ]
+    }
+  ],
+  who:[
+    {icon:'🔧',h_pt:'Mecânico / Técnico',h_en:'Mechanic / Technician',p_pt:'Já trabalhas numa oficina e queres alargar os teus serviços para programação de ECUs e diagnóstico avançado.',p_en:'You already work in a garage and want to expand into ECU programming and advanced diagnostics.'},
+    {icon:'🚀',h_pt:'Quem quer mudar de área',h_en:'Career changers',p_pt:'Tens interesse na área automóvel e queres entrar num nicho técnico com alta procura e baixa concorrência.',p_en:"You're interested in automotive and want to enter a high-demand, low-competition technical niche."},
+    {icon:'🏪',h_pt:'Dono de oficina',h_en:'Workshop owner',p_pt:'Queres adicionar reprogramação e diagnóstico eletrónico ao teu negócio e aumentar as margens de serviço.',p_en:'You want to add remapping and diagnostics to your business and increase service margins.'},
+  ],
+  testimonials:[
+    {init:'RG',loc_pt:'Mecânico, Braga',loc_en:'Mechanic, Braga',name:'Rui Gonçalves',t_pt:'"Formação muito prática e objetiva. Em dois dias aprendi o que não consegui aprender em anos de vídeos no YouTube."',t_en:'"Very practical training. In two days I learned what I couldn\'t in years of YouTube videos."'},
+    {init:'MP',loc_pt:'Técnico, Lisboa',loc_en:'Technician, Lisbon',name:'Marco Pereira',t_pt:'"Depois do Essential ficou tudo claro. Voltei à oficina e já fiz vários trabalhos que antes passavam por mim."',t_en:'"After the Essential everything became clear. I went back and did jobs I used to pass on."'},
+    {init:'AF',loc_pt:'Dono de Oficina, Lisboa',loc_en:'Workshop Owner, Lisbon',name:'André Ferreira',t_pt:'"Excelente relação qualidade-preço. A turma pequena permite tirar todas as dúvidas sem pressão."',t_en:'"Excellent value. The small class lets you ask all questions freely."'},
+  ],
+  faqs:[
+    {q_pt:'Preciso de experiência prévia em mecânica automóvel?',q_en:'Do I need prior automotive experience?',a_pt:'Não é obrigatório, mas é vantajoso ter alguma familiaridade com veículos. O curso acolhe formandos de diferentes backgrounds — o importante é vontade de aprender.',a_en:'Not required, but some familiarity with vehicles is an advantage. The course welcomes students from different backgrounds.'},
+    {q_pt:'O que está incluído no preço presencial?',q_en:"What's included in the in-person price?",a_pt:'2 dias de formação intensiva, materiais, almoço e coffee-breaks, certificado REMAP Academy e acesso ao canal de suporte técnico pós-formação. Adicionalmente recebes acesso às vídeo-aulas na área de membros.',a_en:'2 days intensive training, materials, lunch and coffee breaks, REMAP Academy certificate and post-training support channel access. You also get online video lesson access in the member area.'},
+    {q_pt:'Qual a diferença entre presencial e online?',q_en:"What's the difference between in-person and online?",a_pt:'Presencial inclui prática em bancada com equipamento real e acompanhamento individual (máx. 8 alunos). Online dá acesso vitalício às vídeo-aulas gravadas para estudares ao teu ritmo, sem prática presencial.',a_en:'In-person includes real bench practice and individual support (max. 8 students). Online gives lifetime access to recorded lessons to study at your own pace, without hands-on practice.'},
+    {q_pt:'Posso fazer o Advanced depois de completar o Essential?',q_en:'Can I do the Advanced after completing the Essential?',a_pt:'Sim. O Advanced inclui automaticamente o conteúdo do Essential. Se já fizeste o Essential e queres fazer upgrade, fala connosco.',a_en:"Yes. The Advanced automatically includes the Essential content. If you've already done the Essential and want to upgrade, contact us."},
+    {q_pt:'Emitem fatura?',q_en:'Do you issue invoices?',a_pt:'Sim, emitimos fatura para todos os pagamentos. Podes indicar o teu NIF/NIPC no checkout.',a_en:'Yes, we issue invoices for all payments. You can enter your tax ID at checkout.'},
+  ]
+};
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function nav() {
+  return `<header>
+  <nav class="nav">
+    <a href="../remapacademy_index.html" class="nav-logo">${LOGO}</a>
+    <ul class="nav-links">
+      <li><a href="../remapacademy_index.html#cursos"><span class="pt">Cursos</span><span class="en">Courses</span></a></li>
+      <li><a href="../remapacademy_index.html#como-funciona"><span class="pt">Como Funciona</span><span class="en">How It Works</span></a></li>
+      <li><a href="../membros/index.html"><span class="pt">Área de Membros</span><span class="en">Member Area</span></a></li>
+      <li><a href="../remapacademy_index.html#contacto"><span class="pt">Contacto</span><span class="en">Contact</span></a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="lang-toggle"><button id="btn-pt" class="active" onclick="setLang('pt')">PT</button><button id="btn-en" onclick="setLang('en')">EN</button></div>
+      <a href="${COURSE.checkout}" class="btn btn-${COURSE.accent === 'ess' ? 'cyan' : 'orange'}"><span class="pt">Inscrever-me</span><span class="en">Enrol Now</span></a>
+      <button class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+  <nav class="mobile-menu" id="mobile-menu">
+    <a href="../remapacademy_index.html#cursos" onclick="toggleMenu()"><span class="pt">Cursos</span><span class="en">Courses</span></a>
+    <a href="../remapacademy_index.html#como-funciona" onclick="toggleMenu()"><span class="pt">Como Funciona</span><span class="en">How It Works</span></a>
+    <a href="../membros/index.html"><span class="pt">Área de Membros</span><span class="en">Member Area</span></a>
+    <a href="../remapacademy_index.html#contacto" onclick="toggleMenu()"><span class="pt">Contacto</span><span class="en">Contact</span></a>
+    <div class="mm-btn-wrap"><a href="${COURSE.checkout}" class="btn btn-${COURSE.accent === 'ess' ? 'cyan' : 'orange'}" style="width:100%;justify-content:center"><span class="pt">Inscrever-me</span><span class="en">Enrol Now</span></a></div>
+  </nav>
+</header>`;
+}
+
+function breadcrumb() {
+  return `<div class="breadcrumb">
+    <a href="../remapacademy_index.html"><span class="pt">Início</span><span class="en">Home</span></a>
+    <span class="bc-sep">›</span>
+    <a href="../remapacademy_index.html#cursos"><span class="pt">Cursos</span><span class="en">Courses</span></a>
+    <span class="bc-sep">›</span>
+    <span class="bc-cur">${COURSE.badge_pt}</span>
+  </div>`;
+}
+
+function heroSection() {
+  const outcomes_pt = COURSE.outcomes_pt.map((o,i) => `<li><span class="outcome-chk chk-${COURSE.accent}">✓</span><span class="pt">${o}</span><span class="en">${COURSE.outcomes_en[i]||''}</span></li>`).join('');
+  const outcomes_en = '';
+  const metas = COURSE.meta.map(m => `<div class="meta-item"><span class="meta-icon">${m.icon}</span><span><span class="pt">${m.pt}</span><span class="en">${m.en}</span></span></div>`).join('');
+  const inc_pt = COURSE.includes_pt.map((i,idx) => `<li><span class="pt">${i}</span><span class="en">${COURSE.includes_en[idx]||''}</span></li>`).join('');
+  const inc_en = '';
+  const btnCls = COURSE.accent === 'ess' ? 'btn-cyan' : 'btn-orange';
+  return `<section class="hero-course">
+  <div class="hero-left">
+    <div class="tier-badge ${COURSE.accent}"><div class="tier-dot"></div><span class="tier-label">${COURSE.badge_pt}</span></div>
+    <h1 class="h1-${COURSE.accent}"><span class="pt">${COURSE.h1_pt}</span><span class="en">${COURSE.h1_en}</span></h1>
+    <p class="hero-lead"><span class="pt">${COURSE.lead_pt}</span><span class="en">${COURSE.lead_en}</span></p>
+    <div class="meta-row">${metas}</div>
+    <ul class="outcome-list">${outcomes_pt}</ul>
+    <div class="hero-btns">
+      <a href="${COURSE.checkout}" class="btn ${btnCls}"><span class="pt">Inscrever-me agora</span><span class="en">Enrol Now</span></a>
+      <a href="../remapacademy_index.html#contacto" class="btn btn-ghost"><span class="pt">Tenho dúvidas</span><span class="en">I have questions</span></a>
+    </div>
+  </div>
+  <div class="csc ${COURSE.accent}-card">
+    <div class="csc-thumb">🔧</div>
+    <div class="csc-body">
+      <div class="price-grid">
+        <div class="p-opt"><div class="p-lbl"><span class="pt">Presencial</span><span class="en">In-person</span></div><div class="p-val">${COURSE.price_pres}</div><div class="p-note">IVA incl.</div></div>
+        <div class="p-opt feat-${COURSE.accent}"><div class="p-lbl">Online</div><div class="p-val">${COURSE.price_online}</div><div class="p-note">IVA incl.</div></div>
+      </div>
+      <a href="${COURSE.checkout}" class="csc-btn ${COURSE.accent}-btn"><span class="pt">Inscrever-me no ${COURSE.badge_pt}</span><span class="en">Enrol in ${COURSE.badge_en}</span></a>
+      <a href="../remapacademy_index.html#contacto" class="csc-ghost"><span class="pt">Falar connosco</span><span class="en">Contact us</span></a>
+      <div class="csc-incl">
+        <div class="csc-incl-title"><span class="pt">O que inclui</span><span class="en">What's included</span></div>
+        <ul>${inc_pt}</ul>
+      </div>
+    </div>
+  </div>
+</section>`;
+}
+
+function curriculumSection() {
+  const modules = COURSE.modules.map((m, i) => {
+    const lessons = m.lessons.map(l => `<div class="l-row"><div class="l-icon ${COURSE.accent}-icon">▶</div><div class="l-title"><span class="pt">${l.pt}</span><span class="en">${l.en}</span></div><div class="l-dur">${l.dur}</div></div>`).join('');
+    return `<div class="module-block${i===0?' open':''}">
+      <div class="mod-head" onclick="toggleMod(this)">
+        <div class="mh-l"><span class="mh-num ${COURSE.accent}-num">${m.num}</span><div><div class="mh-title"><span class="pt">${m.title_pt}</span><span class="en">${m.title_en}</span></div><div class="mh-meta"><span class="pt">${m.meta_pt}</span><span class="en">${m.meta_en}</span></div></div></div>
+        <span class="mh-chevron">▼</span>
+      </div>
+      <div class="mod-lessons">${lessons}</div>
+    </div>`;
+  }).join('');
+  return `<section class="section" style="border-top:1px solid rgba(255,255,255,.06)">
+    <div class="sec-label"><span class="pt">Conteúdo programático</span><span class="en">Course curriculum</span></div>
+    <h2 class="sec-h"><span class="pt">O que vais aprender</span><span class="en">What you'll learn</span></h2>
+    <p class="sec-sub"><span class="pt">${COURSE.modules.length} módulos completos com conteúdo técnico prático e materiais de estudo incluídos.</span><span class="en">${COURSE.modules.length} complete modules with practical technical content and study materials included.</span></p>
+    ${modules}
+  </section>`;
+}
+
+function whoSection() {
+  const cards = COURSE.who.map(w => `<div class="who-card"><div class="who-icon">${w.icon}</div><h4 class="who-h"><span class="pt">${w.h_pt}</span><span class="en">${w.h_en}</span></h4><p class="who-p"><span class="pt">${w.p_pt}</span><span class="en">${w.p_en}</span></p></div>`).join('');
+  return `<section class="section" style="border-top:1px solid rgba(255,255,255,.06)">
+    <div class="sec-label"><span class="pt">A quem se destina</span><span class="en">Who it's for</span></div>
+    <h2 class="sec-h"><span class="pt">Este curso é para ti se...</span><span class="en">This course is for you if...</span></h2>
+    <div class="who-grid">${cards}</div>
+  </section>`;
+}
+
+function testimonialsSection() {
+  const cards = COURSE.testimonials.map(t => `<div class="tcard"><div class="t-stars">★★★★★</div><p class="t-text"><span class="pt">${t.t_pt}</span><span class="en">${t.t_en}</span></p><div class="t-author"><div class="t-avatar ${COURSE.accent}-avatar">${t.init}</div><div><div class="t-name">${t.name}</div><div class="t-meta"><span class="pt">${t.loc_pt}</span><span class="en">${t.loc_en}</span></div></div></div></div>`).join('');
+  return `<section class="section" style="border-top:1px solid rgba(255,255,255,.06)">
+    <div class="sec-label"><span class="pt">O que dizem os formandos</span><span class="en">What students say</span></div>
+    <h2 class="sec-h"><span class="pt">Resultados reais</span><span class="en">Real results</span></h2>
+    <div class="t-grid">${cards}</div>
+  </section>`;
+}
+
+function faqSection() {
+  const items = COURSE.faqs.map(f => `<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-t"><span class="pt">${f.q_pt}</span><span class="en">${f.q_en}</span></span><span class="faq-icon">✕</span></div><p class="faq-a"><span class="pt">${f.a_pt}</span><span class="en">${f.a_en}</span></p></div>`).join('');
+  return `<section class="section" style="border-top:1px solid rgba(255,255,255,.06)">
+    <div class="sec-label">FAQ</div>
+    <h2 class="sec-h"><span class="pt">Perguntas frequentes</span><span class="en">Frequently asked questions</span></h2>
+    <div class="faq-list">${items}</div>
+  </section>`;
+}
+
+function footerCta() {
+  const btnCls = COURSE.accent === 'ess' ? 'btn-cyan' : 'btn-orange';
+  return `<div class="footer-cta">
+    <h2 class="fcta-h"><span class="pt">Pronto para começar?</span><span class="en">Ready to get started?</span></h2>
+    <p class="fcta-sub"><span class="pt">Inscreve-te agora e garante o teu lugar na próxima turma. Vagas limitadas.</span><span class="en">Enrol now and secure your place in the next class. Limited spots.</span></p>
+    <div class="fcta-btns">
+      <a href="${COURSE.checkout}" class="btn ${btnCls}"><span class="pt">Inscrever-me no ${COURSE.badge_pt}</span><span class="en">Enrol in ${COURSE.badge_en}</span></a>
+      <a href="${COURSE.other.url}" class="btn btn-ghost"><span class="pt">${COURSE.other.label_pt}</span><span class="en">${COURSE.other.label_en}</span></a>
+    </div>
+  </div>`;
+}
+
+function footer() {
+  return `<footer class="footer"><div class="foot-bot"><p class="foot-copy">© 2026 <span>REMAP Academy</span>. <span class="pt">Todos os direitos reservados.</span><span class="en">All rights reserved.</span></p><div class="foot-legal"><a href="#"><span class="pt">Política de Privacidade</span><span class="en">Privacy Policy</span></a><a href="#"><span class="pt">Termos e Condições</span><span class="en">Terms & Conditions</span></a></div></div></footer>`;
+}
+
+
+document.getElementById('app').innerHTML = nav() + breadcrumb() + '<main>' + heroSection() + curriculumSection() + whoSection() + testimonialsSection() + faqSection() + '</main>' + footerCta() + footer();
+
+// ── BEHAVIOUR ─────────────────────────────────────────────────────────────────
+function setLang(l){document.body.classList.toggle('lang-en',l==='en');document.getElementById('btn-pt').classList.toggle('active',l==='pt');document.getElementById('btn-en').classList.toggle('active',l==='en');document.documentElement.lang=l;localStorage.setItem('ra-lang',l)}
+(function(){if(localStorage.getItem('ra-lang')==='en')setLang('en')})();
+function toggleMenu(){const m=document.getElementById('mobile-menu'),h=document.getElementById('hamburger');m.classList.toggle('open');h.classList.toggle('open')}
+document.addEventListener('click',e=>{const n=document.querySelector('.nav'),m=document.getElementById('mobile-menu'),h=document.getElementById('hamburger');if(m&&h&&!n.contains(e.target)&&!m.contains(e.target)){m.classList.remove('open');h.classList.remove('open')}})
+function toggleMod(head){head.closest('.module-block').classList.toggle('open')}
+function toggleFaq(q){q.closest('.faq-item').classList.toggle('open')}
+</script>
+</body>
+</html>

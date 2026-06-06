@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#141213">
+  <title>Área de Membros — REMAP Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+:root{--black:#231F20;--black-2:#1a1718;--black-3:#141213;--cyan:#0BABDD;--orange:#F36308;--green:#22c55e;--white:#fff}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--black-3);color:var(--white);font-family:'Barlow',sans-serif;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Barlow Condensed',sans-serif;font-weight:700;line-height:1.2}
+a{text-decoration:none;color:inherit}
+button{font-family:'Barlow',sans-serif}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--black-3)}::-webkit-scrollbar-thumb{background:rgba(11,171,221,.3);border-radius:2px}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* ─── LOGIN ─────────────────────────────────────────────────────────────── */
+#login-page{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1rem;position:relative;overflow:hidden}
+#login-page::before{content:'';position:absolute;top:-220px;left:-220px;width:620px;height:620px;background:radial-gradient(circle,rgba(11,171,221,.07) 0%,transparent 70%);pointer-events:none}
+#login-page::after{content:'';position:absolute;bottom:-160px;right:-160px;width:520px;height:520px;background:radial-gradient(circle,rgba(243,99,8,.04) 0%,transparent 70%);pointer-events:none}
+.login-logo{margin-bottom:2.5rem;position:relative;z-index:1}
+.login-logo svg{height:76px;width:auto}
+.login-card{background:var(--black-2);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:2.25rem 2rem;width:100%;max-width:400px;position:relative;z-index:1;animation:fadeIn .5s both}
+.l-h{font-size:1.8rem;text-align:center;margin-bottom:.3rem}
+.l-sub{font-size:13px;color:rgba(255,255,255,.4);text-align:center;margin-bottom:2rem}
+.fg{margin-bottom:1rem}
+.fg label{display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.35);letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px}
+.fg input{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:13px 14px;color:#fff;font-size:16px;outline:none;transition:border-color .2s;-webkit-appearance:none}
+.fg input:focus{border-color:rgba(11,171,221,.5);background:rgba(11,171,221,.03)}
+.fg input::placeholder{color:rgba(255,255,255,.2)}
+.btn-login{width:100%;padding:14px;border-radius:11px;font-family:'Barlow Condensed',sans-serif;font-size:1.05rem;font-weight:700;letter-spacing:.04em;background:var(--cyan);color:#fff;border:none;cursor:pointer;transition:opacity .2s,transform .15s;min-height:52px;margin-top:.5rem}
+.btn-login:hover{opacity:.88}
+.btn-login:active{transform:scale(.98)}
+.login-err{display:none;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:8px;padding:.65rem 1rem;font-size:13px;color:#fca5a5;margin-bottom:1rem;text-align:center}
+.login-err.show{display:block}
+.login-back{margin-top:1.25rem;text-align:center;font-size:12px;color:rgba(255,255,255,.3)}
+.login-back a{color:rgba(255,255,255,.4);transition:color .2s}
+.login-back a:hover{color:var(--cyan)}
+.demo-box{margin-top:1.5rem;background:rgba(11,171,221,.05);border:1px solid rgba(11,171,221,.12);border-radius:10px;padding:.9rem;font-size:12px;color:rgba(255,255,255,.4);text-align:center;line-height:1.9}
+.demo-box strong{color:rgba(255,255,255,.6)}
+.demo-link{color:var(--cyan);cursor:pointer;font-weight:600}
+
+/* ─── DASHBOARD LAYOUT ──────────────────────────────────────────────────── */
+#dashboard{display:none}
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:256px;background:var(--black-2);border-right:1px solid rgba(255,255,255,.07);display:flex;flex-direction:column;z-index:50;overflow-y:auto;transition:transform .3s}
+.sb-logo{padding:1.1rem 1.25rem;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0}
+.sb-logo svg{height:50px;width:auto}
+.sb-user{padding:.9rem 1.25rem;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0}
+.u-avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:700;flex-shrink:0}
+.u-ess{background:rgba(11,171,221,.15);border:1px solid rgba(11,171,221,.25);color:var(--cyan)}
+.u-adv{background:rgba(243,99,8,.15);border:1px solid rgba(243,99,8,.25);color:var(--orange)}
+.u-name{font-size:13px;font-weight:600;color:rgba(255,255,255,.8)}
+.u-plan{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-top:1px}
+.plan-ess{color:var(--cyan)}.plan-adv{color:var(--orange)}
+.sb-nav{padding:.5rem 0;flex:1}
+.sb-section{padding:.4rem 1.25rem .2rem;font-size:10px;font-weight:700;color:rgba(255,255,255,.22);text-transform:uppercase;letter-spacing:.1em;margin-top:.4rem}
+.sb-item{display:flex;align-items:center;gap:10px;padding:.72rem 1.25rem;font-size:13px;font-weight:500;color:rgba(255,255,255,.48);cursor:pointer;transition:all .18s;border-left:2px solid transparent;-webkit-tap-highlight-color:transparent;user-select:none}
+.sb-item:hover{color:rgba(255,255,255,.85);background:rgba(255,255,255,.04);border-left-color:rgba(255,255,255,.15)}
+.sb-item.active{color:#fff;background:rgba(11,171,221,.09);border-left-color:var(--cyan)}
+.sb-item .icon{font-size:.95rem;width:18px;text-align:center;flex-shrink:0}
+.sb-item.locked{opacity:.4;cursor:not-allowed}
+.sb-bottom{padding:1rem 1.25rem;border-top:1px solid rgba(255,255,255,.07);flex-shrink:0}
+.btn-out{width:100%;padding:9px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;background:transparent;color:rgba(255,255,255,.32);border:1px solid rgba(255,255,255,.1);cursor:pointer;transition:all .2s}
+.btn-out:hover{color:rgba(255,255,255,.65);border-color:rgba(255,255,255,.22)}
+
+/* ─── MAIN ──────────────────────────────────────────────────────────────── */
+.main{margin-left:256px;min-height:100vh;display:flex;flex-direction:column}
+.topbar{height:62px;background:var(--black-2);border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between;padding:0 1.75rem;position:sticky;top:0;z-index:40;flex-shrink:0}
+.tb-left{display:flex;align-items:center;gap:12px}
+.tb-title{font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:700}
+.ham-btn{display:none;background:transparent;border:none;cursor:pointer;padding:6px;color:rgba(255,255,255,.6);font-size:1.2rem}
+.search-wrap{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:8px;padding:7px 12px}
+.search-wrap input{background:transparent;border:none;outline:none;color:#fff;font-size:13px;font-family:'Barlow',sans-serif;width:160px}
+.search-wrap input::placeholder{color:rgba(255,255,255,.28)}
+.content{flex:1;padding:1.75rem}
+.panel{display:none;animation:fadeIn .3s both}
+.panel.active{display:block}
+
+/* ─── HOME PANEL ────────────────────────────────────────────────────────── */
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:2rem}
+.stat-c{background:var(--black-2);border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:1.25rem 1.4rem}
+.stat-c .lbl{font-size:11px;font-weight:700;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.5rem}
+.stat-c .val{font-family:'Barlow Condensed',sans-serif;font-size:2.1rem;font-weight:700;line-height:1}
+.stat-c .sub{font-size:11px;color:rgba(255,255,255,.3);margin-top:4px}
+.sec-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.sec-row h3{font-size:1.15rem}
+.sec-row a{font-size:12px;color:var(--cyan);font-weight:600;cursor:pointer}
+.continue-card{background:var(--black-2);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:1.2rem;display:flex;align-items:center;gap:1.25rem;cursor:pointer;transition:border-color .2s;margin-bottom:2rem;-webkit-tap-highlight-color:transparent}
+.continue-card:hover{border-color:rgba(11,171,221,.3)}
+.cc-icon{width:68px;height:50px;border-radius:8px;background:rgba(11,171,221,.1);border:1px solid rgba(11,171,221,.2);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0}
+.cc-body{flex:1;min-width:0}
+.cc-tier{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.cc-title{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:5px}
+.prog-bar{height:4px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;border-radius:2px;transition:width .4s}
+.pf-ess{background:var(--cyan)}.pf-adv{background:var(--orange)}
+.cc-pct{font-size:11px;color:rgba(255,255,255,.32);margin-top:4px}
+.cc-play{width:36px;height:36px;border-radius:50%;background:var(--cyan);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.75rem;flex-shrink:0}
+.course-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.ccard{background:var(--black-2);border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.09);cursor:pointer;transition:border-color .2s,transform .2s;-webkit-tap-highlight-color:transparent}
+.ccard:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.2)}
+.ccard.locked-card{cursor:default;pointer-events:none;opacity:.5}
+.ccard-top{height:96px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;border-bottom:1px solid rgba(255,255,255,.05)}
+.ess-top{background:linear-gradient(135deg,rgba(11,171,221,.12),transparent)}
+.adv-top{background:linear-gradient(135deg,rgba(243,99,8,.12),transparent)}
+.ccard-body{padding:1.1rem}
+.ccard-tier{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px}
+.t-ess{color:var(--cyan)}.t-adv{color:var(--orange)}
+.ccard-title{font-size:1.05rem;margin-bottom:8px}
+.ccard-prog .prog-bar{height:5px}
+.ccard-meta{font-size:11px;color:rgba(255,255,255,.3);margin-top:6px;display:flex;gap:10px}
+
+/* ─── PLAYER PANEL ──────────────────────────────────────────────────────── */
+.player-wrap{display:grid;grid-template-columns:1fr 296px;border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;min-height:500px}
+.player-body{background:#0a0a0a;display:flex;flex-direction:column}
+.video-box{background:#000;position:relative;aspect-ratio:16/9;width:100%}
+.video-box iframe{position:absolute;inset:0;width:100%;height:100%;border:none}
+.no-video{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:rgba(255,255,255,.25)}
+.no-video .nv-icon{font-size:3rem;opacity:.35}
+.no-video .nv-txt{font-size:13px}
+.player-info-bar{padding:1.1rem 1.4rem;border-top:1px solid rgba(255,255,255,.07)}
+.pib-course{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px}
+.pib-ess{color:var(--cyan)}.pib-adv{color:var(--orange)}
+.pib-title{font-size:1.2rem;margin-bottom:.35rem}
+.pib-meta{font-size:12px;color:rgba(255,255,255,.35);display:flex;gap:12px;flex-wrap:wrap}
+.player-ctrls{padding:.9rem 1.4rem;border-top:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.btn-pnav{padding:8px 16px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.5);cursor:pointer;transition:all .2s;min-height:38px}
+.btn-pnav:hover{background:rgba(255,255,255,.1);color:#fff}
+.btn-done{padding:8px 18px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;min-height:38px;border:none}
+.btn-done.todo{background:var(--cyan);color:#fff}
+.btn-done.done{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3)!important;border:none;color:#4ade80}
+/* sidebar list */
+.plist-wrap{border-left:1px solid rgba(255,255,255,.07);display:flex;flex-direction:column;background:var(--black-2)}
+.plist-head{padding:1rem 1.2rem;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0}
+.plist-hdr{font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:700;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px}
+.plist-prog{display:flex;align-items:center;gap:8px;font-size:11px;color:rgba(255,255,255,.32)}
+.plist-prog .prog-bar{flex:1;height:3px}
+.plist-scroll{flex:1;overflow-y:auto;padding:.4rem 0}
+.pl-mod{padding:.55rem 1.2rem .25rem;font-size:10px;font-weight:700;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:.07em}
+.pl-lesson{display:flex;align-items:center;gap:9px;padding:.65rem 1.2rem;cursor:pointer;transition:background .15s;border-left:2px solid transparent;-webkit-tap-highlight-color:transparent}
+.pl-lesson:hover{background:rgba(255,255,255,.04)}
+.pl-lesson.current-ess{background:rgba(11,171,221,.09);border-left-color:var(--cyan)}
+.pl-lesson.current-adv{background:rgba(243,99,8,.09);border-left-color:var(--orange)}
+.pl-check{width:18px;height:18px;border-radius:50%;border:1.5px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:.6rem;flex-shrink:0;transition:all .2s}
+.pl-lesson.done-lesson .pl-check{background:var(--green);border-color:var(--green);color:#fff}
+.pl-title{font-size:12px;color:rgba(255,255,255,.5);flex:1;line-height:1.35}
+.pl-lesson.current-ess .pl-title,.pl-lesson.current-adv .pl-title{color:rgba(255,255,255,.85)}
+.pl-dur{font-size:10px;color:rgba(255,255,255,.25);white-space:nowrap}
+
+/* ─── PROFILE PANEL ─────────────────────────────────────────────────────── */
+.profile-card{background:var(--black-2);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:1.5rem;max-width:480px}
+.prof-top{display:flex;align-items:center;gap:1rem;padding-bottom:1.25rem;margin-bottom:1.25rem;border-bottom:1px solid rgba(255,255,255,.07)}
+.prof-avatar-lg{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:1.35rem;font-weight:700;flex-shrink:0}
+.prof-name{font-size:1.1rem;font-weight:600;margin-bottom:2px}
+.prof-email{font-size:12px;color:rgba(255,255,255,.38)}
+.prof-row{display:flex;gap:12px;padding:.45rem 0;font-size:13px;border-bottom:1px solid rgba(255,255,255,.05)}
+.prof-row:last-child{border-bottom:none}
+.prof-lbl{color:rgba(255,255,255,.32);width:95px;flex-shrink:0}
+.prof-val{color:rgba(255,255,255,.72)}
+
+/* ─── MOBILE ────────────────────────────────────────────────────────────── */
+.mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:49}
+.mob-overlay.show{display:block}
+@media(max-width:960px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .ham-btn{display:flex}
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .course-cards{grid-template-columns:1fr}
+  .player-wrap{grid-template-columns:1fr}
+  .plist-wrap{display:none}
+}
+@media(max-width:560px){
+  .topbar{padding:0 1rem}
+  .content{padding:1.1rem 1rem}
+  .stats-grid{grid-template-columns:1fr}
+  .search-wrap{display:none}
+  .login-card{padding:1.75rem 1.25rem}
+}
+@supports(padding-bottom:env(safe-area-inset-bottom)){
+  .sb-bottom{padding-bottom:calc(1rem + env(safe-area-inset-bottom))}
+}
+  </style>
+</head>
+<body>
+
+<!-- LOGIN PAGE -->
+<div id="login-page">
+  <div class="login-logo" id="login-logo-wrap"></div>
+  <div class="login-card">
+    <h1 class="l-h">Área de Membros</h1>
+    <p class="l-sub">Acede às tuas vídeo-aulas e acompanha o teu progresso</p>
+    <div class="login-err" id="login-err">Email ou password incorretos.</div>
+    <div class="fg"><label>Email</label><input type="email" id="f-email" placeholder="joao@email.com" autocomplete="email" inputmode="email" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <div class="fg"><label>Password</label><input type="password" id="f-pass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <button class="btn-login" onclick="doLogin()">Entrar</button>
+    <div class="login-back"><a href="../index.html">← Voltar ao site</a></div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <div class="mob-overlay" id="mob-overlay" onclick="closeSidebar()"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-logo" id="sb-logo-wrap"></div>
+    <div class="sb-user">
+      <div class="u-avatar" id="u-avatar">JD</div>
+      <div><div class="u-name" id="u-name">João</div><div class="u-plan" id="u-plan">Essential</div></div>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-section">Principal</div>
+      <div class="sb-item active" id="nav-home" onclick="showPanel('home')"><span class="icon">🏠</span>Início</div>
+      <div class="sb-item" id="nav-essential" onclick="showPanel('essential')"><span class="icon">📘</span>Essential</div>
+      <div class="sb-item" id="nav-advanced" onclick="handleAdvancedClick()"><span class="icon">🔥</span>Advanced</div>
+      <div class="sb-section">Conta</div>
+      <div class="sb-item" id="nav-profile" onclick="showPanel('profile')"><span class="icon">👤</span>O meu perfil</div>
+    </nav>
+    <div class="sb-bottom">
+      <button class="btn-out" onclick="doLogout()">Sair da conta</button>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="tb-left">
+        <button class="ham-btn" onclick="openSidebar()">☰</button>
+        <span class="tb-title" id="tb-title">Início</span>
+      </div>
+      <div class="search-wrap"><span style="color:rgba(255,255,255,.3);font-size:.9rem">🔍</span><input type="text" id="search-input" placeholder="Pesquisar aulas..." oninput="doSearch(this.value)"></div>
+    </div>
+    <div class="content">
+
+      <!-- HOME -->
+      <div class="panel active" id="panel-home">
+        <h2 style="font-size:1.7rem;margin-bottom:.25rem" id="welcome-h">Bem-vindo!</h2>
+        <p style="font-size:13px;color:rgba(255,255,255,.4);margin-bottom:1.75rem">Continua o teu percurso de aprendizagem.</p>
+        <div class="stats-grid">
+          <div class="stat-c"><div class="lbl">✅ Aulas concluídas</div><div class="val" id="s-done">0</div><div class="sub" id="s-total">de 0 aulas</div></div>
+          <div class="stat-c"><div class="lbl">⏱ Tempo estimado</div><div class="val" id="s-time">0h</div><div class="sub">conteúdo total</div></div>
+          <div class="stat-c"><div class="lbl">📈 Progresso geral</div><div class="val" id="s-pct">0%</div><div class="sub" id="s-plan-lbl">Essential</div></div>
+        </div>
+        <div class="sec-row"><h3>Continuar a aprender</h3></div>
+        <div class="continue-card" id="continue-card" onclick="continueLesson()">
+          <div class="cc-icon" id="cc-icon">🔧</div>
+          <div class="cc-body">
+            <div class="cc-tier cc-tier-ess" id="cc-tier">Essential</div>
+            <div class="cc-title" id="cc-title">Carregando próxima aula...</div>
+            <div class="prog-bar"><div class="prog-fill pf-ess" id="cc-fill" style="width:0%"></div></div>
+            <div class="cc-pct" id="cc-pct">0% concluído</div>
+          </div>
+          <div class="cc-play" id="cc-play">▶</div>
+        </div>
+        <div class="sec-row"><h3>Os meus cursos</h3></div>
+        <div class="course-cards" id="course-cards"></div>
+      </div>
+
+      <!-- ESSENTIAL PLAYER -->
+      <div class="panel" id="panel-essential">
+        <div class="player-wrap">
+          <div class="player-body">
+            <div class="video-box" id="ess-vbox">
+              <div class="no-video"><div class="nv-icon">▶</div><div class="nv-txt">Seleciona uma aula para começar</div></div>
+            </div>
+            <div class="player-info-bar">
+              <div class="pib-course pib-ess">Essential — Fundamentos de ECU</div>
+              <div class="pib-title" id="ess-p-title">Seleciona uma aula</div>
+              <div class="pib-meta" id="ess-p-meta"></div>
+            </div>
+            <div class="player-ctrls">
+              <button class="btn-pnav" onclick="navLesson('essential',-1)">← Anterior</button>
+              <button class="btn-done todo" id="ess-done-btn" onclick="toggleDone('essential')">Marcar como concluída</button>
+              <button class="btn-pnav" onclick="navLesson('essential',1)">Próxima →</button>
+            </div>
+          </div>
+          <div class="plist-wrap">
+            <div class="plist-head">
+              <div class="plist-hdr">Conteúdo do curso</div>
+              <div class="plist-prog"><div class="prog-bar"><div class="prog-fill pf-ess" id="ess-pl-prog" style="width:0%"></div></div><span id="ess-pl-pct">0%</span></div>
+            </div>
+            <div class="plist-scroll" id="ess-plist"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADVANCED PLAYER -->
+      <div class="panel" id="panel-advanced">
+        <div class="player-wrap">
+          <div class="player-body">
+            <div class="video-box" id="adv-vbox">
+              <div class="no-video"><div class="nv-icon">▶</div><div class="nv-txt">Seleciona uma aula para começar</div></div>
+            </div>
+            <div class="player-info-bar">
+              <div class="pib-course pib-adv">Advanced — Programa de Mestria ECU</div>
+              <div class="pib-title" id="adv-p-title">Seleciona uma aula</div>
+              <div class="pib-meta" id="adv-p-meta"></div>
+            </div>
+            <div class="player-ctrls">
+              <button class="btn-pnav" onclick="navLesson('advanced',-1)">← Anterior</button>
+              <button class="btn-done todo" id="adv-done-btn" onclick="toggleDone('advanced')">Marcar como concluída</button>
+              <button class="btn-pnav" onclick="navLesson('advanced',1)">Próxima →</button>
+            </div>
+          </div>
+          <div class="plist-wrap">
+            <div class="plist-head">
+              <div class="plist-hdr">Conteúdo do curso</div>
+              <div class="plist-prog"><div class="prog-bar"><div class="prog-fill pf-adv" id="adv-pl-prog" style="width:0%"></div></div><span id="adv-pl-pct">0%</span></div>
+            </div>
+            <div class="plist-scroll" id="adv-plist"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROFILE -->
+      <div class="panel" id="panel-profile">
+        <h2 style="margin-bottom:1.5rem">O meu perfil</h2>
+        <div class="profile-card">
+          <div class="prof-top">
+            <div class="prof-avatar-lg u-ess" id="prof-av">JD</div>
+            <div>
+              <div class="prof-name" id="prof-name">João Demo</div>
+              <div class="prof-email" id="prof-email">—</div>
+              <div class="u-plan plan-ess" style="margin-top:4px" id="prof-plan-badge">Essential</div>
+            </div>
+          </div>
+          <div class="prof-row"><span class="prof-lbl">Plano</span><span class="prof-val" id="prof-plan-val">Essential</span></div>
+          <div class="prof-row"><span class="prof-lbl">Acesso</span><span class="prof-val">Vitalício</span></div>
+          <div class="prof-row"><span class="prof-lbl">Suporte</span><span class="prof-val">Canal dedicado pós-formação</span></div>
+          <div class="prof-row"><span class="prof-lbl">Ajuda</span><span class="prof-val"><a href="../index.html#contacto" style="color:var(--cyan)">Contactar →</a></span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ── LOGO SVG (mini) ────────────────────────────────────────────────────────
+const LOGO_SVG = `<svg viewBox="118 135 265 220" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"><defs><linearGradient id="lg1" gradientUnits="userSpaceOnUse" x1="203.76" y1="229.07" x2="357.75" y2="229.07"><stop offset="0" stop-color="#0BABDD"/><stop offset="1" stop-color="#1B6F92"/></linearGradient><linearGradient id="lg2" gradientUnits="userSpaceOnUse" x1="249.99" y1="229.23" x2="142.5" y2="229.23"><stop offset="0" stop-color="#DB3832"/><stop offset=".5025" stop-color="#E46E3A"/><stop offset="1" stop-color="#EDA342"/></linearGradient><linearGradient id="lg3" gradientUnits="userSpaceOnUse" x1="148.64" y1="306.52" x2="148.64" y2="274.31"><stop offset="0" stop-color="#DB3832"/><stop offset="1" stop-color="#EDA342"/></linearGradient><linearGradient id="lg4" gradientUnits="userSpaceOnUse" x1="355.74" y1="306.52" x2="355.74" y2="274.31"><stop offset="0" stop-color="#1B6F92"/><stop offset="1" stop-color="#0BABDD"/></linearGradient></defs><circle fill="#0BABDD" cx="322" cy="193.8" r="4.7"/><circle fill="#0BABDD" cx="244.1" cy="168.1" r="4.7"/><circle fill="#0BABDD" cx="369.7" cy="217" r="4.7"/><circle fill="#0BABDD" cx="298.8" cy="157.4" r="5.1"/><circle fill="#F36308" cx="177.2" cy="168.1" r="6.4"/><circle fill="#F36308" cx="146.1" cy="196.7" r="6.4"/><circle fill="#0BABDD" cx="191.5" cy="200.6" r="5"/><circle fill="#F36308" cx="134.8" cy="217" r="5.8"/><path fill="none" stroke="#F36308" stroke-width="2.5" d="M142.4,230.2c0,0,5.1-33.9,53.4-58.7"/><path fill="none" stroke="#F36308" stroke-width="2.5" d="M130.7,264.8c0,0-11.7-44.8,27.7-81.6c0,0,34.6-37.2,100.9-34.6"/><path fill="none" stroke="#0BABDD" stroke-width="2.5" d="M300.9,158.6c0,0,34.1,10.9,56.8,39.9s19.1,45.2,17.6,65.4"/><path fill="none" stroke="#F36308" stroke-width="2.2" d="M182.3,200.8c0,0-10.9,7.2-19.1,22.9"/><path fill="none" stroke="#0BABDD" stroke-width="2.2" d="M221.8,186.3c0,0-16.5,3.7-29.7,14.3"/><path fill="none" stroke="#0BABDD" stroke-width="2.2" d="M244.1,168.1c0,0,29.8-3.1,61.5,13.8c0,0,20.3,10,33.1,31.9"/><path fill="none" stroke="#0BABDD" stroke-width="2.2" d="M303.9,190.8c0,0-22-18.1-64.5-15.4"/><circle fill="#0BABDD" cx="260.6" cy="148.6" r="6.4"/><path fill="url(#lg1)" d="M351.1,242.2l6.7,3.3c-2.2-5.5-3.6-11-3.6-11c-2.4-5.8,0.8-9.9,0.8-9.9l2.7-3.5l-28.3,0.6C293.2,199.7,261.1,200,250,201h0c-25.4,9.5-46.2,26.9-46.2,26.9h14.5c0,0,1.9,0.1,0.7,2.3c0,0-5.3,6.8-8.5,18.8c29.1-7,79.9-12,79.9-12l-8,12l21.2,8.5h0.5c2-18.2,17.4-17.5,17.4-17.5c5,0.5,8.8,1.9,11.7,3.8l3.4-16.3C336.5,227.4,352.7,242.3,351.1,242.2z"/><path fill="url(#lg2)" d="M250,201c-2.7,0.2-4.2,0.5-4.2,0.5c-23.7,2.5-51.7,22.3-51.7,22.3c-32.2,2.1-49.3,18.7-49.3,18.7c-3.9,3-1.8,8.1-1.8,8.1l2,6.9h22.6c1.9-20.1,16.9-20.6,16.9-20.6c10.3,0.3,11.3,8.4,11.3,8.4c-4-6.2-13.1-4-13.1-4c-11.6,4.2-11,16.2-11,16.2h31.1c0,0,0-0.3,0.1-0.3c3.6-18.3,11.7-27.8,12.6-28.9h-12C203.8,227.9,224.6,210.5,250,201z"/><path fill="#1B6F92" d="M303.3,257.5h-94.8c0.5-3,1.1-5.8,1.8-8.4c29.1-7,79.9-12,79.9-12l-8,12L303.3,257.5z"/><path fill="url(#lg3)" d="M156.6,306.5l-8.3-10.2h-9.2v10.2H130v-32.2h22c8,0,14.2,3.6,14.2,11c0,5.4-3.3,8.8-8.2,10.3l9.2,10.9H156.6z M151.3,289.5c3.3,0,5.6-0.9,5.6-4s-2.4-4-5.6-4h-12.3v8.1H151.3z"/><path fill="#FFF" d="M210,299.3v7.2h-33.6v-32.2h33.1v7.2h-24.1v5.3h19.9v6.9h-19.9v5.7H210z"/><path fill="#FFF" d="M279.4,274.3v32.2h-8.7V286l-11.9,15.7h-0.4L246.4,286v20.6H238v-32.2h9.5l11.2,15.5l11.3-15.5H279.4z"/><path fill="#FFF" d="M317,300.4h-18.1l-3.1,6.2h-10.1l17.1-32.2h10.5l17.1,32.2h-10.2L317,300.4z"/><path fill="url(#lg4)" d="M374.3,285.6c0,7.5-5.8,11.3-14.6,11.3h-13v9.7h-9.4V290h21.6c3.5,0,5.9-1.1,5.9-4.3c0-3.3-2.4-4.3-5.9-4.3h-12.1l-9.5-7.1h22.4C368.4,274.3,374.3,278.2,374.3,285.6z"/><polygon fill="#FFF" points="217.3,295.7 230.3,295.7 223.8,307.5"/><polygon fill="#0BABDD" points="230.3,288.6 217.3,288.6 223.8,276.8"/></svg>`;
+// ── CONFIG — COLOCA AQUI O TEU BIN ID DO JSONBIN ──────────────────────────
+// Podes encontrá-lo no backoffice.html > ⚙️ Configuração
+const RA_BIN_ID = '69fe33a0250b1311c3220298';  // ex: '68xxxxxxxxxxxxxxxxxxxxxx'
+// ────────────────────────────────────────────────────────────────────────────
+
+document.getElementById('login-logo-wrap').innerHTML = LOGO_SVG;
+document.getElementById('sb-logo-wrap').innerHTML = `<a href="../index.html">${LOGO_SVG}</a>`;
+
+// ── USERS ──────────────────────────────────────────────────────────────────
+const USERS = {};
+
+// ── DEFAULT CONTENT (overridden by admin via localStorage ra_content) ────────
+const DEFAULT_CONTENT = {
+  essential: [
+    {id:'em1', title:'M1 — O Ecossistema do Chiptuning', lessons:[
+      {id:'e1',title:'A Profissão de Tuner: Mercado, Ética e Potencial',dur:'45min',url:''},
+      {id:'e2',title:'Ferramentas de Leitura e Escrita — tipos, Master vs Slave, custos',dur:'50min',url:''},
+      {id:'e3',title:'Arquitetura das Centralinas — Flash, EEPROM e Microprocessador',dur:'55min',url:''},
+      {id:'e4',title:'Protocolos de Comunicação — OBD, Bench, BDM e JTAG',dur:'60min',url:''},
+      {id:'e5',title:'O Seguro de Vida da ECU: Energia e Voltagem',dur:'45min',url:''},
+    ]},
+    {id:'em2', title:'M2 — Diagnóstico e Comunicação de Dados', lessons:[
+      {id:'e6',title:'Máquinas de Diagnóstico Profissional — menus, DTCs e adaptações',dur:'50min',url:''},
+      {id:'e7',title:'Interpretação de Erros (DTCs) Pré-Leitura',dur:'50min',url:''},
+      {id:'e8',title:'Protocolos Físicos: CAN-Bus vs K-Line',dur:'45min',url:''},
+      {id:'e9',title:'Diagnóstico em Bancada',dur:'55min',url:''},
+    ]},
+    {id:'em3', title:'M3 — Sistemas Anti-Poluição: DPF, EGR & AdBlue', lessons:[
+      {id:'e10',title:'Sistemas e Nomenclaturas — DPF/FAP/GPF, EGR, SCR e AdBlue',dur:'50min',url:''},
+      {id:'e11',title:'Software para Edição de Emissões — switch off vs tabelas, verificação',dur:'45min',url:''},
+      {id:'e12',title:'Verificação Prática de Dados DPF — fuligem, cinzas, regeneração',dur:'40min',url:''},
+      {id:'e13',title:'Casos Práticos com ECUs Reais',dur:'45min',url:''},
+    ]},
+    {id:'em4', title:'M4 — Gestão de Odómetros e Calibração de Quadrantes', lessons:[
+      {id:'e14',title:'Equipamentos e Software Dedicados — riscos legais e técnicos',dur:'50min',url:''},
+      {id:'e15',title:'Tipos de Odómetros e Acesso EEPROM',dur:'50min',url:''},
+      {id:'e16',title:'Calibração via OBD e BDM',dur:'60min',url:''},
+    ]},
+    {id:'em5', title:'M5 — Reset de Módulos SRS Airbag e Crash Data', lessons:[
+      {id:'e17',title:'Módulos SRS — Estrutura e Protocolos',dur:'45min',url:''},
+      {id:'e18',title:'Leitura e Limpeza de Crash Data via EEPROM',dur:'55min',url:''},
+      {id:'e19',title:'Reset com Ferramentas Dedicadas — Casos Práticos',dur:'60min',url:''},
+    ]},
+  ],
+  advanced: [
+    {id:'am1', title:'M6 — Remapeamento de Potência e Stage Tuning', lessons:[
+      {id:'a1',title:'Fundamentos de Calibração — maps de pressão turbo, combustível e ignição',dur:'55min',url:''},
+      {id:'a2',title:'Workflow de Projeto: Do Cliente ao Ficheiro Final',dur:'60min',url:''},
+      {id:'a3',title:'Software Automático de Stage 1/2 — geração, seleção e validação',dur:'60min',url:''},
+      {id:'a4',title:'Software de Gestão de Projetos de Potência',dur:'60min',url:''},
+      {id:'a5',title:'Software de Verificação e Controlo de Qualidade',dur:'60min',url:''},
+    ]},
+    {id:'am2', title:'M7 — Clonagem de ECU e Transferência de Dados', lessons:[
+      {id:'a6',title:'Clonagem OBD e BDM — procedimentos e riscos',dur:'60min',url:''},
+      {id:'a7',title:'Transferência entre ECUs da Mesma Família',dur:'55min',url:''},
+      {id:'a8',title:'Casos Práticos — Substituição de ECU Defeituosa',dur:'65min',url:''},
+    ]},
+    {id:'am3', title:'M8 — Anulação de Imobilizador e Programação de Chaves', lessons:[
+      {id:'a9',title:'Sistemas de Imobilização — tipos e protocolos',dur:'50min',url:''},
+      {id:'a10',title:'Bypass via EEPROM e Emuladores',dur:'55min',url:''},
+      {id:'a11',title:'Programação de Chaves Transponder',dur:'50min',url:''},
+      {id:'a12',title:'Casos Práticos — Marcas e Protocolos Específicos',dur:'55min',url:''},
+      {id:'a13',title:'Sistemas de Coluna Elétrica (EPS/EPAS) — funcionamento e diagnóstico',dur:'50min',url:''},
+      {id:'a14',title:'Anulação de Coluna via EEPROM e OBD',dur:'45min',url:''},
+    ]},
+    {id:'am4', title:'M9 — Microssoldadura em PCB — SMD e Ar Quente', lessons:[
+      {id:'a15',title:'Fundamentos de Eletrónica — componentes SMD e identificação',dur:'50min',url:''},
+      {id:'a16',title:'Técnicas de Soldadura com Ferro de Ponta Fina',dur:'65min',url:''},
+      {id:'a17',title:'Rework com Ar Quente — remoção e recolocação de BGA',dur:'65min',url:''},
+      {id:'a18',title:'Prática — Reparação de PCB Real com Defeito',dur:'60min',url:''},
+    ]},
+    {id:'am5', title:'M10 — Gestão de Negócio e Precificação de Serviços', lessons:[
+      {id:'a19',title:'Precificação de Serviços — custo, margem e tabela PT/EU',dur:'55min',url:''},
+      {id:'a20',title:'Apresentação de Orçamentos e Comunicação com o Cliente',dur:'45min',url:''},
+      {id:'a21',title:'Gestão de Ficheiros de Clientes e Operação Diária',dur:'50min',url:''},
+    ]},
+    {id:'am6', title:'M11 — Do Curso ao Negócio — Encerramento', lessons:[
+      {id:'a22',title:'Simulação do 1.º Cliente, Primeiros Passos e Entrega de Certificado',dur:'35min',url:''},
+    ]},
+  ]
+};
+
+// ── STATE ──────────────────────────────────────────────────────────────────
+let currentUser = null;
+let content = DEFAULT_CONTENT;
+let progress = {}; // {lessonId: true}
+let currentLesson = {essential: null, advanced: null};
+let allLessons = {essential: [], advanced: []};
+
+function getContent() {
+  try { const s = localStorage.getItem('ra_content'); if(s) return JSON.parse(s); } catch(e){}
+  return DEFAULT_CONTENT;
+}
+function getProgress(email) {
+  try { const s = localStorage.getItem('ra_prog_'+email); if(s) return JSON.parse(s); } catch(e){}
+  return {};
+}
+function saveProgress() {
+  if (!currentUser) return;
+  localStorage.setItem('ra_prog_'+currentUser.email, JSON.stringify(progress));
+}
+function flatLessons(course) {
+  const arr = [];
+  content[course].forEach(mod => mod.lessons.forEach(l => arr.push({...l, modTitle: mod.title})));
+  return arr;
+}
+
+// ── LOGIN ──────────────────────────────────────────────────────────────────
+function fillDemo(e, p) {
+  document.getElementById('f-email').value = e;
+  document.getElementById('f-pass').value = p;
+}
+function doLogin() {
+  const email = document.getElementById('f-email').value.trim().toLowerCase();
+  const pass  = document.getElementById('f-pass').value;
+  const err   = document.getElementById('login-err');
+  const btn   = document.querySelector('.btn-login');
+
+  function tryAuth(userList) {
+    const user = userList.find(u => u.email.toLowerCase() === email && String(u.pass) === String(pass));
+    if (!user) {
+      err.classList.add('show');
+      btn.textContent = 'Entrar';
+      btn.disabled = false;
+      return;
+    }
+    err.classList.remove('show');
+    currentUser = {email, ...user};
+    content  = getContent();
+    progress = getProgress(email);
+    allLessons.essential = flatLessons('essential');
+    allLessons.advanced  = flatLessons('advanced');
+    initDashboard();
+  }
+
+  err.classList.remove('show');
+  btn.textContent = 'A verificar...';
+  btn.disabled = true;
+
+  // Tenta JSONBin (cloud) primeiro — fonte de verdade
+  const BIN_ID = localStorage.getItem('ra_bo_binid') || RA_BIN_ID;
+  if (BIN_ID) {
+    fetch('https://api.jsonbin.io/v3/b/' + BIN_ID + '/latest')
+      .then(function(r) { return r.json(); })
+      .then(function(j) {
+        const users = (j.record && j.record.users) || [];
+        // Guarda localmente para fallback offline
+        if (users.length) localStorage.setItem('ra_users', JSON.stringify(users));
+        tryAuth(users);
+      })
+      .catch(function() {
+        // Fallback: lista local guardada anteriormente
+        let userList = [];
+        try { const s = localStorage.getItem('ra_users'); if(s) userList = JSON.parse(s); } catch(e) {}
+        tryAuth(userList);
+      });
+    return;
+  }
+
+  // Sem BIN_ID: usa lista local
+  let userList = [];
+  try { const s = localStorage.getItem('ra_users'); if(s) userList = JSON.parse(s); } catch(e) {}
+  tryAuth(userList);
+}
+function doLogout() {
+  currentUser = null; progress = {};
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('login-page').style.display = 'flex';
+}
+
+// ── DASHBOARD INIT ─────────────────────────────────────────────────────────
+function initDashboard() {
+  document.getElementById('login-page').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  const isAdv = currentUser.plan === 'advanced';
+  const ini   = currentUser.initials;
+  const avCls = isAdv ? 'u-adv' : 'u-ess';
+  // sidebar user
+  document.getElementById('u-avatar').textContent = ini;
+  document.getElementById('u-avatar').className = 'u-avatar ' + avCls;
+  document.getElementById('u-name').textContent = currentUser.name;
+  document.getElementById('u-plan').textContent = isAdv ? 'Advanced' : 'Essential';
+  document.getElementById('u-plan').className = 'u-plan ' + (isAdv ? 'plan-adv' : 'plan-ess');
+  // advanced nav
+  const advNav = document.getElementById('nav-advanced');
+  if (!isAdv) advNav.classList.add('locked');
+  // profile
+  document.getElementById('prof-av').textContent = ini;
+  document.getElementById('prof-av').className = 'prof-avatar-lg ' + avCls;
+  document.getElementById('prof-name').textContent = currentUser.name;
+  document.getElementById('prof-email').textContent = currentUser.email;
+  document.getElementById('prof-plan-badge').textContent = isAdv ? 'Advanced' : 'Essential';
+  document.getElementById('prof-plan-badge').className = 'u-plan ' + (isAdv ? 'plan-adv' : 'plan-ess');
+  document.getElementById('prof-plan-val').textContent = isAdv ? 'Advanced (inclui Essential)' : 'Essential';
+  // build playlist
+  buildPlaylist('essential');
+  if (isAdv) buildPlaylist('advanced');
+  // home
+  updateHome();
+  showPanel('home');
+}
+
+// ── PLAYLIST BUILD ─────────────────────────────────────────────────────────
+function buildPlaylist(course) {
+  const listEl = document.getElementById(course === 'essential' ? 'ess-plist' : 'adv-plist');
+  const cls = course === 'essential' ? 'ess' : 'adv';
+  let html = '';
+  content[course].forEach(mod => {
+    html += `<div class="pl-mod">${mod.title}</div>`;
+    mod.lessons.forEach(l => {
+      const done = progress[l.id] ? ' done-lesson' : '';
+      html += `<div class="pl-lesson${done}" id="pl-${l.id}" onclick="selectLesson('${course}','${l.id}')">
+        <div class="pl-check">${progress[l.id]?'✓':''}</div>
+        <div class="pl-title">${l.title}</div>
+        <div class="pl-dur">${l.dur}</div>
+      </div>`;
+    });
+  });
+  listEl.innerHTML = html;
+  updateProgress(course);
+}
+
+// ── SELECT LESSON ──────────────────────────────────────────────────────────
+function selectLesson(course, lessonId) {
+  const all = allLessons[course];
+  const lesson = all.find(l => l.id === lessonId);
+  if (!lesson) return;
+  currentLesson[course] = lessonId;
+  const cls = course === 'essential' ? 'ess' : 'adv';
+  const vbox = document.getElementById(cls+'-vbox');
+  if (lesson.url) {
+    let embedUrl = lesson.url;
+    if (embedUrl.includes('youtube.com/watch?v=')) embedUrl = embedUrl.replace('watch?v=','embed/');
+    if (embedUrl.includes('youtu.be/')) embedUrl = 'https://www.youtube.com/embed/' + embedUrl.split('youtu.be/')[1];
+    vbox.innerHTML = `<iframe src="${embedUrl}" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>`;
+  } else {
+    vbox.innerHTML = `<div class="no-video"><div class="nv-icon">🎬</div><div class="nv-txt">Vídeo ainda não disponível</div></div>`;
+  }
+  document.getElementById(cls+'-p-title').textContent = lesson.title;
+  document.getElementById(cls+'-p-meta').textContent = lesson.modTitle + ' · ' + lesson.dur;
+  const doneBtn = document.getElementById(cls+'-done-btn');
+  doneBtn.className = 'btn-done ' + (progress[lessonId] ? 'done' : 'todo');
+  doneBtn.textContent = progress[lessonId] ? '✓ Concluída' : 'Marcar como concluída';
+  // highlight in list
+  document.querySelectorAll(`#${cls}-plist .pl-lesson`).forEach(el => el.classList.remove('current-'+cls));
+  const row = document.getElementById('pl-'+lessonId);
+  if (row) { row.classList.add('current-'+cls); row.scrollIntoView({behavior:'smooth',block:'nearest'}); }
+}
+
+// ── TOGGLE DONE ────────────────────────────────────────────────────────────
+function toggleDone(course) {
+  const id = currentLesson[course];
+  if (!id) return;
+  progress[id] = !progress[id];
+  saveProgress();
+  buildPlaylist(course);
+  selectLesson(course, id);
+  updateHome();
+}
+function navLesson(course, dir) {
+  const all = allLessons[course];
+  const idx = all.findIndex(l => l.id === currentLesson[course]);
+  const next = all[idx + dir];
+  if (next) selectLesson(course, next.id);
+}
+
+// ── PROGRESS ───────────────────────────────────────────────────────────────
+function updateProgress(course) {
+  const all = allLessons[course];
+  const done = all.filter(l => progress[l.id]).length;
+  const pct = all.length ? Math.round(done/all.length*100) : 0;
+  const cls = course === 'essential' ? 'ess' : 'adv';
+  const progEl = document.getElementById(cls+'-pl-prog');
+  const pctEl  = document.getElementById(cls+'-pl-pct');
+  if (progEl) progEl.style.width = pct+'%';
+  if (pctEl)  pctEl.textContent = pct+'%';
+}
+
+// ── HOME UPDATE ────────────────────────────────────────────────────────────
+function updateHome() {
+  const isAdv = currentUser.plan === 'advanced';
+  const courses = isAdv ? ['essential','advanced'] : ['essential'];
+  let totalLessons=0, doneLessons=0, totalMins=0;
+  courses.forEach(c => {
+    allLessons[c].forEach(l => {
+      totalLessons++;
+      if(progress[l.id]) doneLessons++;
+      const m = parseInt(l.dur)||0;
+      totalMins += m;
+    });
+  });
+  const pct = totalLessons ? Math.round(doneLessons/totalLessons*100) : 0;
+  const hrs = Math.round(totalMins/60);
+  document.getElementById('s-done').textContent = doneLessons;
+  document.getElementById('s-total').textContent = 'de ' + totalLessons + ' aulas';
+  document.getElementById('s-time').textContent = hrs+'h';
+  document.getElementById('s-pct').textContent = pct+'%';
+  document.getElementById('s-plan-lbl').textContent = isAdv ? 'Essential + Advanced' : 'Essential';
+  document.getElementById('welcome-h').textContent = 'Bem-vindo, ' + currentUser.name.split(' ')[0] + '!';
+  // continue card — find first uncompleted
+  let nextLesson = null, nextCourse = 'essential';
+  for (const c of courses) {
+    for (const l of allLessons[c]) { if(!progress[l.id]) { nextLesson = l; nextCourse = c; break; } }
+    if (nextLesson) break;
+  }
+  if (nextLesson) {
+    currentLesson[nextCourse] = nextLesson.id;
+    document.getElementById('cc-tier').textContent = nextCourse === 'essential' ? 'Essential' : 'Advanced';
+    document.getElementById('cc-tier').className = 'cc-tier ' + (nextCourse==='essential'?'t-ess':'t-adv');
+    document.getElementById('cc-title').textContent = nextLesson.title;
+    document.getElementById('cc-icon').textContent = nextCourse==='essential' ? '🔧' : '⚡';
+    document.getElementById('cc-fill').className = 'prog-fill ' + (nextCourse==='essential'?'pf-ess':'pf-adv');
+    document.getElementById('cc-fill').style.width = pct+'%';
+    document.getElementById('cc-pct').textContent = pct + '% concluído';
+    document.getElementById('cc-play').style.background = nextCourse==='essential'?'var(--cyan)':'var(--orange)';
+  }
+  // course cards
+  let cardsHtml = '';
+  const essDone = allLessons.essential.filter(l=>progress[l.id]).length;
+  const essPct = allLessons.essential.length ? Math.round(essDone/allLessons.essential.length*100) : 0;
+  cardsHtml += `<div class="ccard" onclick="showPanel('essential')">
+    <div class="ccard-top ess-top">🔧</div>
+    <div class="ccard-body">
+      <div class="ccard-tier t-ess">Essential</div>
+      <div class="ccard-title">Fundamentos de ECU</div>
+      <div class="ccard-prog"><div class="prog-bar"><div class="prog-fill pf-ess" style="width:${essPct}%"></div></div></div>
+      <div class="ccard-meta"><span>${essDone}/${allLessons.essential.length} aulas</span><span>${essPct}%</span></div>
+    </div>
+  </div>`;
+  if (isAdv) {
+    const advDone = allLessons.advanced.filter(l=>progress[l.id]).length;
+    const advPct = allLessons.advanced.length ? Math.round(advDone/allLessons.advanced.length*100) : 0;
+    cardsHtml += `<div class="ccard" onclick="showPanel('advanced')">
+      <div class="ccard-top adv-top">⚡</div>
+      <div class="ccard-body">
+        <div class="ccard-tier t-adv">Advanced</div>
+        <div class="ccard-title">Programa de Mestria ECU</div>
+        <div class="ccard-prog"><div class="prog-bar"><div class="prog-fill pf-adv" style="width:${advPct}%"></div></div></div>
+        <div class="ccard-meta"><span>${advDone}/${allLessons.advanced.length} aulas</span><span>${advPct}%</span></div>
+      </div>
+    </div>`;
+  } else {
+    cardsHtml += `<div class="ccard locked-card">
+      <div class="ccard-top adv-top" style="opacity:.4">⚡</div>
+      <div class="ccard-body">
+        <div class="ccard-tier t-adv">Advanced</div>
+        <div class="ccard-title" style="opacity:.5">🔒 Bloqueado</div>
+        <div class="ccard-meta"><a href="../checkout.html?curso=advanced" style="color:var(--orange);font-size:12px;font-weight:600">Desbloquear →</a></div>
+      </div>
+    </div>`;
+  }
+  document.getElementById('course-cards').innerHTML = cardsHtml;
+}
+
+function continueLesson() {
+  const isAdv = currentUser.plan === 'advanced';
+  let c = 'essential';
+  for (const course of (isAdv ? ['essential','advanced'] : ['essential'])) {
+    for (const l of allLessons[course]) { if(!progress[l.id]) { c = course; break; } }
+  }
+  showPanel(c);
+  if (currentLesson[c]) selectLesson(c, currentLesson[c]);
+  else if (allLessons[c].length) selectLesson(c, allLessons[c][0].id);
+}
+function handleAdvancedClick() {
+  if (currentUser.plan !== 'advanced') {
+    alert('O curso Advanced está disponível apenas para membros com plano Advanced.\n\nInscreeve-te em remapacademy.pt!');
+    return;
+  }
+  showPanel('advanced');
+}
+
+// ── PANEL NAVIGATION ───────────────────────────────────────────────────────
+function showPanel(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  const navEl = document.getElementById('nav-'+name);
+  if (navEl) navEl.classList.add('active');
+  const titles = {home:'Início',essential:'Essential',advanced:'Advanced',profile:'O meu perfil'};
+  document.getElementById('tb-title').textContent = titles[name] || '';
+  closeSidebar();
+}
+
+// ── SEARCH ─────────────────────────────────────────────────────────────────
+function doSearch(q) {
+  if (!q.trim()) return;
+  const term = q.toLowerCase();
+  const all = [...allLessons.essential, ...(currentUser.plan==='advanced'?allLessons.advanced:[])];
+  const match = all.find(l => l.title.toLowerCase().includes(term));
+  if (match) {
+    const course = allLessons.essential.find(l=>l.id===match.id) ? 'essential' : 'advanced';
+    showPanel(course);
+    selectLesson(course, match.id);
+    document.getElementById('search-input').value = '';
+  }
+}
+
+// ── MOBILE SIDEBAR ─────────────────────────────────────────────────────────
+function openSidebar() {
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('mob-overlay').classList.add('show');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('mob-overlay').classList.remove('show');
+}
+</script>
+</body>
+</html>
