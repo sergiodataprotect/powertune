@@ -547,82 +547,85 @@ function copyWallet(e){e.stopPropagation();navigator.clipboard.writeText(WALLETS
 function updateBtn(){const ok=document.getElementById('terms').checked;document.getElementById('btn-pay').disabled=!ok;document.getElementById('mob-btn').disabled=!ok;}
 function enableBtnOnLoad(){const terms=document.getElementById('terms');if(!terms){document.getElementById('btn-pay').disabled=false;document.getElementById('mob-btn').disabled=false;}}
 function validateForm(){const n=document.getElementById('f-nome').value.trim();const e=document.getElementById('f-email').value.trim();const t=document.getElementById('f-tel').value.trim();if(!n){alert(isEn?'Please enter your first name.':'Por favor, introduz o teu nome.');return false;}if(!e||!e.includes('@')){alert(isEn?'Please enter a valid email.':'Por favor, introduz um email válido.');return false;}if(!t){alert(isEn?'Please enter your phone number.':'Por favor, introduz o teu número de telefone.');return false;}return true;}
-async function submitOrder(){
-  // Transferência bancária: fluxo manual
-  if(pagamento==='transferencia'){
-    if(!validateForm())return;
-    const d=DATA[curso];
-    const fmt=formato==='pres'?(isEn?'in-person':'presencial'):'online';
-    const msg=isEn?'After the transfer, send the payment receipt to <strong>info@remapacademy.pt</strong> with your name and course. Enrolment is activated after payment confirmation.':'Após a transferência, envia o comprovativo para <strong>info@remapacademy.pt</strong> com o teu nome e curso. A inscrição é ativada após confirmação do pagamento.';
-    const prefix=isEn?'Enrolment in <strong>'+d.tier_en+' — '+d.nome_en+'</strong> ('+fmt+') received.<br><br>':'Inscrição no curso <strong>'+d.tier_pt+' — '+d.nome_pt+'</strong> ('+fmt+') recebida.<br><br>';
-    document.getElementById('page-wrap').style.display='none';
-    document.getElementById('mobile-bar').style.display='none';
-    document.getElementById('success-page').classList.add('show');
-    document.getElementById('success-msg').innerHTML=prefix+msg;
-    window.scrollTo({top:0,behavior:'smooth'});
-    return;
-  }
+// ─── Helpers para ler dados do formulário e preços ───────────────────────────
+function getFormData(){
+  const nome=(document.getElementById('f-nome').value.trim()+' '+(document.getElementById('f-apelido')?document.getElementById('f-apelido').value.trim():'')).trim();
+  const email=document.getElementById('f-email').value.trim();
+  const tel=document.getElementById('f-tel').value.trim();
+  const nif=document.getElementById('f-nif')?document.getElementById('f-nif').value.trim():'';
+  const empresa=document.getElementById('f-empresa')?document.getElementById('f-empresa').value.trim():'';
+  const country=document.getElementById('vat-country')?document.getElementById('vat-country').value:'';
+  const totalEl=document.getElementById('s-tot');
+  const totalText=(totalEl.textContent||'').replace('€','').replace(/\s/g,'').replace(/\./g,'').replace(',','.');
+  const totalEur=parseFloat(totalText)||(formato==='pres'?DATA[curso].pres:DATA[curso].online);
+  // Calcular subtotal ex-VAT e vatRate actual
+  const invoiceCb=document.getElementById('cb-invoice');
+  const hasInvoice=invoiceCb&&invoiceCb.checked;
+  const currentVatRate=hasInvoice?(vatValid?0:vatRate):0;
+  const subtotal=currentVatRate>0?Math.round(totalEur/(1+currentVatRate/100)*100)/100:totalEur;
+  return {nome,email,tel,nif,empresa,country,totalEur,subtotal,vatRate:currentVatRate};
+}
 
-  // Cripto: fluxo manual — mantém o comportamento original
+function showSuccess(msgHtml){
+  document.getElementById('page-wrap').style.display='none';
+  document.getElementById('mobile-bar').style.display='none';
+  document.getElementById('success-page').classList.add('show');
+  document.getElementById('success-msg').innerHTML=msgHtml;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+async function submitOrder(){
+  const d=DATA[curso];
+  const fmt=formato==='pres'?(isEn?'in-person':'presencial'):'online';
+  const prefix=isEn?'Enrolment in <strong>'+d.tier_en+' — '+d.nome_en+'</strong> ('+fmt+') received.<br><br>':'Inscrição no curso <strong>'+d.tier_pt+' — '+d.nome_pt+'</strong> ('+fmt+') recebida.<br><br>';
+
+  // ── Cripto: sem IVA, fluxo manual, sem fatura ─────────────────────────────
   if(pagamento==='cripto'){
     if(!validateForm())return;
-    const d=DATA[curso];
-    const fmt=formato==='pres'?(isEn?'in-person':'presencial'):'online';
     const msg=isEn?'Send the transaction hash for your <strong>'+cryptoCoin+'</strong> payment to <strong>info@remapacademy.pt</strong>. Enrolment activated after blockchain confirmation.':'Envia o hash da transação do teu pagamento em <strong>'+cryptoCoin+'</strong> para <strong>info@remapacademy.pt</strong>. Inscrição ativada após confirmação na blockchain.';
-    const prefix=isEn?'Enrolment in <strong>'+d.tier_en+' — '+d.nome_en+'</strong> ('+fmt+') received.<br><br>':'Inscrição no curso <strong>'+d.tier_pt+' — '+d.nome_pt+'</strong> ('+fmt+') recebida.<br><br>';
-    document.getElementById('page-wrap').style.display='none';
-    document.getElementById('mobile-bar').style.display='none';
-    document.getElementById('success-page').classList.add('show');
-    document.getElementById('success-msg').innerHTML=prefix+msg;
-    window.scrollTo({top:0,behavior:'smooth'});
+    showSuccess(prefix+msg);
     return;
   }
 
-  // MB WAY e Cartão: redireciona para Stripe Checkout
   if(!validateForm())return;
+  const {nome,email,tel,nif,empresa,country,totalEur,subtotal,vatRate:currentVatRate}=getFormData();
 
+  // ── Transferência bancária: guardar pendente, mostrar confirmação ──────────
+  if(pagamento==='transferencia'){
+    const btn=document.getElementById('btn-pay');
+    const mob=document.getElementById('mob-btn');
+    btn.disabled=true; mob.disabled=true;
+    btn.textContent=isEn?'Saving…':'A guardar…';
+    try{
+      await fetch('/.netlify/functions/save-pending-transfer',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({nome,email,tel,nif,empresa,country,curso,formato,subtotal,vatRate:currentVatRate,total:totalEur,lang:isEn?'en':'pt'})
+      });
+    }catch(e){console.warn('save pending failed',e);}
+    const msg=isEn?'After the transfer, send the payment receipt to <strong>info@remapacademy.pt</strong> with your name and course. Enrolment and invoice are sent after payment confirmation.':'Após a transferência, envia o comprovativo para <strong>info@remapacademy.pt</strong> com o teu nome e curso. A inscrição e fatura são enviadas após confirmação do pagamento.';
+    showSuccess(prefix+msg);
+    return;
+  }
+
+  // ── Stripe (cartão / MB WAY / Multibanco) ─────────────────────────────────
   const btn=document.getElementById('btn-pay');
   const mob=document.getElementById('mob-btn');
   btn.disabled=true; mob.disabled=true;
   btn.textContent=isEn?'Redirecting…':'A redirecionar…';
 
-  // Determinar o Price ID correcto
   const priceId=(PRICE_IDS[curso]||PRICE_IDS.essential)[formato];
-
-  // Calcular total final com IVA (o que está visível no ecrã)
-  const totalEl=document.getElementById('s-tot');
-  const totalText=(totalEl.textContent||'').replace('€','').replace(/\s/g,'').replace(/\./g,'').replace(',','.');
-  const totalEur=parseFloat(totalText)||(formato==='pres'?DATA[curso].pres:DATA[curso].online);
-
-  const nome=document.getElementById('f-nome').value.trim()+' '+(document.getElementById('f-apelido')?document.getElementById('f-apelido').value.trim():'');
-  const email=document.getElementById('f-email').value.trim();
-  const tel=document.getElementById('f-tel').value.trim();
-  const nif=document.getElementById('f-nif')?document.getElementById('f-nif').value.trim():'';
-  const empresa=document.getElementById('f-empresa')?document.getElementById('f-empresa').value.trim():'';
 
   try{
     const resp=await fetch('/.netlify/functions/create-checkout',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        priceId,
-        email,
-        nome:nome.trim(),
-        curso,
-        formato,
-        tel,
-        nif,
-        empresa,
-        totalEur,
-        lang:isEn?'en':'pt'
-      })
+      body:JSON.stringify({priceId,email,nome,curso,formato,tel,nif,empresa,vatRate:currentVatRate,subtotal,totalEur,lang:isEn?'en':'pt'})
     });
-
-    if(!resp.ok) throw new Error('Netlify function error '+resp.status);
+    if(!resp.ok)throw new Error('Netlify function error '+resp.status);
     const data=await resp.json();
-    if(data.url) window.location.href=data.url;
+    if(data.url)window.location.href=data.url;
     else throw new Error('no url');
-
   }catch(err){
     console.error('Stripe checkout error:',err);
     btn.disabled=false; mob.disabled=false;
