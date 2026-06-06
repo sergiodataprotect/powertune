@@ -460,10 +460,8 @@ async function checkVat() {
 
 function applyVat(rate) {
   const d = DATA[curso];
-  const priceWithVat = formato === 'pres' ? d.pres : d.online;
-  // prices in DATA already include VAT at PT rate (23%)
-  // calculate base price (ex-VAT) then apply new rate
-  const base = Math.round(priceWithVat / 1.23 * 100) / 100;
+  // Prices in DATA are ex-VAT base prices
+  const base = formato === 'pres' ? d.pres : d.online;
   const newVat = Math.round(base * rate) / 100;
   const newTotal = rate === 0 ? base : Math.round((base + newVat) * 100) / 100;
 
@@ -493,7 +491,7 @@ function renderPage(){const d=DATA[curso];const b=document.getElementById('c-bad
 function updateFmtNote(){const n=document.getElementById('fmt-note');if(formato==='online'){n.innerHTML=isEn?'<span class="en"><strong>Online:</strong> Immediate access after payment confirmation. Video lessons available in your member area with no expiry.</span>':'<span class="pt"><strong>Online:</strong> Acesso imediato após confirmação do pagamento. Vídeo-aulas disponíveis na tua área de membros sem prazo de expiração.</span>';}else{n.innerHTML=isEn?'<span class="en"><strong>In-person:</strong> Next class dates confirmed by email. Small classes for individual support. Materials, certificate and post-course support included.</span>':'<span class="pt"><strong>Presencial:</strong> Datas da próxima turma confirmadas por email. Turmas reduzidas (máx. 8 alunos). Materiais, certificado e suporte incluídos.</span>';}}
 function selFormat(fmt){formato=fmt;document.getElementById('fc-pres').className='fcard'+(fmt==='pres'?' sel-pres':'');document.getElementById('fc-online').className='fcard'+(fmt==='online'?' sel-online':'');updateFmtNote();renderSummary();}
 function renderSummary(){const d=DATA[curso];const preco=formato==='pres'?d.pres:d.online;const pf='€'+preco.toLocaleString('pt-PT');document.getElementById('s-badge').textContent=isEn?d.tier_en:d.tier_pt;document.getElementById('s-badge').className='sum-badge '+d.badge;document.getElementById('s-name').textContent=isEn?d.nome_en:d.nome_pt;document.getElementById('s-fmt').textContent=formato==='pres'?(isEn?'In-person':'Presencial'):'Online';document.getElementById('s-sub').textContent=pf;document.getElementById('s-tot').textContent=pf;document.getElementById('mob-total').textContent=pf;const incs=formato==='pres'?(isEn?d.inc_pres_en:d.inc_pres_pt):(isEn?d.inc_online_en:d.inc_online_pt);document.getElementById('s-inc').innerHTML=incs.map(i=>'<div class="si">'+i+'</div>').join('');}
-function selPay(m){pagamento=m;['mbway','cartao','cripto','transferencia'].forEach(id=>{document.getElementById('p-'+id).classList.toggle('psel',id===m);document.getElementById('pp-'+id).classList.toggle('show',id===m);});if(m==='cripto')fetchCryptoAmount();}
+function selPay(m){pagamento=m;['mbway','cartao','cripto','transferencia'].forEach(id=>{document.getElementById('p-'+id).classList.toggle('psel',id===m);document.getElementById('pp-'+id).classList.toggle('show',id===m);});if(m==='cripto'){resetVatPricing();fetchCryptoAmount();}else if(m!=='cripto'){const cb=document.getElementById('cb-invoice');if(cb&&cb.checked&&!vatValid&&vatRate>0)applyVat(vatRate);}}
 function selCrypto(coin,e){
   e.stopPropagation();
   cryptoCoin=coin;
@@ -562,7 +560,9 @@ function getFormData(){
   const invoiceCb=document.getElementById('cb-invoice');
   const hasInvoice=invoiceCb&&invoiceCb.checked;
   const currentVatRate=hasInvoice?(vatValid?0:vatRate):0;
-  const subtotal=currentVatRate>0?Math.round(totalEur/(1+currentVatRate/100)*100)/100:totalEur;
+  // subtotal = base price ex-VAT (always from DATA, never derived from displayed total)
+  const basePrice=formato==='pres'?DATA[curso].pres:DATA[curso].online;
+  const subtotal=basePrice;
   return {nome,email,tel,nif,empresa,country,totalEur,subtotal,vatRate:currentVatRate};
 }
 
