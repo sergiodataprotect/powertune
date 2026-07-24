@@ -155,6 +155,14 @@
     .cert-prow{display:grid;grid-template-columns:1fr 1fr auto;gap:6px;align-items:center}
     canvas#cc{width:100%;max-width:1000px;display:block;border-radius:6px;background:#fff;}
     .cert-pinfo{flex:1;font-size:13px;font-weight:500;color:rgba(255,255,255,.7);background:rgba(255,255,255,.04);padding:10px 16px;border-radius:9px;display:flex;align-items:center;border:1px solid rgba(255,255,255,.1)}
+
+    /* ── DISPONIBILIDADE switches ──────────────────────────────────────────── */
+    .avail-switch{position:relative;width:46px;height:26px;flex-shrink:0;display:inline-block}
+    .avail-switch input{opacity:0;width:0;height:0;position:absolute}
+    .avail-slider{position:absolute;inset:0;border-radius:26px;background:rgba(239,68,68,.3);border:1px solid rgba(239,68,68,.25);cursor:pointer;transition:all .3s}
+    .avail-slider::before{content:'';position:absolute;width:20px;height:20px;left:2px;top:2px;border-radius:50%;background:#fff;transition:transform .3s;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+    .avail-switch input:checked + .avail-slider{background:rgba(34,197,94,.35);border-color:rgba(34,197,94,.45)}
+    .avail-switch input:checked + .avail-slider::before{transform:translateX(20px)}
   </style>
 </head>
 <body>
@@ -180,12 +188,16 @@
 
     <div class="sb-label">Sistema</div>
     <div class="sb-link" onclick="showSection('config')"><span class="sb-icon">⚙️</span> Configuração</div>
+    <div class="sb-link" onclick="showSection('disponibilidade')"><span class="sb-icon">🔴</span> Disponibilidade</div>
 
     <div class="sb-bottom">
       <div class="sync-status">
         <div class="sync-dot" id="sync-dot"></div>
         <span id="sync-text">A sincronizar…</span>
       </div>
+      <button onclick="doLogoff()" style="margin-top:.75rem;width:100%;padding:7px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:8px;color:#f87171;font-family:'Barlow',sans-serif;font-size:12px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px" onmouseover="this.style.background='rgba(239,68,68,.2)'" onmouseout="this.style.background='rgba(239,68,68,.1)'">
+        <span>⎋</span> Terminar sessão
+      </button>
     </div>
   </aside>
 
@@ -481,6 +493,77 @@
           <button class="btn btn-ghost btn-sm" style="margin-top:.75rem" onclick="copySnippet()">📋 Copiar Snippet</button>
         </div>
       </div>
+
+
+      <!-- ═══ DISPONIBILIDADE ════════════════════════════════════════════════ -->
+      <div class="section" id="section-disponibilidade">
+
+        <div class="alert alert-info">
+          <span>ℹ️</span>
+          <span>Liga ou desliga as inscrições de cada curso e formato. O efeito é imediato no site — sem necessidade de guardar na cloud.</span>
+        </div>
+
+        <div class="grid-2" style="margin-bottom:1.5rem">
+
+          <div class="card" style="margin-bottom:0">
+            <div class="card-h"><span>🎓</span> REMAP Start <span class="badge badge-ess" style="margin-left:6px;font-size:11px">Essential</span></div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:rgba(255,255,255,.03);border-radius:9px;border:1px solid rgba(255,255,255,.07)">
+                <div>
+                  <div style="font-size:13px;font-weight:500;color:rgba(255,255,255,.85)">🏢 Presencial</div>
+                  <div id="avail-st-ep" style="font-size:11px;margin-top:3px;color:var(--green)">● Inscrições abertas</div>
+                </div>
+                <label class="avail-switch"><input type="checkbox" id="avail-sw-ep" onchange="availSave('essential','pres',this.checked)"><span class="avail-slider"></span></label>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:rgba(255,255,255,.03);border-radius:9px;border:1px solid rgba(255,255,255,.07)">
+                <div>
+                  <div style="font-size:13px;font-weight:500;color:rgba(255,255,255,.85)">🎬 Online</div>
+                  <div id="avail-st-eo" style="font-size:11px;margin-top:3px;color:var(--green)">● Inscrições abertas</div>
+                </div>
+                <label class="avail-switch"><input type="checkbox" id="avail-sw-eo" onchange="availSave('essential','online',this.checked)"><span class="avail-slider"></span></label>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom:0">
+            <div class="card-h"><span>🏆</span> REMAP Pro <span class="badge badge-adv" style="margin-left:6px;font-size:11px">Advanced</span></div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:rgba(255,255,255,.03);border-radius:9px;border:1px solid rgba(255,255,255,.07)">
+                <div>
+                  <div style="font-size:13px;font-weight:500;color:rgba(255,255,255,.85)">🏢 Presencial</div>
+                  <div id="avail-st-ap" style="font-size:11px;margin-top:3px;color:var(--green)">● Inscrições abertas</div>
+                </div>
+                <label class="avail-switch"><input type="checkbox" id="avail-sw-ap" onchange="availSave('advanced','pres',this.checked)"><span class="avail-slider"></span></label>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:rgba(255,255,255,.03);border-radius:9px;border:1px solid rgba(255,255,255,.07)">
+                <div>
+                  <div style="font-size:13px;font-weight:500;color:rgba(255,255,255,.85)">🎬 Online</div>
+                  <div id="avail-st-ao" style="font-size:11px;margin-top:3px;color:var(--green)">● Inscrições abertas</div>
+                </div>
+                <label class="avail-switch"><input type="checkbox" id="avail-sw-ao" onchange="availSave('advanced','online',this.checked)"><span class="avail-slider"></span></label>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- LISTA DE ESPERA -->
+        <div class="card" style="padding:0">
+          <div style="padding:1rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem">
+            <div>
+              <div class="card-h" style="margin-bottom:3px"><span>📋</span> Lista de Espera</div>
+              <div id="wl-count" style="font-size:12px;color:rgba(255,255,255,.35)">0 registos</div>
+            </div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-ghost btn-sm" onclick="availExportCSV()">⬇ Exportar CSV</button>
+              <button class="btn btn-red btn-sm" onclick="availClearWL()">🗑 Limpar</button>
+            </div>
+          </div>
+          <div id="wl-body" class="table-wrap"></div>
+        </div>
+
+      </div>
+      <!-- /DISPONIBILIDADE -->
 
     </div></div></div><div class="modal-backdrop" id="modal-member">
   <div class="modal">
@@ -1052,7 +1135,7 @@ function filterContent(f,btn) {
 }
 
 // ── NAVIGATION ────────────────────────────────────────────────────────────────
-const SECTION_TITLES = { dashboard:'Dashboard', membros:'Membros', datas:'Datas da Formação', conteudo:'Conteúdo', config:'Configuração', certificados:'Gerador de Certificados', pagamentos:'Pagamentos' };
+const SECTION_TITLES = { dashboard:'Dashboard', membros:'Membros', datas:'Datas da Formação', conteudo:'Conteúdo', config:'Configuração', certificados:'Gerador de Certificados', pagamentos:'Pagamentos', disponibilidade:'Disponibilidade dos Cursos' };
 function showSection(name) {
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.sb-link').forEach(l=>l.classList.remove('active'));
@@ -1066,6 +1149,7 @@ function showSection(name) {
   
   if(name === 'certificados') certUpdate();
   if(name === 'pagamentos') pgLoad();
+  if(name === 'disponibilidade') availLoad();
 }
 
 // ── MODALS ────────────────────────────────────────────────────────────────────
@@ -1695,6 +1779,111 @@ async function initRoteiro() {
   renderAll();
   toast(`✅ ${ROTEIRO.length} aulas do roteiro carregadas. Clica "Guardar na Cloud" para guardar.`, 'success');
 }
+
+
+// ═══ DISPONIBILIDADE — controlo de inscrições ══════════════════════════════════
+// Chaves localStorage: ra_avail_{curso}_{fmt} → '1' aberto | '0' fechado
+// Usadas pelo index.html (tryBuy) e checkout.html (checkCourseAvailability)
+
+function availKey(curso, fmt) {
+  return 'ra_avail_' + curso + '_' + fmt;
+}
+
+function availLoad() {
+  var opts = [
+    { id: 'ep', curso: 'essential', fmt: 'pres' },
+    { id: 'eo', curso: 'essential', fmt: 'online' },
+    { id: 'ap', curso: 'advanced',  fmt: 'pres' },
+    { id: 'ao', curso: 'advanced',  fmt: 'online' },
+  ];
+  opts.forEach(function(o) {
+    var open = localStorage.getItem(availKey(o.curso, o.fmt)) !== '0';
+    var sw = document.getElementById('avail-sw-' + o.id);
+    if (sw) sw.checked = open;
+    availSetStatus(o.id, open);
+  });
+  availRenderWL();
+}
+
+function availSave(curso, fmt, open) {
+  localStorage.setItem(availKey(curso, fmt), open ? '1' : '0');
+  var id = (curso === 'essential' ? 'e' : 'a') + (fmt === 'pres' ? 'p' : 'o');
+  availSetStatus(id, open);
+  var label = (curso === 'essential' ? 'REMAP Start' : 'REMAP Pro') + ' ' + (fmt === 'pres' ? 'Presencial' : 'Online');
+  toast((open ? '✅ Aberto' : '🔴 Fechado') + ': ' + label, open ? 'success' : 'info');
+}
+
+function availSetStatus(id, open) {
+  var el = document.getElementById('avail-st-' + id);
+  if (!el) return;
+  el.style.color = open ? 'var(--green)' : 'var(--red)';
+  el.textContent = open ? '● Inscrições abertas' : '● Inscrições fechadas';
+}
+
+function availRenderWL() {
+  var list = [];
+  try { list = JSON.parse(localStorage.getItem('ra_waitlist') || '[]'); } catch(e) {}
+  var cnt = document.getElementById('wl-count');
+  if (cnt) cnt.textContent = list.length + ' registo' + (list.length !== 1 ? 's' : '');
+  var body = document.getElementById('wl-body');
+  if (!body) return;
+  if (!list.length) {
+    body.innerHTML = '<div class="empty"><span class="empty-icon">📭</span>Nenhum contacto na lista de espera.</div>';
+    return;
+  }
+  var LABELS = { essential: 'Essential', advanced: 'Advanced' };
+  var BADGES = { essential: 'badge-ess', advanced: 'badge-adv' };
+  var rows = list.map(function(r, i) {
+    return '<tr>' +
+      '<td style="color:rgba(255,255,255,.3)">' + (i + 1) + '</td>' +
+      '<td>' + esc(r.nome || '—') + '</td>' +
+      '<td style="font-size:12px">' + esc(r.contacto) + '</td>' +
+      '<td><span class="badge ' + (BADGES[r.curso] || 'badge-pres') + '">' + (LABELS[r.curso] || r.curso) + '</span>' +
+      (r.fmt ? ' <span class="badge badge-' + (r.fmt === 'online' ? 'online' : 'pres') + '" style="margin-left:4px">' + (r.fmt === 'online' ? 'Online' : 'Presencial') + '</span>' : '') +
+      '</td>' +
+      '<td style="font-size:12px;color:rgba(255,255,255,.35)">' + esc(r.data) + '</td>' +
+      '<td><button class="btn btn-red btn-sm" onclick="availDelWL(' + i + ')">✕</button></td>' +
+      '</tr>';
+  }).join('');
+  body.innerHTML = '<table><thead><tr><th>#</th><th>Nome</th><th>Contacto</th><th>Curso</th><th>Data</th><th></th></tr></thead><tbody>' + rows + '</tbody></table>';
+}
+
+function availDelWL(i) {
+  var list = [];
+  try { list = JSON.parse(localStorage.getItem('ra_waitlist') || '[]'); } catch(e) {}
+  list.splice(i, 1);
+  localStorage.setItem('ra_waitlist', JSON.stringify(list));
+  availRenderWL();
+}
+
+function availClearWL() {
+  if (!confirm('Limpar toda a lista de espera? Não pode ser desfeito.')) return;
+  localStorage.removeItem('ra_waitlist');
+  availRenderWL();
+  toast('Lista de espera limpa.', 'info');
+}
+
+function availExportCSV() {
+  var list = [];
+  try { list = JSON.parse(localStorage.getItem('ra_waitlist') || '[]'); } catch(e) {}
+  if (!list.length) { toast('Lista de espera vazia.', 'info'); return; }
+  var csv = 'Nome,Contacto,Curso,Formato,Data\n';
+  list.forEach(function(r) {
+    csv += '"' + (r.nome||'') + '","' + (r.contacto||'') + '","' + (r.curso||'') + '","' + (r.fmt||'') + '","' + (r.data||'') + '"\n';
+  });
+  var a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'waitlist_remap_' + new Date().toISOString().slice(0, 10) + '.csv';
+  a.click();
+  toast('CSV exportado ✓', 'success');
+}
+
+function doLogoff() {
+  if (!confirm('Terminar sessão?')) return;
+  sessionStorage.removeItem('ra_admin_ok');
+  location.reload();
+}
+// ═══════════════════════════════════════════════════════════════════════════════
 
 // Inicializar e arrancar tudo quando a página carrega
 window.addEventListener('DOMContentLoaded', () => {
