@@ -387,7 +387,7 @@ body.lang-en .en{display:revert}
           <span class="fmt-tag fmt-online">&#127909; <span class="pt">Online</span><span class="en">Online</span></span>
         </div>
         <div class="c-cta">
-          <a href="checkout.html?curso=essential" class="cta-full cta-ess"><span class="pt">Inscrever-me no Essential</span><span class="en">Enrol in Essential</span></a>
+          <button onclick="tryBuy('essential')" class="cta-full cta-ess"><span class="pt">Inscrever-me no Essential</span><span class="en">Enrol in Essential</span></button>
           <a href="cursos/essential.html" class="cta-ghost"><span class="pt">Ver conte&#250;do completo</span><span class="en">View full content</span></a>
         </div>
       </div>
@@ -424,7 +424,7 @@ body.lang-en .en{display:revert}
           <span class="fmt-tag fmt-online">&#127909; <span class="pt">Online</span><span class="en">Online</span></span>
         </div>
         <div class="c-cta">
-          <a href="checkout.html?curso=advanced" class="cta-full cta-adv"><span class="pt">Inscrever-me no Advanced</span><span class="en">Enrol in Advanced</span></a>
+          <button onclick="tryBuy('advanced')" class="cta-full cta-adv"><span class="pt">Inscrever-me no Advanced</span><span class="en">Enrol in Advanced</span></button>
           <a href="cursos/advanced.html" class="cta-ghost"><span class="pt">Ver conte&#250;do completo</span><span class="en">View full content</span></a>
         </div>
       </div>
@@ -710,5 +710,121 @@ window.addEventListener('scroll', () => {
   navAs.forEach(a => { a.style.color = a.getAttribute('href') === '#'+cur ? '#0BABDD' : ''; });
 }, {passive:true});
 </script>
+
+<!-- ═══ MODAL AVISA-ME (Disponibilidade) ═══════════════════════════════════ -->
+<div id="nm-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:300;align-items:center;justify-content:center;padding:1rem">
+  <div style="background:#1a1718;border:1px solid rgba(255,255,255,.13);border-radius:18px;width:100%;max-width:430px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.6)">
+    <div style="background:#231F20;padding:1.25rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:flex-start;justify-content:space-between;gap:1rem">
+      <div>
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:6px">
+          <span style="width:8px;height:8px;border-radius:50%;background:#F36308;display:inline-block;animation:nmPulse 1.8s infinite"></span>
+          <span style="font-size:11px;font-weight:700;color:#F36308;letter-spacing:.1em;text-transform:uppercase"><span class="pt">Inscrições temporariamente fechadas</span><span class="en">Enrolments temporarily closed</span></span>
+        </div>
+        <div id="nm-title" style="font-family:'Barlow Condensed',sans-serif;font-size:1.3rem;font-weight:700;color:#fff;line-height:1.2"></div>
+      </div>
+      <button onclick="nmClose()" style="background:rgba(255,255,255,.07);border:none;color:rgba(255,255,255,.5);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1.1rem;flex-shrink:0;margin-top:2px;transition:background .2s" onmouseover="this.style.background='rgba(255,255,255,.14)'" onmouseout="this.style.background='rgba(255,255,255,.07)'">&times;</button>
+    </div>
+    <div style="padding:1.5rem">
+      <p style="font-size:13.5px;color:rgba(255,255,255,.55);line-height:1.75;margin-bottom:1.25rem">
+        <span class="pt">Este curso está a ser reestruturado e as inscrições estão temporariamente suspensas. Deixa o teu contacto e serás o(a) primeiro(a) a saber quando abrirem.</span>
+        <span class="en">This course is currently being restructured. Enrolments are temporarily suspended. Leave your contact and you will be the first to know when they reopen.</span>
+      </p>
+      <div style="margin-bottom:10px">
+        <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.35);letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px"><span class="pt">Nome</span><span class="en">Name</span></label>
+        <input id="nm-nome" type="text" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:12px 14px;color:#fff;font-family:'Barlow',sans-serif;font-size:16px;outline:none;-webkit-appearance:none;transition:border-color .2s" placeholder="João Silva" onfocus="this.style.borderColor='rgba(11,171,221,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.12)'">
+      </div>
+      <div style="margin-bottom:16px">
+        <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.35);letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px"><span class="pt">Email ou Telefone *</span><span class="en">Email or Phone *</span></label>
+        <input id="nm-contacto" type="text" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:12px 14px;color:#fff;font-family:'Barlow',sans-serif;font-size:16px;outline:none;-webkit-appearance:none;transition:border-color .2s" placeholder="email@exemplo.com / +351 9XX XXX XXX" onfocus="this.style.borderColor='rgba(11,171,221,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.12)'">
+      </div>
+      <div id="nm-success" style="display:none;text-align:center;padding:.9rem;background:rgba(34,197,94,.1);border-radius:9px;border:1px solid rgba(34,197,94,.25);margin-bottom:12px">
+        <div style="color:#4ade80;font-weight:700;font-size:14px">&#10003; <span class="pt">Registo confirmado! Contactamos assim que as inscrições abrirem.</span><span class="en">Registered! We will contact you as soon as enrolments open.</span></div>
+      </div>
+      <button id="nm-btn" onclick="nmSubmit()" style="width:100%;padding:14px;background:#F36308;color:#fff;border:none;border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-size:1.05rem;font-weight:700;cursor:pointer;transition:opacity .2s;min-height:50px;letter-spacing:.04em">
+        <span class="pt">Avisar-me quando abrir</span><span class="en">Notify me when available</span>
+      </button>
+      <p style="font-size:11px;color:rgba(255,255,255,.2);text-align:center;margin-top:10px;line-height:1.5"><span class="pt">Sem spam. Apenas uma notificação quando as inscrições abrirem.</span><span class="en">No spam. Just one notification when enrolments open.</span></p>
+    </div>
+  </div>
+</div>
+<style>
+@keyframes nmPulse{0%,100%{opacity:1}50%{opacity:.2}}
+</style>
+
+<script>
+// ═══ DISPONIBILIDADE — switch do backoffice ═══════════════════════════════════
+var _nmCurso = '';
+
+function _isAvail(curso) {
+  // chave: ra_avail_essential / ra_avail_advanced
+  // valor '0' = fechado; qualquer outra coisa (incluindo ausente) = aberto
+  return localStorage.getItem('ra_avail_' + curso) !== '0';
+}
+
+function tryBuy(curso) {
+  if (_isAvail(curso)) {
+    window.location.href = 'checkout.html?curso=' + curso;
+  } else {
+    nmOpen(curso);
+  }
+}
+
+function nmOpen(curso) {
+  _nmCurso = curso;
+  var isEn = document.body.classList.contains('lang-en');
+  var labels = {
+    essential: { pt: 'REMAP Start — ECU Fundamentals', en: 'REMAP Start — ECU Fundamentals' },
+    advanced:  { pt: 'REMAP Pro — ECU Mastery Program', en: 'REMAP Pro — ECU Mastery Program' }
+  };
+  document.getElementById('nm-title').textContent = isEn ? labels[curso].en : labels[curso].pt;
+  document.getElementById('nm-nome').value = '';
+  document.getElementById('nm-contacto').value = '';
+  document.getElementById('nm-success').style.display = 'none';
+  document.getElementById('nm-btn').style.display = 'block';
+  var ov = document.getElementById('nm-overlay');
+  ov.style.display = 'flex';
+  setTimeout(function(){ document.getElementById('nm-nome').focus(); }, 120);
+}
+
+function nmClose() {
+  document.getElementById('nm-overlay').style.display = 'none';
+}
+
+function nmSubmit() {
+  var contacto = document.getElementById('nm-contacto').value.trim();
+  if (!contacto) {
+    document.getElementById('nm-contacto').style.borderColor = '#ef4444';
+    document.getElementById('nm-contacto').focus();
+    setTimeout(function(){ document.getElementById('nm-contacto').style.borderColor = 'rgba(255,255,255,.12)'; }, 1500);
+    return;
+  }
+  var nome = document.getElementById('nm-nome').value.trim();
+  var list = [];
+  try { list = JSON.parse(localStorage.getItem('ra_waitlist') || '[]'); } catch(e){}
+  var now = new Date();
+  var pad = function(n){ return n.toString().padStart(2,'0'); };
+  var data = pad(now.getDate())+'/'+pad(now.getMonth()+1)+'/'+now.getFullYear()+' '+pad(now.getHours())+':'+pad(now.getMinutes());
+  list.push({ curso: _nmCurso, nome: nome, contacto: contacto, data: data });
+  localStorage.setItem('ra_waitlist', JSON.stringify(list));
+  document.getElementById('nm-success').style.display = 'block';
+  document.getElementById('nm-btn').style.display = 'none';
+  setTimeout(nmClose, 3000);
+}
+
+// Fechar ao clicar fora
+document.getElementById('nm-overlay').addEventListener('click', function(e){
+  if (e.target === this) nmClose();
+});
+
+// Auto-abrir modal se redireccionado do checkout com ?notify=curso
+(function(){
+  var p = new URLSearchParams(window.location.search);
+  var n = p.get('notify');
+  if (n && (n === 'essential' || n === 'advanced')) {
+    setTimeout(function(){ nmOpen(n); }, 500);
+  }
+})();
+</script>
+
 </body>
 </html>

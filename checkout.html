@@ -357,6 +357,21 @@
 <div class="success-page" id="success-page"><div class="success-icon">&#9989;</div><h2 class="success-h"><span class="pt">Inscri&ccedil;&atilde;o recebida!</span><span class="en">Enrolment received!</span></h2><p class="success-sub" id="success-msg"></p><a href="index.html" class="success-back">&larr; <span class="pt">Voltar ao site</span><span class="en">Back to site</span></a></div>
 
 <script>
+
+// ═══ VERIFICAÇÃO DE DISPONIBILIDADE (controlada pelo backoffice) ══════════════
+(function checkCourseAvailability() {
+  var p = new URLSearchParams(window.location.search);
+  var c = p.get('curso') || 'essential';
+  // chave ra_avail_essential / ra_avail_advanced — '0' = fechado
+  var avail = localStorage.getItem('ra_avail_' + c);
+  if (avail === '0') {
+    // Redirecionar para homepage com parâmetro para abrir modal de notificação
+    window.location.href = 'index.html?notify=' + c;
+    return;
+  }
+})();
+// ═════════════════════════════════════════════════════════════════════════════
+
 // ─── STRIPE ──────────────────────────────────────────────────────────────────
 // Substitui pela tua chave pública LIVE quando estiveres em produção:
 // pk_test_... → pk_live_...
