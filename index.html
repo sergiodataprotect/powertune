@@ -797,16 +797,41 @@ function nmSubmit() {
     return;
   }
   var nome = document.getElementById('nm-nome').value.trim();
-  var list = [];
-  try { list = JSON.parse(localStorage.getItem('ra_waitlist') || '[]'); } catch(e){}
-  var now = new Date();
-  var pad = function(n){ return n.toString().padStart(2,'0'); };
-  var data = pad(now.getDate())+'/'+pad(now.getMonth()+1)+'/'+now.getFullYear()+' '+pad(now.getHours())+':'+pad(now.getMinutes());
-  list.push({ curso: _nmCurso, nome: nome, contacto: contacto, data: data });
-  localStorage.setItem('ra_waitlist', JSON.stringify(list));
-  document.getElementById('nm-ok').style.display = 'block';
-  document.getElementById('nm-btn').style.display = 'none';
-  setTimeout(nmClose, 3000);
+  var btn  = document.getElementById('nm-btn');
+  var isEn = document.body.classList.contains('lang-en');
+
+  btn.disabled = true;
+  btn.textContent = isEn ? 'Sending…' : 'A enviar…';
+
+  fetch('/.netlify/functions/save-waitlist', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ curso: _nmCurso, nome: nome, contacto: contacto })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.ok) {
+      document.getElementById('nm-ok').style.display = 'block';
+      document.getElementById('nm-btn').style.display = 'none';
+      setTimeout(nmClose, 3000);
+    } else {
+      throw new Error(data.error || 'Erro desconhecido');
+    }
+  })
+  .catch(function(err) {
+    // Fallback: guardar em localStorage se a function falhar
+    console.warn('save-waitlist function falhou, a guardar localmente:', err.message);
+    var list = [];
+    try { list = JSON.parse(localStorage.getItem('ra_waitlist') || '[]'); } catch(e){}
+    var now = new Date();
+    var pad = function(n){ return n.toString().padStart(2,'0'); };
+    list.push({ curso: _nmCurso, nome: nome, contacto: contacto,
+      data: pad(now.getDate())+'/'+pad(now.getMonth()+1)+'/'+now.getFullYear()+' '+pad(now.getHours())+':'+pad(now.getMinutes()) });
+    localStorage.setItem('ra_waitlist', JSON.stringify(list));
+    document.getElementById('nm-ok').style.display = 'block';
+    document.getElementById('nm-btn').style.display = 'none';
+    setTimeout(nmClose, 3000);
+  });
 }
 
 document.getElementById('nm-overlay').addEventListener('click', function(e){
