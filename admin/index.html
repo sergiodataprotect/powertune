@@ -1820,27 +1820,45 @@ function availSetStatus(id, open) {
   el.textContent = open ? '● Inscrições abertas' : '● Inscrições fechadas';
 }
 
-function availRenderWL() {
-  var list = [];
-  try { list = JSON.parse(localStorage.getItem('ra_waitlist') || '[]'); } catch(e) {}
-  var cnt = document.getElementById('wl-count');
-  if (cnt) cnt.textContent = list.length + ' registo' + (list.length !== 1 ? 's' : '');
+// ── Lista de espera — lê do JSONBin (mesma fonte que o site) ─────────────────
+var _wlList = []; // cache local
+
+async function availRenderWL() {
   var body = document.getElementById('wl-body');
+  var cnt  = document.getElementById('wl-count');
   if (!body) return;
-  if (!list.length) {
+
+  body.innerHTML = '<div class="empty"><span class="empty-icon" style="font-size:1.5rem">⏳</span>A carregar…</div>';
+
+  try {
+    if (!BIN_ID || !API_KEY) throw new Error('JSONBin não configurado');
+    const r = await fetch('https://api.jsonbin.io/v3/b/' + BIN_ID + '/latest', {
+      headers: { 'X-Master-Key': API_KEY }
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const data = await r.json();
+    _wlList = Array.isArray((data.record || {}).waitlist) ? data.record.waitlist : [];
+  } catch(e) {
+    // Fallback para localStorage se JSONBin falhar
+    try { _wlList = JSON.parse(localStorage.getItem('ra_waitlist') || '[]'); } catch(_) { _wlList = []; }
+    if (!BIN_ID) toast('JSONBin não configurado — a mostrar dados locais.', 'info');
+  }
+
+  if (cnt) cnt.textContent = _wlList.length + ' registo' + (_wlList.length !== 1 ? 's' : '');
+
+  if (!_wlList.length) {
     body.innerHTML = '<div class="empty"><span class="empty-icon">📭</span>Nenhum contacto na lista de espera.</div>';
     return;
   }
+
   var LABELS = { essential: 'Essential', advanced: 'Advanced' };
-  var BADGES = { essential: 'badge-ess', advanced: 'badge-adv' };
-  var rows = list.map(function(r, i) {
+  var BADGES  = { essential: 'badge-ess', advanced: 'badge-adv' };
+  var rows = _wlList.map(function(r, i) {
     return '<tr>' +
-      '<td style="color:rgba(255,255,255,.3)">' + (i + 1) + '</td>' +
-      '<td>' + esc(r.nome || '—') + '</td>' +
+      '<td style="color:rgba(255,255,255,.3)">' + (i+1) + '</td>' +
+      '<td><strong style="color:#fff">' + esc(r.nome || '—') + '</strong></td>' +
       '<td style="font-size:12px">' + esc(r.contacto) + '</td>' +
-      '<td><span class="badge ' + (BADGES[r.curso] || 'badge-pres') + '">' + (LABELS[r.curso] || r.curso) + '</span>' +
-      (r.fmt ? ' <span class="badge badge-' + (r.fmt === 'online' ? 'online' : 'pres') + '" style="margin-left:4px">' + (r.fmt === 'online' ? 'Online' : 'Presencial') + '</span>' : '') +
-      '</td>' +
+      '<td><span class="badge ' + (BADGES[r.curso] || 'badge-pres') + '">' + (LABELS[r.curso] || r.curso) + '</span></td>' +
       '<td style="font-size:12px;color:rgba(255,255,255,.35)">' + esc(r.data) + '</td>' +
       '<td><button class="btn btn-red btn-sm" onclick="availDelWL(' + i + ')">✕</button></td>' +
       '</tr>';
@@ -1848,28 +1866,49 @@ function availRenderWL() {
   body.innerHTML = '<table><thead><tr><th>#</th><th>Nome</th><th>Contacto</th><th>Curso</th><th>Data</th><th></th></tr></thead><tbody>' + rows + '</tbody></table>';
 }
 
-function availDelWL(i) {
-  var list = [];
-  try { list = JSON.parse(localStorage.getItem('ra_waitlist') || '[]'); } catch(e) {}
-  list.splice(i, 1);
-  localStorage.setItem('ra_waitlist', JSON.stringify(list));
+async function availDelWL(i) {
+  if (!confirm('Remover este registo?')) return;
+  _wlList.splice(i, 1);
+  try {
+    const r = await fetch('https://api.jsonbin.io/v3/b/' + BIN_ID + '/latest', { headers: { 'X-Master-Key': API_KEY } });
+    const data = await r.json();
+    const record = data.record || {};
+    await fetch('https://api.jsonbin.io/v3/b/' + BIN_ID, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'X-Master-Key': API_KEY },
+      body: JSON.stringify({ ...record, waitlist: _wlList })
+    });
+    toast('Registo removido ✓', 'success');
+  } catch(e) {
+    toast('Erro ao remover: ' + e.message, 'error');
+  }
   availRenderWL();
 }
 
-function availClearWL() {
-  if (!confirm('Limpar toda a lista de espera? Não pode ser desfeito.')) return;
-  localStorage.removeItem('ra_waitlist');
-  availRenderWL();
-  toast('Lista de espera limpa.', 'info');
+async function availClearWL() {
+  if (!confirm('Limpar toda a lista de espera no JSONBin? Não pode ser desfeito.')) return;
+  try {
+    const r = await fetch('https://api.jsonbin.io/v3/b/' + BIN_ID + '/latest', { headers: { 'X-Master-Key': API_KEY } });
+    const data = await r.json();
+    const record = data.record || {};
+    await fetch('https://api.jsonbin.io/v3/b/' + BIN_ID, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'X-Master-Key': API_KEY },
+      body: JSON.stringify({ ...record, waitlist: [] })
+    });
+    _wlList = [];
+    availRenderWL();
+    toast('Lista de espera limpa ✓', 'info');
+  } catch(e) {
+    toast('Erro: ' + e.message, 'error');
+  }
 }
 
 function availExportCSV() {
-  var list = [];
-  try { list = JSON.parse(localStorage.getItem('ra_waitlist') || '[]'); } catch(e) {}
-  if (!list.length) { toast('Lista de espera vazia.', 'info'); return; }
-  var csv = 'Nome,Contacto,Curso,Formato,Data\n';
-  list.forEach(function(r) {
-    csv += '"' + (r.nome||'') + '","' + (r.contacto||'') + '","' + (r.curso||'') + '","' + (r.fmt||'') + '","' + (r.data||'') + '"\n';
+  if (!_wlList.length) { toast('Lista de espera vazia.', 'info'); return; }
+  var csv = 'Nome,Contacto,Curso,Data\n';
+  _wlList.forEach(function(r) {
+    csv += '"' + (r.nome||'') + '","' + (r.contacto||'') + '","' + (r.curso||'') + '","' + (r.data||'') + '"\n';
   });
   var a = document.createElement('a');
   a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
