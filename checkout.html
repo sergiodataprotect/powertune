@@ -357,21 +357,6 @@
 <div class="success-page" id="success-page"><div class="success-icon">&#9989;</div><h2 class="success-h"><span class="pt">Inscri&ccedil;&atilde;o recebida!</span><span class="en">Enrolment received!</span></h2><p class="success-sub" id="success-msg"></p><a href="index.html" class="success-back">&larr; <span class="pt">Voltar ao site</span><span class="en">Back to site</span></a></div>
 
 <script>
-
-// ═══ VERIFICAÇÃO DE DISPONIBILIDADE (controlada pelo backoffice) ══════════════
-(function checkCourseAvailability() {
-  var p = new URLSearchParams(window.location.search);
-  var c = p.get('curso') || 'essential';
-  // chave ra_avail_essential / ra_avail_advanced — '0' = fechado
-  var avail = localStorage.getItem('ra_avail_' + c);
-  if (avail === '0') {
-    // Redirecionar para homepage com parâmetro para abrir modal de notificação
-    window.location.href = 'index.html?notify=' + c;
-    return;
-  }
-})();
-// ═════════════════════════════════════════════════════════════════════════════
-
 // ─── STRIPE ──────────────────────────────────────────────────────────────────
 // Substitui pela tua chave pública LIVE quando estiveres em produção:
 // pk_test_... → pk_live_...
@@ -711,6 +696,37 @@ async function submitOrder(){
   }
 }
 // card-num field removed — Stripe handles card input on its own secure page
+
+// === VERIFICACAO DE DISPONIBILIDADE ==========================================
+// Chaves: ra_avail_{curso}_pres | ra_avail_{curso}_online
+// '0' = fechado | '1' ou ausente = aberto (mesmo formato do admin)
+(function checkCourseAvailability() {
+  var p = new URLSearchParams(window.location.search);
+  var curso = p.get('curso') || 'essential';
+  var keyPres   = 'ra_avail_' + curso + '_pres';
+  var keyOnline = 'ra_avail_' + curso + '_online';
+  var presOpen   = localStorage.getItem(keyPres)   !== '0';
+  var onlineOpen = localStorage.getItem(keyOnline) !== '0';
+
+  if (!presOpen && !onlineOpen) {
+    window.location.href = 'index.html?notify=' + curso;
+    return;
+  }
+
+  window.addEventListener('DOMContentLoaded', function() {
+    if (!presOpen) {
+      var fc = document.getElementById('fc-pres');
+      if (fc) { fc.style.opacity='.35'; fc.style.pointerEvents='none'; fc.style.cursor='not-allowed'; fc.title='Temporariamente indisponivel'; }
+      if (typeof selFormat === 'function') selFormat('online');
+    }
+    if (!onlineOpen) {
+      var fo = document.getElementById('fc-online');
+      if (fo) { fo.style.opacity='.35'; fo.style.pointerEvents='none'; fo.style.cursor='not-allowed'; fo.title='Temporariamente indisponivel'; }
+    }
+  });
+})();
+// =============================================================================
+
 </script>
 </body>
 </html>
